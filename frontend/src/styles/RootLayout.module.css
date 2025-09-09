@@ -1,0 +1,20 @@
+.layoutContainer {
+  display: flex;
+  min-height: 100vh;
+  gap: 1.5rem; /* space between sidebar and main */
+  background-color: #f3f4f6; /* white background for the page */
+}
+
+.sidebar {
+  flex: 1; /* 1 part of ratio */
+  max-width: 300px; /* optional max-width */
+  background-color: #f3f4f6; /* light gray for sidebar */
+  padding: 1rem;
+  border-radius: 12px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.main {
+  flex: 2; /* 2 parts of ratio */
+  padding: 1rem;
+}

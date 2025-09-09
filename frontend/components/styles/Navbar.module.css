@@ -1,0 +1,76 @@
+/* Navbar.module.css */
+
+/* Overall Navbar */
+.navbar {
+  background-color: #ffffff; /* White background for professional look */
+  color: #111111; /* Text black */
+  padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* subtle shadow */
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+/* Logo */
+.logo {
+  font-size: 1.5rem; /* slightly larger */
+  font-weight: 700;
+  color: #111111;
+  text-decoration: none;
+}
+
+/* Navigation links */
+.navLinks {
+  display: flex;
+  gap: 2rem;
+}
+
+.navLinks a {
+  text-decoration: none;
+  color: #111111;
+  font-weight: 500;
+  transition: color 0.2s, border-bottom 0.2s;
+  padding-bottom: 2px;
+}
+
+.navLinks a:hover {
+  color: #2563eb; /* subtle brand color on hover */
+  border-bottom: 2px solid #2563eb;
+}
+
+/* Auth Links */
+.authLinks {
+  display: flex;
+  gap: 1rem;
+}
+
+.authLinks a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  color: #111111;
+  font-weight: 500;
+  transition: color 0.2s, background 0.2s, border 0.2s;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+}
+
+.authLinks a:hover {
+  background-color: #f2f2f2;
+  color: #2563eb;
+}
+
+/* Hide span on small screens */
+.authLinks span {
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .authLinks span {
+    display: inline;
+  }
+}

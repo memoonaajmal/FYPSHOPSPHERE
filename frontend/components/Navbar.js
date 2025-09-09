@@ -1,31 +1,30 @@
 "use client";
 import Link from "next/link";
 import { UserPlus, LogIn } from "lucide-react";
+import styles from "./styles/Navbar.module.css";
 
 export default function Navbar() {
   return (
-    <nav className="bg-blue-600 text-white px-6 py-3 flex justify-between items-center shadow-md">
+    <nav className={styles.navbar}>
       {/* Left: Logo */}
-      <h1 className="text-xl font-bold">
-        <Link href="/">MyShop</Link>
+      <h1 className={styles.logo}>
+        <Link href="/">ShopSphere</Link>
       </h1>
 
       {/* Center: Navigation */}
-      <div className="flex gap-6">
-        <Link href="/products" className="hover:underline">
-          Products
-        </Link>
+      <div className={styles.navLinks}>
+        <Link href="/products">Products</Link>
       </div>
 
       {/* Right: Auth Icons */}
-      <div className="flex gap-4">
-        <Link href="../signup" className="flex items-center gap-1 hover:underline">
+      <div className={styles.authLinks}>
+        <Link href="/signup">
           <UserPlus size={20} />
-          <span className="hidden sm:inline">Sign Up</span>
+          <span> Sign Up</span>
         </Link>
-        <Link href="/login" className="flex items-center gap-1 hover:underline">
+        <Link href="/login">
           <LogIn size={20} />
-          <span className="hidden sm:inline">Login</span>
+          <span> Login</span>
         </Link>
       </div>
     </nav>

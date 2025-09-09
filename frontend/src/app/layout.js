@@ -2,6 +2,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../../components/Navbar";
 import SearchFilterBar from "../../components/FilterBar";
+import styles from "../styles/RootLayout.module.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,15 +27,15 @@ export default function RootLayout({ children }) {
         <Navbar />
 
         {/* Page Layout */}
-        <div className="flex min-h-screen gap-6">
-          {/* Sidebar (left) */}
-          <aside className="w-64 bg-gray-100 p-4 hidden md:block rounded-xl shadow-md">
+        <div className={styles.layoutContainer}>
+          {/* Sidebar */}
+          <aside className={styles.sidebar}>
             <h2 className="font-bold mb-4">Filters</h2>
             <SearchFilterBar />
           </aside>
 
-          {/* Main Content (right) */}
-          <main className="flex-1 p-4">{children}</main>
+          {/* Main Content */}
+          <main className={styles.main}>{children}</main>
         </div>
       </body>
     </html>
