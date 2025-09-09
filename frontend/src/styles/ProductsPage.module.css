@@ -1,0 +1,28 @@
+/* ProductsPage.module.css */
+
+.container {
+  max-width: 1200px; /* wider than 800px for desktop */
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+  .productsGrid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+  }
+}
+
+.noProducts {
+  text-align: center;
+  font-size: 1.125rem;
+  color: #555;
+  margin-top: 2rem;
+}
