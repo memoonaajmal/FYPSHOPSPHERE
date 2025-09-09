@@ -8,8 +8,6 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
-const IMAGES_BASE_URL = process.env.IMAGES_BASE_URL || '/static/images';
-const IMAGES_DIR = process.env.IMAGES_DIR || './public/images';
 
 const connectDB = require('./utils/connectDB');
 const logger = require('./utils/logger');
@@ -20,6 +18,7 @@ const { notFound, errorHandler } = require('./middleware/errors');
 
 const app = express();
 
+// Security & middleware
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(compression());
@@ -27,7 +26,11 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
-// CORS handling: support CORS_ORIGINS="*" or comma list
+// ✅ Serve images from backend/data/images
+app.use("/images", express.static(path.join(__dirname, "../data/images")));
+
+
+// ✅ CORS setup
 const cors = require('cors');
 const corsOrigins = (process.env.CORS_ORIGINS || '').trim();
 app.use(cors({
@@ -41,22 +44,12 @@ app.use(cors({
   credentials: true
 }));
 
-// Static images with long cache
-const imagesDir = path.resolve(IMAGES_DIR);
-app.use(IMAGES_BASE_URL, express.static(imagesDir, {
-  setHeaders: (res, filePath) => {
-    if (/(jpg|jpeg|png|gif|webp)$/i.test(filePath)) {
-      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
-    }
-  }
-}));
-
-// Routes
+// ✅ Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
 
-// Swagger (basic)
+// ✅ Swagger docs (optional)
 try {
   const swaggerUi = require('swagger-ui-express');
   const swaggerSpec = require('./utils/swaggerSpec');
@@ -65,18 +58,22 @@ try {
   logger.warn('Swagger UI not available: ' + e.message);
 }
 
-// Healthcheck
+// ✅ Healthcheck
 const Product = require('./models/Product');
 app.get('/api/health', async (req, res) => {
   const total = await Product.estimatedDocumentCount().catch(() => 0);
-  res.json({ status: 'ok', db: require('./utils/getDBStatus')(), counts: { products: total } });
+  res.json({
+    status: 'ok',
+    db: require('./utils/getDBStatus')(),
+    counts: { products: total }
+  });
 });
 
-// 404 + error
+// ✅ Error handlers
 app.use(notFound);
 app.use(errorHandler);
 
-// Start
+// ✅ Start server
 connectDB()
   .then(() => {
     app.listen(PORT, () => {

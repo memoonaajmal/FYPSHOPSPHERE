@@ -71,3 +71,87 @@ exports.remove = async function(req, res, next) {
     res.json({ message: 'Deleted' });
   } catch (err) { next(err); }
 };
+exports.getProducts = async (req, res) => {
+  try {
+    let {
+      page = 1,
+      limit = 4,
+      sort = "newest",
+      category,
+      priceMin,
+      priceMax,
+      search,
+      gender,
+      masterCategory,
+      subCategory,
+      baseColour,
+      season,
+      usage,
+      year,
+    } = req.query;
+
+    page = parseInt(page, 10);
+    limit = parseInt(limit, 10);
+
+    const where = {};
+
+    if (category) where.subCategory = category;
+    if (gender) where.gender = gender;
+    if (masterCategory) where.masterCategory = masterCategory;
+    if (subCategory) where.subCategory = subCategory;
+    if (baseColour) where.baseColour = baseColour;
+    if (season) where.season = season;
+    if (usage) where.usage = usage;
+    if (year) where.year = Number(year);
+
+    if (search) {
+      const regex = new RegExp(search, "i");
+      where.$or = [
+        { productDisplayName: regex },
+        { articleType: regex },
+        { baseColour: regex },
+      ];
+    }
+
+    if (priceMin || priceMax) {
+      where.price = {};
+      if (priceMin) where.price.$gte = Number(priceMin);
+      if (priceMax) where.price.$lte = Number(priceMax);
+    }
+
+    const sortOptions =
+      sort === "newest"
+        ? { createdAt: -1 }
+        : sort === "oldest"
+        ? { createdAt: 1 }
+        : { productDisplayName: 1 };
+
+    const count = await Product.countDocuments(where);
+    let totalPages = Math.ceil(count / limit) || 1;
+
+    if (page > totalPages) page = totalPages;
+    if (page < 1) page = 1;
+
+    const products = await Product.find(where)
+      .sort(sortOptions)
+      .skip((page - 1) * limit)
+      .limit(limit);
+
+    // 🔑 Map products to include image URL
+    const productsWithImage = products.map((p) => ({
+      ...p.toObject(),
+      imageUrl: `${req.protocol}://${req.get("host")}/images/${p.imageFilename}`,
+    }));
+
+    res.json({
+      data: productsWithImage,
+      page,
+      total: count,
+      totalPages,
+      hasNext: page < totalPages,
+    });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ message: "Server error" });
+  }
+};
