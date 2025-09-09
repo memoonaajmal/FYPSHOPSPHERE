@@ -1,0 +1,32 @@
+/* login.module.css */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 300px;
+  margin: 0 auto;
+}
+
+.button {
+  padding: 8px 12px;
+  background-color: #0070f3;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.error {
+  color: red;
+  margin-top: 5px;
+}
+
+.loginText {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.loginLink {
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
+}
