@@ -31,7 +31,9 @@ export default async function ProductsPage({ searchParams }) {
 
   return (
     <div className={styles.container}>
-     
+     <div className={styles.filterBar}>
+        <SearchFilterBar />
+      </div>
 
       <div className={styles.productsGrid}>
         {data.length > 0 ? (
