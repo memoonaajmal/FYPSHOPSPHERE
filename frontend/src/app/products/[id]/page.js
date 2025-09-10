@@ -1,7 +1,8 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import styles from "../../../styles/ProductDetails.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // http://localhost:4000
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 async function fetchProduct(productId) {
   const res = await fetch(`${BASE_URL}/api/products/${productId}`, {
@@ -13,34 +14,41 @@ async function fetchProduct(productId) {
 }
 
 export default async function ProductDetailsPage({ params }) {
-  const { id } = await params; // ✅ only change here
+  const { id } = await params;
   const product = await fetchProduct(id);
 
   if (!product) {
     notFound();
   }
 
-  // Always absolute
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
   return (
-    <div style={{ display: "flex", gap: 24, padding: 24 }}>
-      <div style={{ minWidth: 400 }}>
+    <div className={styles.container}>
+      <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}
           alt={product.productDisplayName || "Product"}
-          width={400}
-          height={400}
+          width={500}
+          height={500}
         />
       </div>
 
-      <div>
+      <div className={styles.details}>
         <h1>{product.productDisplayName}</h1>
+        <p className={styles.price}>$99.00</p> {/* Placeholder price */}
         <p><strong>Color:</strong> {product.baseColour}</p>
         <p><strong>Type:</strong> {product.articleType}</p>
-        <p><strong>Season:</strong> {product.season}</p>
-        <p><strong>Year:</strong> {product.year}</p>
-        <p><strong>Description:</strong> {product.description || "—"}</p>
+       
+
+        <div className={styles.actions}>
+          <button className={`${styles.btn} ${styles.btnPrimary}`}>
+            Add to Cart
+          </button>
+          <button className={`${styles.btn} ${styles.btnSecondary}`}>
+            Wishlist
+          </button>
+        </div>
       </div>
     </div>
   );
