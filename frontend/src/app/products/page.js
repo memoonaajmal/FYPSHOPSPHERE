@@ -33,13 +33,14 @@ export default async function ProductsPage({ searchParams }) {
     <div className={styles.container}>
      
 
-      <div className={styles.productsGrid}>
-        {data.length > 0 ? (
-          data.map((p) => <ProductCard key={p._id} product={p} />)
-        ) : (
-          <p className={styles.noProducts}>No products found.</p>
-        )}
-      </div>
+<div className={styles.productsGrid}>
+  {data.length > 0 ? (
+    data.map((p) => <ProductCard key={p.productId || p._id} product={p} />)
+  ) : (
+    <p className={styles.noProducts}>No products found.</p>
+  )}
+</div>
+
 
       <Pagination page={page} totalPages={totalPages} />
     </div>

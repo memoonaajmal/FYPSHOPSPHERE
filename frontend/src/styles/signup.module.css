@@ -1,38 +1,74 @@
 .container {
+  width: 100%;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  align-items: center;
   justify-content: center;
-  min-height: 100vh;
-  background-color: #f9f9f9;
+  align-items: center;
+  background: #f0f2f5; /* soft neutral background */
+  color: #333;
+  padding: 2rem;
 }
 
 .form {
-  background: #fff;
+  width: 350px;
   padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 320px;
+  background: #fdfdf9; /* card background */
+  backdrop-filter: blur(6px);
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
-.input {
-  width: 100%;
-  padding: 0.8rem;
-  margin: 0.5rem 0;
+.form input {
+  padding: 12px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  outline: none;
+  border-radius: 8px;
+  font-size: 14px;
+  background: #f9f9f9;
 }
 
-.button {
-  background: #0070f3;
-  color: white;
+.form input:focus {
+  border-color: #999;
+  background: #fff;
+}
+
+.form button {
+  padding: 12px;
   border: none;
-  padding: 0.8rem;
-  border-radius: 6px;
+  border-radius: 8px;
+  background: #008080; /* teal button */
+  color: white;
+  font-weight: 600;
   cursor: pointer;
-  width: 100%;
+  transition: background 0.3s;
 }
 
-.button:hover {
-  background: #005bb5;
+.form button:hover {
+  background: #006666;
+}
+
+.error {
+  color: #c0392b;
+  font-size: 14px;
+  margin-top: 0.5rem;
+}
+
+.loginText {
+  margin-top: 1rem;
+  font-size: 14px;
+  color: #555;
+}
+
+.loginLink {
+  color: #0070f3;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.loginLink:hover {
+  text-decoration: underline;
 }
