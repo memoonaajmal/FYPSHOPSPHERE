@@ -30,21 +30,28 @@ export default async function ProductsPage({ searchParams }) {
   const { data, page, totalPages } = productsData;
 
   return (
-    <div className={styles.container}>
-     <div className={styles.filterBar}>
-        <SearchFilterBar />
-      </div>
+  <div className={styles.container}>
+  <div className={styles.filterBar}>
+    <SearchFilterBar />
+  </div>
 
-<div className={styles.productsGrid}>
-  {data.length > 0 ? (
-    data.map((p) => <ProductCard key={p.productId || p._id} product={p} />)
-  ) : (
-    <p className={styles.noProducts}>No products found.</p>
-  )}
-</div>
+  <div>
+    <div className={styles.productsGrid}>
+      {data.length > 0 ? (
+        data.map((p) => (
+          <ProductCard key={p.productId || p._id} product={p} />
+        ))
+      ) : (
+        <p className={styles.noProducts}>No products found.</p>
+      )}
+    </div>
 
-
+    {/* Pagination should be directly below products */}
+    <div className={styles.paginationWrapper}>
       <Pagination page={page} totalPages={totalPages} />
     </div>
+  </div>
+</div>
+
   );
 }
