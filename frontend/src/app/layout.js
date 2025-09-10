@@ -28,11 +28,7 @@ export default function RootLayout({ children }) {
 
         {/* Page Layout */}
         <div className={styles.layoutContainer}>
-          {/* Sidebar */}
-          <aside className={styles.sidebar}>
-            <h2 className="font-bold mb-4">Filters</h2>
-            <SearchFilterBar />
-          </aside>
+      
 
           {/* Main Content */}
           <main className={styles.main}>{children}</main>
