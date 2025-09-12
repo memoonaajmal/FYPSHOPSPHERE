@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "socket.io-client": "^4.8.1",
     "yarn": "^1.22.22"
   }
 }
