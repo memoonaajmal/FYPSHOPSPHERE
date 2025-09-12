@@ -1,5 +1,5 @@
 // models/Store.js
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const storeSchema = new mongoose.Schema({
   _id: { type: String, required: true }, // e.g. "store_watch"
@@ -8,6 +8,5 @@ const storeSchema = new mongoose.Schema({
   productIds: { type: [String], default: [] } // <-- productId is a String in Product schema
 });
 
-const Store = mongoose.model("Store", storeSchema);
 
-export default Store;
+module.exports = mongoose.model('Store', storeSchema);

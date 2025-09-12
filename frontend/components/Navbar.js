@@ -11,11 +11,7 @@ export default function Navbar() {
         <Link href="/">ShopSphere</Link>
       </h1>
 
-      {/* Center: Navigation */}
-      <div className={styles.navLinks}>
-        <Link href="/products">Products</Link>
-      </div>
-
+ 
       {/* Right: Auth Icons */}
       <div className={styles.authLinks}>
         <Link href="/signup">

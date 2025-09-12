@@ -14,6 +14,7 @@ const logger = require('./utils/logger');
 const authRoutes = require('./routes/auth.routes');
 const productsRoutes = require('./routes/products.routes');
 const facetsRoutes = require('./routes/facets.routes');
+const storeRoutes = require('./routes/store.routes');
 const { notFound, errorHandler } = require('./middleware/errors');
 
 const app = express();
@@ -48,7 +49,7 @@ app.use(cors({
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
-
+app.use("/api/stores", storeRoutes);
 // ✅ Swagger docs (optional)
 try {
   const swaggerUi = require('swagger-ui-express');

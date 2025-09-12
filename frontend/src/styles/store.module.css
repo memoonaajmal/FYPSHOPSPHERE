@@ -1,0 +1,88 @@
+/* Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  background: #f9f9fb;
+  color: #222;
+}
+
+/* ✅ Hero Banner */
+.heroBanner {
+  width: 100%;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, #ff6b35, #ff6b35);
+  color: #fff;
+  text-align: center;
+  border-radius: 0 0 20px 20px;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+}
+
+.heroContent {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.storeTitle {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 0.8rem;
+  letter-spacing: 1px;
+}
+
+.storeSubtitle {
+  font-size: 1.2rem;
+  opacity: 0.95;
+}
+
+
+.productsHeading {
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2rem;
+  color: #111;
+  text-align: center;
+}
+
+/* ✅ Products Section */
+.productsSection {
+  padding: 3rem 1rem;   /* keep top/bottom spacing, reduce side padding */
+  width: 100%;          /* stretch full width */
+  max-width: none;      /* remove the 1300px limit */
+  margin: 0;            /* remove auto-centering */
+}
+
+/* ✅ Products Grid */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(220px, 1fr)); /* auto-adjust */
+  gap: 1.5rem;
+  width: 100%;
+}
+
+
+@media (max-width: 1200px) {
+  .productsGrid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+@media (max-width: 900px) {
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 600px) {
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ✅ Empty State */
+.emptyState {
+  grid-column: 1 / -1;
+  text-align: center;
+  font-size: 1.1rem;
+  color: #666;
+  padding: 2rem;
+}
