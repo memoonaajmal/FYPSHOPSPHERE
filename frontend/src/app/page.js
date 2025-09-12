@@ -1,30 +1,41 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "./page.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // http://localhost:4000
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // e.g., http://localhost:4000
 
 export default function HomePage() {
   const [stores, setStores] = useState([]);
+  const [loading, setLoading] = useState(true); // Loading state
+  const [error, setError] = useState(null);     // Error state
 
   useEffect(() => {
-    fetch(`${BASE_URL}/api/stores`)
-      .then((res) => res.json())
-      .then((data) => {
+    async function fetchStores() {
+      try {
+        const res = await fetch(`${BASE_URL}/api/stores`);
+        const data = await res.json();
+
         console.log("Stores API response:", data);
+
         if (Array.isArray(data)) {
           setStores(data);
-        } else if (data && data.stores) {
+        } else if (data && Array.isArray(data.stores)) {
           setStores(data.stores);
         } else {
           setStores([]);
         }
-      })
-      .catch((err) => {
+      } catch (err) {
         console.error("Error fetching stores:", err);
+        setError("Failed to load stores.");
         setStores([]);
-      });
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchStores();
   }, []);
 
   return (
@@ -36,9 +47,9 @@ export default function HomePage() {
           <p className={styles.heroSubtitle}>
             Discover the best stores & exclusive collections
           </p>
-          <a href="/products" className={styles.heroButton}>
+          <Link href="/products" className={styles.heroButton}>
             Explore Products
-          </a>
+          </Link>
         </div>
       </section>
 
@@ -46,9 +57,15 @@ export default function HomePage() {
       <section id="stores" className={styles.storesSection}>
         <h2 className={styles.heading}>Our Stores</h2>
 
-        <div className={styles.grid}>
-          {stores.length > 0 ? (
-            stores.map((store) => (
+        {loading ? (
+          <p>Loading stores...</p>
+        ) : error ? (
+          <p className={styles.error}>{error}</p>
+        ) : stores.length === 0 ? (
+          <p>No stores found.</p>
+        ) : (
+          <div className={styles.grid}>
+            {stores.map((store) => (
               <Link
                 key={store._id}
                 href={`/stores/${store._id}`}
@@ -56,20 +73,20 @@ export default function HomePage() {
               >
                 <h3 className={styles.storeName}>{store.name}</h3>
 
-                {/* ✅ Display categories in divs */}
-                <div className={styles.categories}>
-                  {store.categories.map((cat, i) => (
-                    <span key={i} className={styles.categoryBadge}>
-                      {cat}
-                    </span>
-                  ))}
-                </div>
+                {/* ✅ Display categories in badges if available */}
+                {Array.isArray(store.categories) && store.categories.length > 0 && (
+                  <div className={styles.categories}>
+                    {store.categories.map((cat, i) => (
+                      <span key={i} className={styles.categoryBadge}>
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </Link>
-            ))
-          ) : (
-            <p>No stores found</p>
-          )}
-        </div>
+            ))}
+          </div>
+        )}
       </section>
     </div>
   );

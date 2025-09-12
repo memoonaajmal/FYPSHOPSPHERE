@@ -1,9 +1,15 @@
+"use client";
+
+import React from "react";
 import Image from "next/image";
-import { notFound } from "next/navigation";
+import { notFound, useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../../../../redux/CartSlice";
 import styles from "../../../styles/ProductDetails.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
+// Fetch product from backend
 async function fetchProduct(productId) {
   const res = await fetch(`${BASE_URL}/api/products/${productId}`, {
     cache: "no-store",
@@ -13,15 +19,42 @@ async function fetchProduct(productId) {
   return res.json();
 }
 
-export default async function ProductDetailsPage({ params }) {
-  const { id } = await params;
-  const product = await fetchProduct(id);
+export default function ProductDetailsPage({ params: paramsPromise }) {
+  const params = React.use(paramsPromise); // <-- unwrap promise
+  const { id } = params;
 
-  if (!product) {
-    notFound();
-  }
+  const dispatch = useDispatch();
+  const router = useRouter();
+  const [product, setProduct] = React.useState(null);
+
+  React.useEffect(() => {
+    async function loadProduct() {
+      const data = await fetchProduct(id);
+      if (!data) {
+        notFound();
+      } else {
+        setProduct(data);
+      }
+    }
+    loadProduct();
+  }, [id]);
+
+  if (!product) return <p>Loading...</p>;
 
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
+
+  const handleAddToCart = () => {
+    dispatch(
+      addItemToCart({
+        id: product._id,
+        name: product.productDisplayName,
+        price: 99, // placeholder
+        image: imageSrc,
+      })
+    );
+
+    router.push("/cart");
+  };
 
   return (
     <div className={styles.container}>
@@ -36,13 +69,15 @@ export default async function ProductDetailsPage({ params }) {
 
       <div className={styles.details}>
         <h1>{product.productDisplayName}</h1>
-        <p className={styles.price}>$99.00</p> {/* Placeholder price */}
+        <p className={styles.price}>$99.00</p>
         <p><strong>Color:</strong> {product.baseColour}</p>
         <p><strong>Type:</strong> {product.articleType}</p>
-       
 
         <div className={styles.actions}>
-          <button className={`${styles.btn} ${styles.btnPrimary}`}>
+          <button
+            className={`${styles.btn} ${styles.btnPrimary}`}
+            onClick={handleAddToCart}
+          >
             Add to Cart
           </button>
           <button className={`${styles.btn} ${styles.btnSecondary}`}>
