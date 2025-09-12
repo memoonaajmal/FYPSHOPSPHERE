@@ -1,8 +1,8 @@
 export const dynamic = 'force-dynamic';
+import styles from '../../styles/ProductsPage.module.css'; 
 import SearchFilterBar from '../../../components/FilterBar';
 import ProductCard from '../../../components/ProductCard';
 import Pagination from '../../../components/Pagination';
-import styles from '../../styles/ProductsPage.module.css'; 
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

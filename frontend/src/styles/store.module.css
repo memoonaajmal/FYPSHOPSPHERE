@@ -1,88 +1,86 @@
-/* Container */
+/* store.module.css */
+
+/* Container for entire store page */
 .container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  min-height: 100vh;
-  background: #f9f9fb;
-  color: #222;
+  max-width: 100%;
+
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #333;
 }
 
-/* ✅ Hero Banner */
+/* Hero Banner */
 .heroBanner {
-  width: 100%;
+  background: linear-gradient(135deg, #0070f3, #da8845);
+  color: white;
   padding: 4rem 2rem;
-  background: linear-gradient(135deg, #ff6b35, #4745c5);
-  color: #fff;
+  border-radius: 12px;
   text-align: center;
-  border-radius: 0 0 20px 20px;
-  box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+  margin-bottom: 3rem;
 }
 
 .heroContent {
-  max-width: 900px;
+  max-width: 800px;
   margin: 0 auto;
 }
 
 .storeTitle {
-  font-size: 2.8rem;
-  font-weight: 800;
-  margin-bottom: 0.8rem;
-  letter-spacing: 1px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
 }
 
 .storeSubtitle {
   font-size: 1.2rem;
-  opacity: 0.95;
+  opacity: 0.9;
 }
 
+/* Main content wrapper: sidebar + products */
+.storeContent {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+/* Products Section */
+.productsSection {
+  flex: 1;
+}
 
 .productsHeading {
-  font-size: 2rem;
-  font-weight: 700;
-  margin-bottom: 2rem;
-  color: #111;
-  text-align: center;
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  font-weight: 600;
 }
 
-/* ✅ Products Section */
-.productsSection {
-  padding: 3rem 1rem;   /* keep top/bottom spacing, reduce side padding */
-  width: 100%;          /* stretch full width */
-  max-width: none;      /* remove the 1300px limit */
-  margin: 0;            /* remove auto-centering */
-}
-
-/* ✅ Products Grid */
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(5, minmax(220px, 1fr)); /* auto-adjust */
+  grid-template-columns: repeat(4, minmax(250px, 1fr));
   gap: 1.5rem;
-  width: 100%;
 }
 
-
-@media (max-width: 1200px) {
-  .productsGrid {
-    grid-template-columns: repeat(4, 1fr);
-  }
-}
-@media (max-width: 900px) {
-  .productsGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 600px) {
-  .productsGrid {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* ✅ Empty State */
 .emptyState {
-  grid-column: 1 / -1;
-  text-align: center;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   color: #666;
-  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+  .storeContent {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 640px) {
+  .heroBanner {
+    padding: 3rem 1rem;
+  }
+  .storeTitle {
+    font-size: 2rem;
+  }
+  .storeSubtitle {
+    font-size: 1rem;
+  }
 }

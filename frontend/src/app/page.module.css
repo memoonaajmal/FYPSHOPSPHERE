@@ -120,3 +120,39 @@
   background: #ffefea;
   color: #ff3c00;
 }
+.footer {
+  width: 100%;
+  
+  background-color: #111;
+  color: #fff;
+  padding: 4rem 1rem;
+  text-align: center;
+
+}
+
+.footerContent {
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.footerLinks {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin-bottom: 1rem;
+}
+
+.footerLink {
+  color: #fff;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.footerLink:hover {
+  color: #ff9900;
+}
+
+.footerCopy {
+  font-size: 0.9rem;
+  opacity: 0.8;
+}
