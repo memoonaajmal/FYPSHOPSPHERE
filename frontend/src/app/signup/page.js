@@ -11,6 +11,7 @@ export default function SignupPage() {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [error, setError] = useState("");
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleSignup = async (e) => {
     e.preventDefault();
@@ -28,7 +29,7 @@ export default function SignupPage() {
       const idToken = await user.getIdToken(true); // force refresh token
 
       // 4️⃣ Call backend to sync with MongoDB
-      const response = await fetch("http://localhost:4000/api/auth/sync", {
+      const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

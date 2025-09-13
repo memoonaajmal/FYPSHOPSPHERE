@@ -11,6 +11,7 @@ export default function OrderDetailsPage() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     if (!id) return;
@@ -22,7 +23,7 @@ export default function OrderDetailsPage() {
       }
       try {
            const token = await getIdToken(user);
-           const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders/${id}`, {
+           const res = await fetch(`${BASE_URL}/api/orders/${id}`, {
            headers: { Authorization: `Bearer ${token}` }
            });
 

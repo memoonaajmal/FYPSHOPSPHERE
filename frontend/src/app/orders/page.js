@@ -6,11 +6,14 @@ import { auth } from "../../../firebase/config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
+
+
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const router = useRouter();
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -20,7 +23,7 @@ export default function OrdersPage() {
       }
       try {
          const token = await getIdToken(currentUser);
-         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/orders`, {
+         const res = await fetch(`${BASE_URL}/api/orders`, {
          headers: { Authorization: `Bearer ${token}` }
          });
 

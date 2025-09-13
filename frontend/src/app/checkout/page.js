@@ -7,11 +7,14 @@ import { clearCart } from "../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import styles from "../../styles/Checkout.module.css";
 
+
+
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const itemsTotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -64,7 +67,7 @@ export default function CheckoutPage() {
 
       const paymentMethod = formData.paymentMethod === "COD" ? "COD" : "JazzCash";
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/orders`, {
+      const res = await fetch(`${BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

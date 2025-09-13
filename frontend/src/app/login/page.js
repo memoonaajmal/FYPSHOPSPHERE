@@ -12,6 +12,7 @@ export default function LoginPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectPath = searchParams?.get("redirect") || "/";
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -21,7 +22,7 @@ export default function LoginPage() {
       const user = userCred.user;
       const token = await user.getIdToken(true);
 
-      const response = await fetch("http://localhost:4000/api/auth/sync", {
+      const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
