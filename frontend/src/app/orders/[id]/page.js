@@ -62,7 +62,7 @@ export default function OrderDetailsPage() {
       <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
       <p><strong>Payment Method:</strong> {order.paymentMethod}</p>
       <p><strong>Payment Status:</strong> {order.paymentStatus}</p>
-      <p><strong>Grand Total:</strong> ₹ {order.grandTotal}</p>
+      <p><strong>Grand Total:</strong> $ {order.grandTotal}</p>
     </div>
 
     <div className={styles.section}>
@@ -80,7 +80,7 @@ export default function OrderDetailsPage() {
           <li key={i} className={styles.item}>
             <span className={styles.itemName}>{item.name}</span> — 
             <span className={styles.itemQty}> qty: {item.quantity}</span> — 
-            <span className={styles.itemPrice}> ₹ {item.price}</span>
+            <span className={styles.itemPrice}> $ {item.price}</span>
           </li>
         ))}
       </ul>
