@@ -4,12 +4,13 @@ import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItemFromCart, clearCart, increaseQty, decreaseQty } from "../../../redux/CartSlice";
 import Image from "next/image";
-
+import { useRouter } from "next/navigation"; // ✅ added
 
 export default function CartPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const dispatch = useDispatch();
+  const router = useRouter(); // ✅ added
 
   useEffect(() => setHasMounted(true), []);
 
@@ -72,7 +73,12 @@ export default function CartPage() {
         >
           Clear Cart
         </button>
-        <button className={styles.checkoutBtn}>Checkout</button>
+        <button
+          className={styles.checkoutBtn}
+          onClick={() => router.push("/checkout")} // ✅ added
+        >
+          Checkout
+        </button>
       </div>
     </div>
   );

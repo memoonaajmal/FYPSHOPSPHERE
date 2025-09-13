@@ -1,8 +1,21 @@
+/* Container for full page */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: #f0f2f5; /* soft neutral background */
+  color: #333;
+  padding: 2rem;
+}
+
+/* Login form card */
 .form {
   width: 350px;
-  margin: 100px auto;
   padding: 2rem;
-   background: #fdfdf9; 
+  background: #fdfdf9; 
   backdrop-filter: blur(6px);
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
@@ -12,6 +25,7 @@
   text-align: center;
 }
 
+/* Input fields */
 .form input {
   padding: 12px;
   border: 1px solid #ddd;
@@ -26,6 +40,7 @@
   background: #fff;
 }
 
+/* Login button */
 .form button {
   padding: 12px;
   border: none;
@@ -38,11 +53,33 @@
 }
 
 .form button:hover {
-   background: #006666;
+  background: #006666;
 }
 
+/* Error message */
 .error {
   color: #c0392b;
   font-size: 14px;
   margin-top: 0.5rem;
+}
+
+/* Signup text below the form card */
+.signupText {
+  margin-top: 1rem; /* same spacing as signup page */
+  font-size: 14px;
+  text-align: center;
+  color: #555;
+}
+
+/* Signup link styling */
+.signupLink {
+  color: #008080;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: none; /* no underline by default like signup page */
+}
+
+.signupLink:hover {
+  text-decoration: underline; /* underline on hover */
+  color: #006666;
 }

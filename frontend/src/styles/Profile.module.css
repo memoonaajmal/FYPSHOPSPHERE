@@ -1,0 +1,90 @@
+/* Container for the whole profile page */
+.profileContainer {
+  max-width: 700px;
+  margin: 3rem auto;
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: #111111;
+}
+
+/* Page heading */
+.profileContainer h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+}
+
+/* Card that holds profile info */
+.profileCard {
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Profile info rows */
+.profileCard p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+/* Labels */
+.profileCard strong {
+  color: #333333;
+  margin-right: 0.5rem;
+}
+
+/* Buttons container */
+.buttonGroup {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+/* Buttons styling */
+.buttonGroup button {
+  padding: 0.6rem 1.2rem;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 0.95rem;
+  background-color: #2563eb;
+  color: white;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.buttonGroup button:hover {
+  background-color: #1e4bb8;
+  transform: translateY(-1px);
+}
+
+/* Responsive: card width and padding on smaller screens */
+@media (max-width: 640px) {
+  .profileContainer {
+    padding: 1rem;
+    margin: 2rem auto;
+  }
+
+  .profileCard {
+    padding: 1.5rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+    gap: 0.8rem;
+  }
+
+  .buttonGroup button {
+    width: 100%;
+  }
+}
