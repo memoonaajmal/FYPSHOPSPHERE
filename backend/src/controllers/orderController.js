@@ -30,7 +30,7 @@ exports.createOrder = async (req, res) => {
       shippingFee,
       grandTotal,
       paymentMethod,
-      paymentStatus: paymentMethod === 'COD' ? 'pending' : 'pending',
+      paymentStatus: 'pending',
       trackingId
     });
 
@@ -64,7 +64,7 @@ exports.getOrder = async (req, res) => {
     const { id } = req.params;
     const order = await Order.findById(id);
     if (!order) return res.status(404).json({ message: 'Order not found' });
-    if (order.user !== userId) return res.status(403).json({ message: 'Forbidden' });
+    if (order.user.toString() !== userId) return res.status(403).json({ message: 'Forbidden' });
     res.json(order);
   } catch (err) {
     console.error('getOrder error:', err);

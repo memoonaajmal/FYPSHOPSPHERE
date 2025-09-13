@@ -1,9 +1,10 @@
 "use client";
+import styles from "../../styles/Profile.module.css";
 import { useEffect, useState } from "react";
 import { auth } from "../../../firebase/config";
 import { signOut, onAuthStateChanged } from "firebase/auth";
 import { useRouter } from "next/navigation";
-import styles from "../../styles/Profile.module.css";
+
 
 export default function ProfilePage() {
   const [user, setUser] = useState(null);

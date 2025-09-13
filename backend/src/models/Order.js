@@ -1,30 +1,30 @@
-// models/Order.js (CommonJS)
-const mongoose = require('mongoose');
+// backend/src/models/Order.js
+const mongoose = require("mongoose");
 
-const OrderItemSchema = new mongoose.Schema({
-  productId: { type: String, required: true },
-  name: String,
-  price: Number,
-  quantity: Number,
-  image: String,
+const orderItemSchema = new mongoose.Schema({
+  productId: { type: String, required: false }, // optional if you store product ref
+  name: { type: String, required: true },
+  price: { type: Number, required: true },
+  quantity: { type: Number, required: true },
 });
 
-const OrderSchema = new mongoose.Schema({
-  user: { type: String, required: true, index: true }, // store Firebase uid
-  firstName: { type: String, required: true },
-  lastName: { type: String, required: true },
-  phone: { type: String, required: true },
-  email: { type: String, required: true },
-  houseAddress: { type: String, required: true },
-  items: [OrderItemSchema],
-  itemsTotal: { type: Number, required: true },
-  shippingFee: { type: Number, default: 0 },
-  grandTotal: { type: Number, required: true },
-  paymentMethod: { type: String, enum: ['COD', 'JazzCash'], required: true },
-  paymentStatus: { type: String, enum: ['pending','paid','failed'], default: 'pending' },
-  orderStatus: { type: String, enum: ['created','processing','shipped','delivered','cancelled'], default: 'created' },
-  trackingId: { type: String, required: true, unique: true, index: true },
-  jazzcashTransactionId: { type: String }, // optional
-}, { timestamps: true });
+const orderSchema = new mongoose.Schema(
+  {
+    user: { type: String, required: true }, // storing Firebase uid as string
+    firstName: String,
+    lastName: String,
+    phone: String,
+    email: String,
+    houseAddress: String,
+    items: [orderItemSchema],
+    itemsTotal: { type: Number, required: true },
+    shippingFee: { type: Number, default: 0 },
+    grandTotal: { type: Number, required: true },
+    paymentMethod: { type: String, default: "COD" },
+    paymentStatus: { type: String, default: "pending" },
+    trackingId: { type: String, index: true },
+  },
+  { timestamps: true }
+);
 
-module.exports = mongoose.model('Order', OrderSchema);
+module.exports = mongoose.model("Order", orderSchema);

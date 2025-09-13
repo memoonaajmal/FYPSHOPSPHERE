@@ -1,9 +1,10 @@
 "use client";
+import styles from "../../styles/signup.module.css";
 import { useState } from "react";
 import Link from "next/link";
 import { auth } from "../../../firebase/config";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import styles from "../../styles/signup.module.css";
+
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");

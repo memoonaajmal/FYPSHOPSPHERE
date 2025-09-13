@@ -1,8 +1,8 @@
 "use client";
+import styles from "../../styles/login.module.css";
 import { useState } from "react";
 import { auth } from "../../../firebase/config";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import styles from "../../styles/login.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
 
 export default function LoginPage() {
