@@ -5,6 +5,7 @@ import Image from "next/image";
 import { notFound, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../../../redux/CartSlice";
+import { addToWishlist } from "../../../../redux/WishlistSlice";
 import styles from "../../../styles/ProductDetails.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -56,6 +57,20 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
     router.push("/cart");
   };
 
+    // ✅ new wishlist function
+  const handleAddToWishlist = () => {
+    dispatch(
+      addToWishlist({
+        id: product._id,
+        name: product.productDisplayName,
+        price: 99, // placeholder
+        image: imageSrc,
+      })
+    );
+
+    router.push("/wishlist");
+  };
+
   return (
     <div className={styles.container}>
       <div className={styles.imageWrapper}>
@@ -80,7 +95,9 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
           >
             Add to Cart
           </button>
-          <button className={`${styles.btn} ${styles.btnSecondary}`}>
+          <button className={`${styles.btn} ${styles.btnSecondary}`}
+          onClick={handleAddToWishlist}
+          >
             Wishlist
           </button>
         </div>

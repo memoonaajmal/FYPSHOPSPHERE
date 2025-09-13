@@ -158,6 +158,20 @@
   color: #777;
 }
 
+.actions {
+  display: flex;
+  gap: 10px; /* ✅ space between buttons */
+}
+
+.actions button {
+  min-width: 120px;   /* ✅ same width */
+  height: 40px;       /* ✅ same height */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
 /* Responsive */
 @media (max-width: 768px) {
   .cartItem {
