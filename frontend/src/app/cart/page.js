@@ -79,6 +79,13 @@ export default function CartPage() {
         >
           Checkout
         </button>
+        <button
+  className={styles.clearBtn} // ✅ reuse styling
+  onClick={() => router.push("/products")}
+>
+  Continue Shopping
+</button>
+
       </div>
     </div>
   );

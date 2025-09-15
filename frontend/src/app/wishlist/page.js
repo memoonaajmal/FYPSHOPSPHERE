@@ -76,6 +76,12 @@ export default function WishlistPage() {
         >
           Clear Wishlist
         </button>
+        <button
+  className={styles.clearBtn} // ✅ reuse styling
+  onClick={() => router.push("/products")}
+>
+  Continue Shopping
+</button>
       </div>
     </div>
   );
