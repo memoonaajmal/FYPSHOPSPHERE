@@ -38,7 +38,7 @@ exports.createOrder = async (req, res) => {
 
     // If JazzCash, return paymentUrl placeholder
     if (paymentMethod === 'JazzCash') {
-      const paymentUrl = `${process.env.FRONTEND_BASE_URL}/pay/jazzcash?orderId=${order._id}`;
+      const paymentUrl = `${process.env.CORS_ORIGINS}/checkout?orderId=${order._id}`;
       return res.status(201).json({
         orderId: order._id,
         trackingId: order.trackingId,

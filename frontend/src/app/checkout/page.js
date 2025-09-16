@@ -7,12 +7,14 @@ import { clearCart } from "../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import styles from "../../styles/Checkout.module.css";
 
+
+
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const itemsTotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -28,6 +30,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
+        // ✅ Redirect to login with redirect param
         router.push("/login?redirect=/checkout");
       } else {
         setUser(u);
@@ -47,17 +50,12 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    if (loading) return; // Prevent multiple clicks immediately
-    setLoading(true); // Disable button immediately
-
     if (cartItems.length === 0) {
       alert("Your cart is empty!");
-      setLoading(false);
       return;
     }
-
     try {
+      setLoading(true);
       const token = await user.getIdToken();
       const items = cartItems.map((item) => ({
         productId: item.id,

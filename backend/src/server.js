@@ -16,6 +16,7 @@ const productsRoutes = require('./routes/products.routes');
 const facetsRoutes = require('./routes/facets.routes');
 const storeRoutes = require('./routes/store.routes');
 const orderRoutes = require('./routes/orderRoutes');
+const jazzcashRoutes = require('./routes/jazzcashRoutes');
 const { notFound, errorHandler } = require('./middleware/errors');
 
 const app = express();
@@ -52,7 +53,7 @@ app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
 app.use("/api/stores", storeRoutes);
 app.use('/api/orders', orderRoutes);
-
+app.use('/api/jazzcash', jazzcashRoutes);
 
 
 // ✅ Swagger docs (optional)
