@@ -7,17 +7,16 @@ import { clearCart } from "../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import styles from "../../styles/Checkout.module.css";
 
-
-
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
   const itemsTotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [discountedTotal, setDiscountedTotal] = useState(itemsTotal);
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,10 +26,10 @@ export default function CheckoutPage() {
   });
   const [trackingId, setTrackingId] = useState("");
 
+  // 🔹 Firebase auth check
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
-        // ✅ Redirect to login with redirect param
         router.push("/login?redirect=/checkout");
       } else {
         setUser(u);
@@ -41,11 +40,22 @@ export default function CheckoutPage() {
     return () => unsubscribe();
   }, [router]);
 
+  // 🔹 Update discounted total whenever items change
+  useEffect(() => {
+    if (formData.paymentMethod === "JazzCash") {
+      const discount = itemsTotal * 0.05;
+      setDiscountedTotal(itemsTotal - discount);
+    } else {
+      setDiscountedTotal(itemsTotal);
+    }
+  }, [formData.paymentMethod, itemsTotal]);
+
   if (loading) return <p className={styles.text}>Loading...</p>;
   if (!user) return null;
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (e) => {
@@ -81,7 +91,7 @@ export default function CheckoutPage() {
           phone: formData.phone,
           houseAddress: formData.address,
           items,
-          itemsTotal,
+          itemsTotal: formData.paymentMethod === "JazzCash" ? discountedTotal : itemsTotal,
           paymentMethod,
         }),
       });
@@ -106,22 +116,20 @@ export default function CheckoutPage() {
       <h1 className={styles.title}>Checkout</h1>
       {trackingId ? (
         <div>
-        <div className={styles.successCard}>
-          <h2 className={styles.subtitle}>✅ Order Placed Successfully!</h2>
-          <p className={styles.text}>
-            Your tracking ID is: <strong className={styles.strong}>{trackingId}</strong>
-          </p>
-        
-        </div>
+          <div className={styles.successCard}>
+            <h2 className={styles.subtitle}>✅ Order Placed Successfully!</h2>
+            <p className={styles.text}>
+              Your tracking ID is:{" "}
+              <strong className={styles.strong}>{trackingId}</strong>
+            </p>
+          </div>
           <button
-  className={styles.button} // ✅ reuse styling
-  onClick={() => router.push("/")}
->
-  Continue Shopping
-</button>
+            className={styles.button}
+            onClick={() => router.push("/")}
+          >
+            Continue Shopping
+          </button>
         </div>
-
-        
       ) : (
         <form onSubmit={handleSubmit} className={styles.formWrapper}>
           <input
@@ -166,27 +174,54 @@ export default function CheckoutPage() {
             onChange={handleChange}
             className={styles.textarea}
           />
-          <label className={styles.label}>
-            Payment Method:
-            <select
-              name="paymentMethod"
-              value={formData.paymentMethod}
-              onChange={handleChange}
-              className={styles.select}
-            >
-              <option value="COD">Cash on Delivery</option>
-              <option value="JazzCash">JazzCash</option>
-            </select>
-          </label>
+
+          {/* 🔹 Payment Method as Radio Buttons */}
+         {/* 🔹 Payment Method */}
+<div>
+  <p className={styles.label}>Payment:</p>
+  <div className={styles.radioGroup}>
+    <label className={styles.radioLabel}>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="COD"
+        checked={formData.paymentMethod === "COD"}
+        onChange={handleChange}
+        className={styles.radioInput}
+      />
+      <span>Cash on Delivery</span>
+    </label>
+
+    <label className={styles.radioLabel}>
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="JazzCash"
+        checked={formData.paymentMethod === "JazzCash"}
+        onChange={handleChange}
+        className={styles.radioInput}
+      />
+      <span>JazzCash <span className={styles.discountText}>(5% off)</span></span>
+    </label>
+  </div>
+</div>
+
+
           <p className={styles.text}>
-            Total: <strong className={styles.strong}>PKR {itemsTotal}</strong>
+            Total:{" "}
+            <strong className={styles.strong}>
+              PKR{" "}
+              {formData.paymentMethod === "JazzCash"
+                ? discountedTotal
+                : itemsTotal}
+            </strong>
           </p>
+
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? "Placing Order..." : "Place Order"}
           </button>
         </form>
       )}
-      
     </div>
   );
 }
