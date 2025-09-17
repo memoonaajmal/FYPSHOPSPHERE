@@ -105,12 +105,23 @@ export default function CheckoutPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Checkout</h1>
       {trackingId ? (
+        <div>
         <div className={styles.successCard}>
           <h2 className={styles.subtitle}>✅ Order Placed Successfully!</h2>
           <p className={styles.text}>
             Your tracking ID is: <strong className={styles.strong}>{trackingId}</strong>
           </p>
+        
         </div>
+          <button
+  className={styles.button} // ✅ reuse styling
+  onClick={() => router.push("/")}
+>
+  Continue Shopping
+</button>
+        </div>
+
+        
       ) : (
         <form onSubmit={handleSubmit} className={styles.formWrapper}>
           <input
@@ -175,6 +186,7 @@ export default function CheckoutPage() {
           </button>
         </form>
       )}
+      
     </div>
   );
 }

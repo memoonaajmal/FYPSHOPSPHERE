@@ -3,14 +3,42 @@ const { getPagination } = require('../utils/pagination');
 const { buildImageUrl } = require('../utils/buildImageUrl');
 
 function buildFilters(qs) {
-  const allowed = ['gender','masterCategory','subCategory','articleType','baseColour','season','year','usage'];
+  const allowed = [
+    "gender",
+    "masterCategory",
+    "subCategory",
+    "articleType",
+    "baseColour",
+    "season",
+    "year",
+    "usage",
+  ];
+
   const filter = {};
+
+  // ✅ Add allowed direct filters
   for (const key of allowed) {
-    if (qs[key]) filter[key] = key === 'year' ? Number(qs[key]) : qs[key];
+    if (qs[key]) {
+      filter[key] = key === "year" ? Number(qs[key]) : qs[key];
+    }
   }
-  if (qs.q) filter.$text = { $search: qs.q };
+
+  // ✅ Replace `qs.q` with `qs.search` and use regex (LIKE %keyword%)
+  if (qs.search) {
+    const regex = new RegExp(qs.search.trim(), "i");
+    filter.$or = [
+      { productDisplayName: regex },
+      { articleType: regex },
+      { subCategory: regex },
+      { masterCategory: regex },
+      { baseColour: regex },
+      { usage: regex },
+    ];
+  }
+
   return filter;
 }
+
 
 function projectImage(doc) {
   const obj = doc.toObject({ virtuals: true });
@@ -104,14 +132,18 @@ exports.getProducts = async (req, res) => {
     if (usage) where.usage = usage;
     if (year) where.year = Number(year);
 
-    if (search) {
-      const regex = new RegExp(search, "i");
-      where.$or = [
-        { productDisplayName: regex },
-        { articleType: regex },
-        { baseColour: regex },
-      ];
-    }
+if (qs.search) {
+  const regex = new RegExp(qs.search.trim(), "i");
+  filter.$or = [
+    { productDisplayName: regex },
+    { articleType: regex },
+    { subCategory: regex },
+    { masterCategory: regex },
+    { baseColour: regex },
+    { usage: regex },
+  ];
+}
+
 
     if (priceMin || priceMax) {
       where.price = {};
