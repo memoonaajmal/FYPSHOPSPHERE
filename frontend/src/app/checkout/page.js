@@ -179,7 +179,7 @@ export default function CheckoutPage() {
             </select>
           </label>
           <p className={styles.text}>
-            Total: <strong className={styles.strong}>${itemsTotal}</strong>
+            Total: <strong className={styles.strong}>PKR {itemsTotal}</strong>
           </p>
           <button type="submit" disabled={loading} className={styles.button}>
             {loading ? "Placing Order..." : "Place Order"}

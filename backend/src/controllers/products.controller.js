@@ -1,4 +1,6 @@
+// controllers/product.controller.js
 const Product = require('../models/Product');
+const Price = require('../models/Price'); // ✅ Import Price model
 const { getPagination } = require('../utils/pagination');
 const { buildImageUrl } = require('../utils/buildImageUrl');
 
@@ -39,14 +41,14 @@ function buildFilters(qs) {
   return filter;
 }
 
-
 function projectImage(doc) {
   const obj = doc.toObject({ virtuals: true });
   obj.imageUrl = buildImageUrl(obj.imageFilename);
   return obj;
 }
 
-exports.list = async function(req, res, next) {
+// ✅ LIST with pagination + prices
+exports.list = async function (req, res, next) {
   try {
     const filter = buildFilters(req.query);
     const { page, limit, skip } = getPagination(req.query);
@@ -60,45 +62,90 @@ exports.list = async function(req, res, next) {
       }
     } else sortObj.createdAt = -1;
 
-    const [data, total] = await Promise.all([
+    const [products, total] = await Promise.all([
       Product.find(filter).sort(sortObj).skip(skip).limit(limit),
-      Product.countDocuments(filter)
+      Product.countDocuments(filter),
     ]);
 
-    res.json({ data: data.map(projectImage), page, limit, total, totalPages: Math.ceil(total / limit) });
-  } catch (err) { next(err); }
+    // 🔑 Merge prices
+    const productIds = products.map(p => p.productId);
+    const prices = await Price.find({ productId: { $in: productIds } }).lean();
+    const priceMap = Object.fromEntries(prices.map(p => [p.productId, p.price]));
+
+    const data = products.map(p => {
+      const obj = projectImage(p);
+      obj.price = priceMap[p.productId] || null;
+      return obj;
+    });
+
+    res.json({ data, page, limit, total, totalPages: Math.ceil(total / limit) });
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.getOne = async function(req, res, next) {
+// ✅ Single product with price
+exports.getOne = async function (req, res, next) {
   try {
     const product = await Product.findOne({ productId: req.params.productId });
-    if (!product) return res.status(404).json({ error: { message: 'Product not found', code: 'NOT_FOUND' }});
-    res.json(projectImage(product));
-  } catch (err) { next(err); }
+    if (!product)
+      return res
+        .status(404)
+        .json({ error: { message: "Product not found", code: "NOT_FOUND" } });
+
+    const obj = projectImage(product);
+
+    const priceDoc = await Price.findOne({ productId: product.productId });
+    obj.price = priceDoc ? priceDoc.price : null;
+
+    res.json(obj);
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.create = async function(req, res, next) {
+exports.create = async function (req, res, next) {
   try {
     const created = await Product.create(req.body);
     res.status(201).json(projectImage(created));
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.update = async function(req, res, next) {
+exports.update = async function (req, res, next) {
   try {
-    const updated = await Product.findOneAndUpdate({ productId: req.params.productId }, req.body, { new: true });
-    if (!updated) return res.status(404).json({ error: { message: 'Product not found', code: 'NOT_FOUND' }});
+    const updated = await Product.findOneAndUpdate(
+      { productId: req.params.productId },
+      req.body,
+      { new: true }
+    );
+    if (!updated)
+      return res
+        .status(404)
+        .json({ error: { message: "Product not found", code: "NOT_FOUND" } });
     res.json(projectImage(updated));
-  } catch (err) { next(err); }
+  } catch (err) {
+    next(err);
+  }
 };
 
-exports.remove = async function(req, res, next) {
+exports.remove = async function (req, res, next) {
   try {
-    const deleted = await Product.findOneAndDelete({ productId: req.params.productId });
-    if (!deleted) return res.status(404).json({ error: { message: 'Product not found', code: 'NOT_FOUND' }});
-    res.json({ message: 'Deleted' });
-  } catch (err) { next(err); }
+    const deleted = await Product.findOneAndDelete({
+      productId: req.params.productId,
+    });
+    if (!deleted)
+      return res
+        .status(404)
+        .json({ error: { message: "Product not found", code: "NOT_FOUND" } });
+    res.json({ message: "Deleted" });
+  } catch (err) {
+    next(err);
+  }
 };
+
+// ✅ Category/product listing with filters + prices
 exports.getProducts = async (req, res) => {
   try {
     let {
@@ -132,23 +179,16 @@ exports.getProducts = async (req, res) => {
     if (usage) where.usage = usage;
     if (year) where.year = Number(year);
 
-if (qs.search) {
-  const regex = new RegExp(qs.search.trim(), "i");
-  filter.$or = [
-    { productDisplayName: regex },
-    { articleType: regex },
-    { subCategory: regex },
-    { masterCategory: regex },
-    { baseColour: regex },
-    { usage: regex },
-  ];
-}
-
-
-    if (priceMin || priceMax) {
-      where.price = {};
-      if (priceMin) where.price.$gte = Number(priceMin);
-      if (priceMax) where.price.$lte = Number(priceMax);
+    if (search) {
+      const regex = new RegExp(search.trim(), "i");
+      where.$or = [
+        { productDisplayName: regex },
+        { articleType: regex },
+        { subCategory: regex },
+        { masterCategory: regex },
+        { baseColour: regex },
+        { usage: regex },
+      ];
     }
 
     const sortOptions =
@@ -158,6 +198,7 @@ if (qs.search) {
         ? { createdAt: 1 }
         : { productDisplayName: 1 };
 
+    // First count
     const count = await Product.countDocuments(where);
     let totalPages = Math.ceil(count / limit) || 1;
 
@@ -169,14 +210,19 @@ if (qs.search) {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    // 🔑 Map products to include image URL
-    const productsWithImage = products.map((p) => ({
+    // 🔑 Merge prices
+    const productIds = products.map(p => p.productId);
+    const prices = await Price.find({ productId: { $in: productIds } }).lean();
+    const priceMap = Object.fromEntries(prices.map(p => [p.productId, p.price]));
+
+    const productsWithImageAndPrice = products.map(p => ({
       ...p.toObject(),
       imageUrl: `${req.protocol}://${req.get("host")}/images/${p.imageFilename}`,
+      price: priceMap[p.productId] || null,
     }));
 
     res.json({
-      data: productsWithImage,
+      data: productsWithImageAndPrice,
       page,
       total: count,
       totalPages,

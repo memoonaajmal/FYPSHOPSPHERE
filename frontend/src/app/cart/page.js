@@ -36,7 +36,7 @@ export default function CartPage() {
             <Image src={item.image} alt={item.name} width={80} height={80} />
             <div className={styles.itemDetails}>
               <h3>{item.name}</h3>
-              <p>${item.price} x {item.qty}</p>
+              <p>PKR {item.price} x {item.qty}</p>
 
               <div className={styles.qtyControls}>
                 <button
@@ -66,7 +66,7 @@ export default function CartPage() {
       </div>
 
       <div className={styles.cartSummary}>
-        <h2>Total: ${total.toFixed(2)}</h2>
+        <h2>Total: PKR {total.toFixed(2)}</h2>
         <button
           className={styles.clearBtn}
           onClick={() => dispatch(clearCart())}

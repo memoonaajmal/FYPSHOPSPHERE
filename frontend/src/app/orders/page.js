@@ -63,7 +63,7 @@ return (
           <div key={order._id} className={styles.orderCard}>
             <p><strong>Order ID:</strong> {order._id}</p>
             <p><strong>Date:</strong> {new Date(order.createdAt).toLocaleString()}</p>
-            <p><strong>Grand Total:</strong> $ {order.grandTotal ?? order.totalAmount ?? '0'}</p>
+            <p><strong>Grand Total:</strong> PKR  {order.grandTotal ?? order.totalAmount ?? '0'}</p>
             <p><strong>Items:</strong> {order.items?.length ?? 0}</p>
             <div className={styles.buttonGroup}>
               <button

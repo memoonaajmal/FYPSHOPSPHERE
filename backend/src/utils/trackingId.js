@@ -1,9 +1,28 @@
-// utils/trackingId.js
-const { v4: uuidv4 } = require('uuid');
+// src/utils/trackingId.js
+const crypto = require('crypto');
+
+let uuidv4Fn = null;
+
+(async () => {
+  try {
+    const mod = await import('uuid');    
+    
+    uuidv4Fn = mod.v4;
+
+  } catch (err) {
+  }
+})();
 
 function generateTrackingId() {
-  // e.g. TRK-<short-uuid>
-  return 'TRK-' + uuidv4().split('-')[0].toUpperCase();
+
+  if (uuidv4Fn) {
+
+    const short = uuidv4Fn().split('-')[0].toUpperCase(); 
+    return 'TRK-' + short;
+  }
+
+  const shortFallback = crypto.randomBytes(4).toString('hex').toUpperCase();
+  return 'TRK-' + shortFallback;
 }
 
 module.exports = generateTrackingId;

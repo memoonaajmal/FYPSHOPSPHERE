@@ -10,7 +10,6 @@ import styles from "../../../styles/ProductDetails.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-// Fetch product from backend
 async function fetchProduct(productId) {
   const res = await fetch(`${BASE_URL}/api/products/${productId}`, {
     cache: "no-store",
@@ -21,7 +20,7 @@ async function fetchProduct(productId) {
 }
 
 export default function ProductDetailsPage({ params: paramsPromise }) {
-  const params = React.use(paramsPromise); // <-- unwrap promise
+  const params = React.use(paramsPromise);
   const { id } = params;
 
   const dispatch = useDispatch();
@@ -49,7 +48,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
       addItemToCart({
         id: product._id,
         name: product.productDisplayName,
-        price: 99, // placeholder
+        price: product.price,   // ✅ real price
         image: imageSrc,
       })
     );
@@ -57,13 +56,12 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
     router.push("/cart");
   };
 
-    // ✅ new wishlist function
   const handleAddToWishlist = () => {
     dispatch(
       addToWishlist({
         id: product._id,
         name: product.productDisplayName,
-        price: 99, // placeholder
+        price: product.price,   // ✅ real price
         image: imageSrc,
       })
     );
@@ -84,7 +82,9 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
 
       <div className={styles.details}>
         <h1>{product.productDisplayName}</h1>
-        <p className={styles.price}>$99.00</p>
+        <p className={styles.price}>
+          {product.price ? `PKR ${product.price.toLocaleString()}` : "Price not available"}
+        </p>
         <p><strong>Color:</strong> {product.baseColour}</p>
         <p><strong>Type:</strong> {product.articleType}</p>
 
@@ -95,8 +95,9 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
           >
             Add to Cart
           </button>
-          <button className={`${styles.btn} ${styles.btnSecondary}`}
-          onClick={handleAddToWishlist}
+          <button
+            className={`${styles.btn} ${styles.btnSecondary}`}
+            onClick={handleAddToWishlist}
           >
             Wishlist
           </button>

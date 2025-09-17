@@ -34,7 +34,7 @@ export default function WishlistPage() {
         image: item.image,
       })
     );
-    router.push("/cart"); // ✅ navigate to cart after adding
+    router.push("/cart"); 
   };
 
   return (
@@ -47,7 +47,7 @@ export default function WishlistPage() {
             <Image src={item.image} alt={item.name} width={80} height={80} />
             <div className={styles.itemDetails}>
               <h3>{item.name}</h3>
-              <p>${item.price}</p>
+              <p>PKR {item.price}</p>
 
               <div className={styles.actions}>
                 <button
@@ -58,7 +58,7 @@ export default function WishlistPage() {
                 </button>
 
                 <button
-                  className={styles.checkoutBtn} // reusing checkoutBtn style
+                  className={styles.checkoutBtn}
                   onClick={() => handleAddToCart(item)}
                 >
                   Add to Cart
@@ -77,7 +77,7 @@ export default function WishlistPage() {
           Clear Wishlist
         </button>
         <button
-  className={styles.clearBtn} // ✅ reuse styling
+  className={styles.clearBtn}
   onClick={() => router.push("/products")}
 >
   Continue Shopping
