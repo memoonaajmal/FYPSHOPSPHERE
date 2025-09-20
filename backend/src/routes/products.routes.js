@@ -10,6 +10,6 @@ router.get('/:productId', controller.getOne);
 // Admin routes
 router.post('/', requireAuth, requireRole('admin'), controller.create);
 router.patch('/:productId', requireAuth, requireRole('admin'), controller.update);
-router.delete('/:productId', requireAuth, requireRole('admin'), controller.remove);
+router.delete('/:productId', controller.remove);
 
 module.exports = router;
