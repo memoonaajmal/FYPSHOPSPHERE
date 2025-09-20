@@ -8,6 +8,7 @@
     "seed": "node scripts/seed.js",
     "buildStores": "node scripts/buildStores.js",
     "seedPrices": "node scripts/seedPrices.js",
+    "seed:createAdmin": "node scripts/createAdmin.js",
     "seed:drop": "node scripts/seed.js --drop",
     "seed:dry": "node scripts/seed.js --dry-run"
   },

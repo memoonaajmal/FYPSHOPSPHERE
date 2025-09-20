@@ -3,50 +3,72 @@ import styles from "../../styles/signup.module.css";
 import { useState } from "react";
 import Link from "next/link";
 import { auth } from "../../../firebase/config";
-import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  signOut,
+} from "firebase/auth";
+import { useRouter } from "next/navigation";
+import { useAuth } from "../../context/AuthContext";
 
 export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [role, setRole] = useState("user"); // default role
   const [error, setError] = useState("");
+  const router = useRouter();
+  const { setUser } = useAuth();
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const handleSignup = async (e) => {
     e.preventDefault();
-    setError(""); // reset error
+    setError("");
     try {
-      // 1️⃣ Sign up in Firebase
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      // Firebase signup
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
 
-      // 2️⃣ Update profile with name
+      // Update displayName
       await updateProfile(userCred.user, { displayName: name });
 
-      // 3️⃣ Get Firebase ID token
+      // Get token
       const user = auth.currentUser;
       if (!user) throw new Error("User not available after signup");
-      const idToken = await user.getIdToken(true); // force refresh token
+      const idToken = await user.getIdToken(true);
 
-      // 4️⃣ Call backend to sync with MongoDB
-      const response = await fetch(`${BASE_URL}/api/auth/sync`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${idToken}`,
-        },
-        body: JSON.stringify({}), // backend middleware populates req.user
-      });
+
+ // Sync with backend, include chosen role
+const response = await fetch(`${BASE_URL}/api/auth/sync`, {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+    Authorization: `Bearer ${idToken}`,
+  },
+  body: JSON.stringify({ role: role.toLowerCase().trim() }), // normalize here
+});
+
 
       if (!response.ok) {
         const errData = await response.json();
-        throw new Error(errData.error?.message || "Failed to sync user with backend");
+        throw new Error(
+          errData.error?.message || "Failed to sync user with backend"
+        );
       }
 
       const data = await response.json();
       console.log("Backend user data:", data.user);
 
-      alert("Signup successful! User saved in Firebase and MongoDB.");
+      setUser(data.user);
+
+      // 🚀 Force logout right after signup
+      await signOut(auth);
+
+      // Redirect to login (always after signup)
+      router.push("/login");
     } catch (err) {
       console.error(err);
       setError(err.message);
@@ -74,6 +96,13 @@ export default function SignupPage() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
+
+        {/* Role Selection */}
+        <select value={role} onChange={(e) => setRole(e.target.value)}>
+          <option value="user">Signup as User</option>
+          <option value="seller">Signup as Seller</option>
+        </select>
+
         <button type="submit">Sign Up</button>
         {error && <p className={styles.error}>{error}</p>}
       </form>

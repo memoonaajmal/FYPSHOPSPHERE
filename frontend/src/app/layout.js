@@ -2,7 +2,8 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "../../components/Navbar";
 import styles from "../styles/RootLayout.module.css";
-import { ReduxProvider } from "./ReduxProvider"; // make sure path is correct
+import { ReduxProvider } from "./ReduxProvider"; 
+import { AuthProvider } from "../context/AuthContext"; // ✅ import AuthProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -28,9 +29,11 @@ export default function RootLayout({ children }) {
 
         {/* Page Layout */}
         <div className={styles.layoutContainer}>
-          {/* Wrap the main content with ReduxProvider */}
           <ReduxProvider>
-            <main className={styles.main}>{children}</main>
+            {/* ✅ Wrap children with AuthProvider */}
+            <AuthProvider>
+              <main className={styles.main}>{children}</main>
+            </AuthProvider>
           </ReduxProvider>
         </div>
       </body>
