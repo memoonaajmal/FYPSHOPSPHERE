@@ -1,0 +1,195 @@
+/* Container for the whole seller products page */
+.container {
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr; /* single column page */
+  gap: 2rem;
+}
+
+/* Header: title + button inline */
+.header {
+  display: flex;
+  justify-content: space-between; /* title left, button right */
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Page title */
+.title {
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* Minimal Add Product button */
+.addProductBtn {
+  background-color: white;
+  color: #333;
+  border: 1px solid #ccc;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.95rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.addProductBtn:hover {
+  background-color: #f0f0f0;
+}
+
+/* Products grid */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr); /* 4 per row */
+  gap: 2rem;
+  align-items: stretch;
+}
+
+/* Responsive adjustments */
+@media (max-width: 1200px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 900px) {
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .productsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Message when no products are found */
+.noProducts {
+  grid-column: 1 / -1;
+  text-align: center;
+  color: #888;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+/* Pagination wrapper */
+.paginationWrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* Card styling */
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  width: 100%;
+  min-height: 400px; /* same height for all cards */
+}
+
+/* Hover effect */
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+}
+
+/* Image wrapper */
+.imageWrapper {
+  width: 100%;
+  height: 250px;
+  position: relative;
+  background: #f8f8f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Image inside card */
+.image {
+  object-fit: contain;
+  max-height: 100%;
+  max-width: 100%;
+}
+
+/* Info below image */
+.info {
+  padding: 16px;
+  text-align: center;
+  width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* Title inside card */
+.titleCard {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 6px;
+  color: #222;
+}
+
+/* Color & type */
+.color {
+  font-size: 0.9rem;
+  color: #666;
+  margin: 0 0 4px;
+}
+
+.type {
+  font-size: 0.85rem;
+  color: #999;
+  margin: 0;
+}
+
+/* Price */
+.price {
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Buttons container */
+.cardButtons {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+.updateBtn {
+  background-color: #f0f0f0;
+  color: #333;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: background-color 0.2s;
+}
+
+.updateBtn:hover {
+  background-color: #e0e0e0;
+}
+
+.deleteBtn {
+  background-color: #f44336;
+  color: white;
+  padding: 0.4rem 0.8rem;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.deleteBtn:hover {
+  background-color: #d32f2f;
+}

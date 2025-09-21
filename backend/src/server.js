@@ -57,7 +57,7 @@ app.use("/api/stores", storeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jazzcash', jazzcashRoutes);
 app.use('/api/admin', adminRoutes);
-// app.use('/api/seller', sellerRoutes);
+app.use('/api/seller', sellerRoutes);
 
 // ✅ Swagger docs (optional)
 try {

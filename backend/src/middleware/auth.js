@@ -27,6 +27,7 @@ exports.requireAuth = async function (req, res, next) {
       email: decoded.email,
       name: userRecord?.displayName || decoded.name || null,
       mongoUser, // attach Mongo record (can be null)
+      roles: mongoUser?.roles || [],
     };
 
     next();
