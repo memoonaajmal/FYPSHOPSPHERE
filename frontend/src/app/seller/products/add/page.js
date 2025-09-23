@@ -88,8 +88,6 @@ export default function AddProductPage() {
           >
             <option>Men</option>
             <option>Women</option>
-            <option>Boys</option>
-            <option>Girls</option>
             <option>Unisex</option>
           </select>
         </label>

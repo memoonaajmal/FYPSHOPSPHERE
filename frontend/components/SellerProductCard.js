@@ -1,24 +1,22 @@
 "use client";
-
 import Image from "next/image";
 import Link from "next/link";
-import styles from "../src/styles/SellerProductPage.module.css"; // adjust path if needed
+import { Trash2 } from "lucide-react"; // ✅ delete icon
+import styles from "./styles/SellerProductCard.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // http://localhost:4000
 
-export default function SellerProductCard({ product, onDelete }) {
+export default function AdminProductCard({ product, onDelete }) {
   if (!product) return null;
 
   const id = product.productId || product._id;
 
+  // Always build absolute URL
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
-
-  const handleDelete = () => {
-    if (onDelete) onDelete(id);
-  };
 
   return (
     <div className={styles.card}>
+      {/* ✅ Image (not clickable anymore) */}
       <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}
@@ -29,26 +27,31 @@ export default function SellerProductCard({ product, onDelete }) {
         />
       </div>
 
+      {/* Info + Actions */}
       <div className={styles.info}>
-        <h3 className={styles.titleCard}>{product.productDisplayName}</h3>
+        <h3 className={styles.title}>{product.productDisplayName}</h3>
         <p className={styles.color}>{product.baseColour}</p>
         <p className={styles.type}>{product.articleType}</p>
-        <p className={styles.price}>Pkr {product.price ?? 0}</p>
-      </div>
 
-      <div className={styles.cardButtons}>
-        <Link
-          href={`/seller/products/update/${id}`}
-          className={styles.updateBtn}
-        >
-          Update
-        </Link>
-        <button
-          onClick={handleDelete}
-          className={styles.deleteBtn}
-        >
-          Delete
-        </button>
+        <div className={styles.actions}>
+          <Link
+            href={`/seller/products/update/${id}`}
+            className={styles.updateBtn}
+          >
+            Update
+          </Link>
+
+          <button
+            onClick={() => {
+              if (confirm("Are you sure you want to delete this product?")) {
+                onDelete(product.productId || product._id);
+              }
+            }}
+            className={styles.deleteBtn}
+          >
+            <Trash2 size={20} />
+          </button>
+        </div>
       </div>
     </div>
   );
