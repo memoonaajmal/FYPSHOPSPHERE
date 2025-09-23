@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { auth } from "../../../../firebase/config";
+import styles from "../../../styles/SellerOrdersPage.module.css";
 
 export default function SellerOrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -43,43 +44,76 @@ export default function SellerOrdersPage() {
     fetchOrders();
   }, []);
 
-  if (loading) return <p className="p-4">Loading your orders...</p>;
-  if (error) return <p className="p-4 text-red-600">Error: {error}</p>;
+  if (loading) return <p className={styles.message}>Loading your orders...</p>;
+  if (error) return <p className={`${styles.message} ${styles.error}`}>Error: {error}</p>;
+
+  // ✅ Function to assign badge style based on status
+  const getStatusClass = (status) => {
+    switch (status.toLowerCase()) {
+      case "paid":
+        return styles.statusPaid;
+      case "pending":
+        return styles.statusPending;
+      case "failed":
+      case "cancelled":
+        return styles.statusFailed;
+      default:
+        return styles.statusDefault;
+    }
+  };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Orders for My Store</h1>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Orders for My Store</h1>
       {orders.length === 0 ? (
-        <p>No orders found for your store yet.</p>
+        <p className={styles.message}>No orders found for your store yet.</p>
       ) : (
-        <ul className="space-y-6">
+        <ul className={styles.orderList}>
           {orders.map((order) => (
-            <li key={order._id} className="border rounded p-4 shadow-sm">
-              <div className="flex justify-between items-center mb-2">
+            <li key={order._id} className={styles.orderCard}>
+              <div className={styles.orderHeader}>
                 <div>
-                  <p className="font-semibold text-lg">
+                  <p className={styles.customerName}>
                     {order.firstName} {order.lastName}
                   </p>
-                  <p className="text-gray-600">{order.email} | {order.phone}</p>
-                  <p className="text-gray-600">Address: {order.houseAddress}</p>
+                  <p className={styles.customerInfo}>
+                    {order.email} | {order.phone}
+                  </p>
+                  <p className={styles.customerInfo}>
+                    Address: {order.houseAddress}
+                  </p>
                 </div>
-                <div className="text-right">
-                  <p className="font-semibold">Order Total: ${order.grandTotal}</p>
-                  <p className="text-sm text-gray-500">Status: {order.paymentStatus}</p>
-                  {order.trackingId && <p className="text-sm text-gray-500">Tracking: {order.trackingId}</p>}
-                  <p className="text-xs text-gray-400">{new Date(order.createdAt).toLocaleString()}</p>
+                <div className={styles.orderMeta}>
+                  <p className={styles.orderTotal}>
+                    Order Total: <span>${order.grandTotal}</span>
+                  </p>
+                  <span className={`${styles.statusBadge} ${getStatusClass(order.paymentStatus)}`}>
+                    {order.paymentStatus}
+                  </span>
+                  {order.trackingId && (
+                    <p className={styles.trackingId}>
+                      Tracking: {order.trackingId}
+                    </p>
+                  )}
+                  <p className={styles.timestamp}>
+                    {new Date(order.createdAt).toLocaleString()}
+                  </p>
                 </div>
               </div>
 
-              <ul className="mt-2 pl-4 list-disc">
+              <ul className={styles.itemList}>
                 {order.items.map((item, idx) => (
-                  <li key={idx}>
-                    {item.name} — {item.quantity} × ${item.price} = ${item.price * item.quantity}
+                  <li key={idx} className={styles.item}>
+                    <span>{item.name}</span>
+                    <span>
+                      {item.quantity} × ${item.price} = $
+                      {item.price * item.quantity}
+                    </span>
                   </li>
                 ))}
               </ul>
 
-              <p className="mt-2 font-semibold">
+              <p className={styles.sellerTotal}>
                 Seller Items Total: ${order.itemsTotal}
               </p>
             </li>

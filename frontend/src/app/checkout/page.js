@@ -67,15 +67,18 @@ export default function CheckoutPage() {
     try {
       setLoading(true);
       const token = await user.getIdToken();
+
+      // 🔹 Use productId (not _id)
       const items = cartItems.map((item) => ({
-        productId: item.id,
+        productId: item.id, // ✅ item.id is product.productId
         name: item.name,
         price: item.price,
         quantity: item.qty,
         image: item.image,
       }));
 
-      const paymentMethod = formData.paymentMethod === "COD" ? "COD" : "JazzCash";
+      const paymentMethod =
+        formData.paymentMethod === "COD" ? "COD" : "JazzCash";
 
       const res = await fetch(`${BASE_URL}/api/orders`, {
         method: "POST",
@@ -91,7 +94,10 @@ export default function CheckoutPage() {
           phone: formData.phone,
           houseAddress: formData.address,
           items,
-          itemsTotal: formData.paymentMethod === "JazzCash" ? discountedTotal : itemsTotal,
+          itemsTotal:
+            formData.paymentMethod === "JazzCash"
+              ? discountedTotal
+              : itemsTotal,
           paymentMethod,
         }),
       });
@@ -175,37 +181,38 @@ export default function CheckoutPage() {
             className={styles.textarea}
           />
 
-          {/* 🔹 Payment Method as Radio Buttons */}
-         {/* 🔹 Payment Method */}
-<div>
-  <p className={styles.label}>Payment:</p>
-  <div className={styles.radioGroup}>
-    <label className={styles.radioLabel}>
-      <input
-        type="radio"
-        name="paymentMethod"
-        value="COD"
-        checked={formData.paymentMethod === "COD"}
-        onChange={handleChange}
-        className={styles.radioInput}
-      />
-      <span>Cash on Delivery</span>
-    </label>
+          {/* 🔹 Payment Method */}
+          <div>
+            <p className={styles.label}>Payment:</p>
+            <div className={styles.radioGroup}>
+              <label className={styles.radioLabel}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="COD"
+                  checked={formData.paymentMethod === "COD"}
+                  onChange={handleChange}
+                  className={styles.radioInput}
+                />
+                <span>Cash on Delivery</span>
+              </label>
 
-    <label className={styles.radioLabel}>
-      <input
-        type="radio"
-        name="paymentMethod"
-        value="JazzCash"
-        checked={formData.paymentMethod === "JazzCash"}
-        onChange={handleChange}
-        className={styles.radioInput}
-      />
-      <span>JazzCash <span className={styles.discountText}>(5% off)</span></span>
-    </label>
-  </div>
-</div>
-
+              <label className={styles.radioLabel}>
+                <input
+                  type="radio"
+                  name="paymentMethod"
+                  value="JazzCash"
+                  checked={formData.paymentMethod === "JazzCash"}
+                  onChange={handleChange}
+                  className={styles.radioInput}
+                />
+                <span>
+                  JazzCash{" "}
+                  <span className={styles.discountText}>(5% off)</span>
+                </span>
+              </label>
+            </div>
+          </div>
 
           <p className={styles.text}>
             Total:{" "}

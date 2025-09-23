@@ -1,5 +1,6 @@
 // backend/src/controllers/orderController.js
 const Order = require('../models/Order');
+const Product = require('../models/Product');
 const generateTrackingId = require('../utils/trackingId');
 
 // Create new order
@@ -8,14 +9,31 @@ exports.createOrder = async (req, res) => {
     const userId = req.user.uid; // from requireAuth
     const {
       firstName, lastName, phone, email, houseAddress,
-      items, itemsTotal, shippingFee = 0, paymentMethod
+      items, shippingFee = 0, paymentMethod
     } = req.body;
 
     if (!firstName || !lastName || !phone || !email || !houseAddress || !items?.length) {
       return res.status(400).json({ message: 'Missing required fields' });
     }
 
-    const grandTotal = Number(itemsTotal) + Number(shippingFee);
+    // ✅ Rebuild items so productId is always the custom one
+    const rebuiltItems = await Promise.all(
+      items.map(async (item) => {
+        const product = await Product.findById(item.productId)
+          .select("productId productDisplayName");
+        if (!product) throw new Error(`Product not found: ${item.productId}`);
+
+        return {
+          productId: product.productId,              // ✅ use custom productId
+          name: product.productDisplayName || item.name,
+          price: item.price,
+          quantity: item.quantity,
+        };
+      })
+    );
+
+    const itemsTotal = rebuiltItems.reduce((sum, it) => sum + it.price * it.quantity, 0);
+    const grandTotal = itemsTotal + Number(shippingFee);
     const trackingId = generateTrackingId();
 
     const order = new Order({
@@ -25,7 +43,7 @@ exports.createOrder = async (req, res) => {
       phone,
       email,
       houseAddress,
-      items,
+      items: rebuiltItems,   // ✅ consistent productId
       itemsTotal,
       shippingFee,
       grandTotal,

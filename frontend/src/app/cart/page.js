@@ -2,21 +2,29 @@
 import styles from "../../styles/Cart.module.css";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeItemFromCart, clearCart, increaseQty, decreaseQty } from "../../../redux/CartSlice";
+import {
+  removeItemFromCart,
+  clearCart,
+  increaseQty,
+  decreaseQty,
+} from "../../../redux/CartSlice";
 import Image from "next/image";
-import { useRouter } from "next/navigation"; // ✅ added
+import { useRouter } from "next/navigation";
 
 export default function CartPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
   const dispatch = useDispatch();
-  const router = useRouter(); // ✅ added
+  const router = useRouter();
 
   useEffect(() => setHasMounted(true), []);
 
-  const total = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const total = cartItems.reduce(
+    (acc, item) => acc + item.price * item.qty,
+    0
+  );
 
-  if (!hasMounted) return null; // Avoid hydration mismatch
+  if (!hasMounted) return null;
 
   if (cartItems.length === 0) {
     return (
@@ -36,7 +44,9 @@ export default function CartPage() {
             <Image src={item.image} alt={item.name} width={80} height={80} />
             <div className={styles.itemDetails}>
               <h3>{item.name}</h3>
-              <p>PKR {item.price} x {item.qty}</p>
+              <p>
+                PKR {item.price} x {item.qty}
+              </p>
 
               <div className={styles.qtyControls}>
                 <button
@@ -75,17 +85,16 @@ export default function CartPage() {
         </button>
         <button
           className={styles.checkoutBtn}
-          onClick={() => router.push("/checkout")} // ✅ added
+          onClick={() => router.push("/checkout")}
         >
           Checkout
         </button>
         <button
-  className={styles.clearBtn} // ✅ reuse styling
-  onClick={() => router.push("/products")}
->
-  Continue Shopping
-</button>
-
+          className={styles.clearBtn}
+          onClick={() => router.push("/products")}
+        >
+          Continue Shopping
+        </button>
       </div>
     </div>
   );
