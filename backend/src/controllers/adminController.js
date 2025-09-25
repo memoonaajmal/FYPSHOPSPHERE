@@ -1,5 +1,6 @@
 // backend/src/controllers/adminController.js
 const User = require("../models/User");
+const Order = require("../models/Order");
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -35,5 +36,26 @@ exports.deleteUser = async (req, res) => {
     res.json({ message: "User deleted successfully" });
   } catch (err) {
     res.status(500).json({ message: "Error deleting user", error: err.message });
+  }
+};
+
+exports.getOrdersByEmail = async (req, res) => {
+  try {
+    const { email } = req.params;
+
+    if (!email) {
+      return res.status(400).json({ message: "Email is required" });
+    }
+
+    const orders = await Order.find({ email }).sort({ createdAt: -1 });
+
+    if (!orders || orders.length === 0) {
+      return res.status(404).json({ message: "No orders found for this email" });
+    }
+
+    res.status(200).json(orders);
+  } catch (err) {
+    console.error("Error fetching orders:", err);
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 };

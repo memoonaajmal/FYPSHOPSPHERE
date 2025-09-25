@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "../../../styles/AllUser.module.css";
+import styles from "../styles/AllUser.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; 
 

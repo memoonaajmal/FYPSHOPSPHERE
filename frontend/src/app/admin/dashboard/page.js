@@ -1,7 +1,7 @@
 "use client";
 import ProtectedRoute from "../../../../components/ProtectedRoute";
 import Link from "next/link";
-import styles from "../../../styles/AdminDashboard.module.css";
+import styles from "../styles/AdminDashboard.module.css";
 
 export default function AdminDashboard() {
   return (
