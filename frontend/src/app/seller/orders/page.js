@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { auth } from "../../../../firebase/config";
-import styles from "../../../styles/SellerOrdersPage.module.css";
+import styles from "../styles/SellerOrdersPage.module.css";
 
 export default function SellerOrdersPage() {
   const [orders, setOrders] = useState([]);

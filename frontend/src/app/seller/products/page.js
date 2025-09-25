@@ -8,7 +8,7 @@ import SellerProductCard from "../../../../components/SellerProductCard";
 import SearchFilterBar from "../../../../components/FilterBar";
 import StorePagination from "../../../../components/StorePagination";
 
-import styles from "../../../styles/SellerProductPage.module.css"; // ✅ using admin style
+import styles from "../styles/SellerProductPage.module.css";
 
 export const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

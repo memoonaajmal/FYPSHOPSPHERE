@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { auth } from "../../../../../../firebase/config";
 import { BASE_URL } from "../../page"; // adjust path if needed
-import styles from "../../../../../styles/AddProductPage.module.css"; // reuse AddProductPage styles
+import styles from "../../../styles/AddProductPage.module.css"; // reuse AddProductPage styles
 
 export default function UpdateProductPage() {
   const router = useRouter();

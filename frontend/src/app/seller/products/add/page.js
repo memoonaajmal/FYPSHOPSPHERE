@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../../../../../firebase/config";
 import { BASE_URL } from "../page"; // same as your SellerProductsPage
-import styles from "../../../../styles/AddProductPage.module.css";
+import styles from "../../styles/AddProductPage.module.css";
 
 export default function AddProductPage() {
   const router = useRouter();
