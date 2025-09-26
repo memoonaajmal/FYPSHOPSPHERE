@@ -5,7 +5,6 @@ import { useParams, useRouter } from "next/navigation";
 import UserDetails from "../../../../../components/UserDetails";
 import styles from "../../styles/UserDetails.module.css";
 
-
 export default function UserDetailsPage() {
   const { id: userId } = useParams();
   const router = useRouter();
@@ -38,13 +37,18 @@ export default function UserDetailsPage() {
 
           if (ordersRes.ok) {
             const ordersData = await ordersRes.json();
-            setOrders(ordersData);
+            // always set an array
+            setOrders(Array.isArray(ordersData) ? ordersData : []);
           } else {
             console.error("Failed to fetch user orders");
+            setOrders([]); // fallback
           }
+        } else {
+          setOrders([]); // no email, no orders
         }
       } catch (err) {
         console.error("Error fetching user details:", err);
+        setOrders([]); // fallback
       } finally {
         setLoadingOrders(false);
       }
@@ -81,51 +85,52 @@ export default function UserDetailsPage() {
 
   if (!user) return <p style={{ padding: "24px" }}>Loading user details...</p>;
 
+  return (
+    <div className={styles.container}>
+      <UserDetails user={user} />
 
+      <button
+        onClick={handleDelete}
+        className={`${styles.button} ${styles.btnDanger}`}
+      >
+        Delete User
+      </button>
 
-return (
-  <div className={styles.container}>
-    <UserDetails user={user} />
-
-    <button
-      onClick={handleDelete}
-      className={`${styles.button} ${styles.btnDanger}`}
-    >
-      Delete User
-    </button>
-
-    {/* ✅ Orders Section */}
-    {orders.length > 0 && (
+      {/* ✅ Orders Section */}
       <div style={{ marginTop: "30px" }}>
         <h2 className={styles.sectionTitle}>Previous Orders</h2>
 
-        <div className={styles.tableWrap}>
-          <table className={styles.table}>
-            <thead className={styles.thead}>
-              <tr>
-                <th>Order ID</th>
-                <th>Total</th>
-                <th>Status</th>
-                <th>Payment</th>
-                <th>Created At</th>
-              </tr>
-            </thead>
-            <tbody className={styles.tbody}>
-              {orders.map((order) => (
-                <tr key={order._id} className={styles.rowHover}>
-                  <td>{order._id}</td>
-                  <td>{order.grandTotal}</td>
-                  <td>{order.paymentStatus}</td>
-                  <td>{order.paymentMethod}</td>
-                  <td>{new Date(order.createdAt).toLocaleString()}</td>
+        {loadingOrders ? (
+          <p>Loading orders...</p>
+        ) : orders.length > 0 ? (
+          <div className={styles.tableWrap}>
+            <table className={styles.table}>
+              <thead className={styles.thead}>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Total</th>
+                  <th>Status</th>
+                  <th>Payment</th>
+                  <th>Created At</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className={styles.tbody}>
+                {orders.map((order) => (
+                  <tr key={order._id} className={styles.rowHover}>
+                    <td>{order._id}</td>
+                    <td>{order.grandTotal}</td>
+                    <td>{order.paymentStatus}</td>
+                    <td>{order.paymentMethod}</td>
+                    <td>{new Date(order.createdAt).toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <p>No previous orders</p>
+        )}
       </div>
-    )}
-  </div>
-);
-
+    </div>
+  );
 }

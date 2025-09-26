@@ -46,3 +46,9 @@
 .button:hover {
   background: #e2e8f0;
 }
+.subtitle{
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 20px 0 10px 0;
+  color: #555;
+}

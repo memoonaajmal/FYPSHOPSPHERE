@@ -1,4 +1,5 @@
 // backend/src/controllers/adminController.js
+const admin = require("firebase-admin");
 const User = require("../models/User");
 const Order = require("../models/Order");
 
@@ -47,15 +48,21 @@ exports.getOrdersByEmail = async (req, res) => {
       return res.status(400).json({ message: "Email is required" });
     }
 
+    // Fetch orders by email
     const orders = await Order.find({ email }).sort({ createdAt: -1 });
 
+    // ✅ If no orders found, return empty array with 200 OK
     if (!orders || orders.length === 0) {
-      return res.status(404).json({ message: "No orders found for this email" });
+      return res.status(200).json([]);
     }
 
-    res.status(200).json(orders);
+    // ✅ Return found orders
+    return res.status(200).json(orders);
   } catch (err) {
     console.error("Error fetching orders:", err);
-    res.status(500).json({ message: "Server error", error: err.message });
+    return res.status(500).json({
+      message: "Server error",
+      error: err.message,
+    });
   }
 };
