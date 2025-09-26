@@ -1,5 +1,5 @@
 // backend/src/controllers/adminController.js
-const admin = require("firebase-admin");
+const admin = require("../utils/firebaseAdmin");
 const User = require("../models/User");
 const Order = require("../models/Order");
 
@@ -26,6 +26,8 @@ exports.getUserById = async (req, res) => {
   }
 };
 
+
+
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
@@ -34,11 +36,24 @@ exports.deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.json({ message: "User deleted successfully" });
+    // Delete from Firebase
+    if (user.firebaseUid) {
+      try {
+        await admin.auth().deleteUser(user.firebaseUid);
+        console.log(`✅ Firebase user ${user.firebaseUid} deleted`);
+      } catch (firebaseErr) {
+        console.error("❌ Error deleting user from Firebase:", firebaseErr);
+      }
+    }
+
+    res.json({ message: "User deleted successfully from MongoDB and Firebase" });
   } catch (err) {
     res.status(500).json({ message: "Error deleting user", error: err.message });
   }
 };
+
+
+
 
 exports.getOrdersByEmail = async (req, res) => {
   try {

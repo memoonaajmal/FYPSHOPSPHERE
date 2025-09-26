@@ -23,14 +23,24 @@ exports.sync = async function (req, res, next) {
         name: name || "",
         passwordHash: "",
         roles: [finalRole],
+        firebaseUid: uid, // 🔑 store Firebase UID
       });
       await user.save();
       console.log("Created new user with role:", finalRole);
-    } else if (!user.roles || user.roles.length === 0) {
-      // Existing user with empty roles: set role
-      user.roles = [finalRole];
-      await user.save();
-      console.log("Updated existing user with role:", finalRole);
+    } else {
+      // Patch missing Firebase UID if not already set
+      if (!user.firebaseUid) {
+        user.firebaseUid = uid;
+        await user.save();
+        console.log("Patched user with Firebase UID");
+      }
+
+      if (!user.roles || user.roles.length === 0) {
+        // Existing user with empty roles: set role
+        user.roles = [finalRole];
+        await user.save();
+        console.log("Updated existing user with role:", finalRole);
+      }
     }
 
     // Normalize roles
@@ -57,6 +67,7 @@ exports.sync = async function (req, res, next) {
   }
 };
 
+
 // Get current logged-in user info
 exports.me = async function (req, res, next) {
   try {
@@ -70,13 +81,15 @@ exports.me = async function (req, res, next) {
 
     res.json({
       user: {
-        uid,
+        uid, // Firebase UID from req.user
         email,
         name: mongoUser.name,
         roles: mongoUser.roles,
+        firebaseUid: mongoUser.firebaseUid || uid, // 🔑 include firebaseUid
       },
     });
   } catch (err) {
     next(err);
   }
 };
+
