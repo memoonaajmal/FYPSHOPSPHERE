@@ -32,6 +32,7 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^7.8.7",
     "morgan": "^1.10.0",
+    "multer": "^2.0.2",
     "nanoid": "^5.1.5",
     "pino": "^9.0.0",
     "pino-pretty": "^11.2.2",

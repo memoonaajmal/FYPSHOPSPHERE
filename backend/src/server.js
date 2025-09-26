@@ -20,6 +20,7 @@ const jazzcashRoutes = require('./routes/jazzcashRoutes');
 const { notFound, errorHandler } = require('./middleware/errors');
 const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes = require('./routes/seller.routes');
+const uploadRoutes = require("./routes/uploadRoutes");
 
 const app = express();
 
@@ -58,6 +59,9 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/jazzcash', jazzcashRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/seller', sellerRoutes);
+app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/images", express.static("public/images"));
+
 
 // ✅ Swagger docs (optional)
 try {

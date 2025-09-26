@@ -2,7 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { auth } from "../../../../../firebase/config";
-import { BASE_URL } from "../page"; // same as your SellerProductsPage
+import { BASE_URL } from "../page"; 
 import styles from "../../styles/AddProductPage.module.css";
 
 export default function AddProductPage() {
@@ -20,12 +20,24 @@ export default function AddProductPage() {
     imageFilename: "",
     price: 0,
   });
+
+  const [imageFile, setImageFile] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
+  };
+
+  // ✅ handle image selection + preview
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImageFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -36,16 +48,39 @@ export default function AddProductPage() {
     try {
       const user = auth.currentUser;
       if (!user) throw new Error("Not logged in");
-
       const token = await user.getIdToken();
 
+      // ✅ 1. Upload image first if selected
+      let uploadedFilename = form.imageFilename;
+      if (imageFile) {
+        const imgFormData = new FormData();
+        imgFormData.append("image", imageFile);
+
+        const uploadRes = await fetch(`${BASE_URL}/api/upload`, {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: imgFormData,
+        });
+
+        if (!uploadRes.ok) {
+          const text = await uploadRes.text();
+          throw new Error(text || "Image upload failed");
+        }
+
+        const { filename } = await uploadRes.json();
+        uploadedFilename = filename;
+      }
+
+      // ✅ 2. Save product with uploaded image filename
       const res = await fetch(`${BASE_URL}/api/seller/products`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, imageFilename: uploadedFilename }),
       });
 
       if (!res.ok) {
@@ -66,6 +101,7 @@ export default function AddProductPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Add New Product</h1>
       {error && <p style={{ color: "red" }}>{error}</p>}
+
       <form onSubmit={handleSubmit} className={styles.form}>
         <label className={styles.formLabel}>
           Product Name:
@@ -164,15 +200,29 @@ export default function AddProductPage() {
           />
         </label>
 
+        {/* ✅ Image upload */}
         <label className={styles.formLabel}>
-          Image Filename (optional):
+          Product Image:
           <input
+            type="file"
+            accept="image/*"
             className={styles.formInput}
-            name="imageFilename"
-            value={form.imageFilename}
-            onChange={handleChange}
+            onChange={handleImageChange}
           />
         </label>
+
+        {/* ✅ Preview */}
+        {previewUrl && (
+          <div className={styles.previewContainer}>
+            <p>Preview:</p>
+            <img
+              src={previewUrl}
+              alt="Preview"
+              className={styles.previewImage}
+              style={{ maxWidth: "200px", marginTop: "0.5rem" }}
+            />
+          </div>
+        )}
 
         <label className={styles.formLabel}>
           Price:

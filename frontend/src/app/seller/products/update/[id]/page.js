@@ -3,12 +3,12 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { auth } from "../../../../../../firebase/config";
-import { BASE_URL } from "../../page"; // adjust path if needed
-import styles from "../../../styles/AddProductPage.module.css"; // reuse AddProductPage styles
+import { BASE_URL } from "../../page"; // adjust if needed
+import styles from "../../../styles/AddProductPage.module.css";
 
 export default function UpdateProductPage() {
   const router = useRouter();
-  const params = useParams(); // get productId from URL
+  const params = useParams();
   const productId = params.id;
 
   const [form, setForm] = useState({
@@ -24,10 +24,14 @@ export default function UpdateProductPage() {
     imageFilename: "",
     price: 0,
   });
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [imagePreview, setImagePreview] = useState(null); // preview new upload
+  const [newImageFile, setNewImageFile] = useState(null); // store file if chosen
 
+  // ✅ Fetch product details
   useEffect(() => {
     async function fetchProduct() {
       try {
@@ -41,9 +45,8 @@ export default function UpdateProductPage() {
         });
 
         if (!res.ok) throw new Error(await res.text());
-
         const products = await res.json();
-        const product = products.find(p => p.productId === productId);
+        const product = products.find((p) => p.productId === productId);
 
         if (!product) throw new Error("Product not found");
 
@@ -76,6 +79,38 @@ export default function UpdateProductPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
+  // ✅ Handle image selection
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setNewImageFile(file);
+      setImagePreview(URL.createObjectURL(file));
+    }
+  };
+
+  // ✅ Upload image if selected
+  const uploadImageIfNeeded = async () => {
+    if (!newImageFile) return form.imageFilename; // keep existing one
+
+    const user = auth.currentUser;
+    if (!user) throw new Error("Not logged in");
+    const token = await user.getIdToken();
+
+    const data = new FormData();
+    data.append("image", newImageFile);
+
+    const res = await fetch(`${BASE_URL}/api/upload`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${token}` },
+      body: data,
+    });
+
+    if (!res.ok) throw new Error(await res.text());
+    const result = await res.json();
+    return result.filename;
+  };
+
+  // ✅ Submit update
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -84,8 +119,12 @@ export default function UpdateProductPage() {
     try {
       const user = auth.currentUser;
       if (!user) throw new Error("Not logged in");
-
       const token = await user.getIdToken();
+
+      // Upload image if new one is selected
+      const imageFilename = await uploadImageIfNeeded();
+
+      const updatedData = { ...form, imageFilename };
 
       const res = await fetch(`${BASE_URL}/api/seller/products/${productId}`, {
         method: "PUT",
@@ -93,11 +132,10 @@ export default function UpdateProductPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(updatedData),
       });
 
       if (!res.ok) throw new Error(await res.text());
-
       router.push("/seller/products");
     } catch (err) {
       console.error(err);
@@ -108,6 +146,10 @@ export default function UpdateProductPage() {
   };
 
   if (loading) return <p>Loading product...</p>;
+
+  const currentImageUrl = form.imageFilename
+    ? `${BASE_URL.replace(/\/$/, "")}/images/${form.imageFilename}`
+    : null;
 
   return (
     <div className={styles.container}>
@@ -212,15 +254,30 @@ export default function UpdateProductPage() {
           />
         </label>
 
-        <label className={styles.formLabel}>
-          Image Filename (optional):
+        {/* ✅ Image Upload Section */}
+        <div className={styles.formLabel}>
+          <p>Current Image:</p>
+          {currentImageUrl && !imagePreview && (
+            <img
+              src={currentImageUrl}
+              alt="Current Product"
+              style={{ width: "150px", marginBottom: "10px" }}
+            />
+          )}
+          {imagePreview && (
+            <img
+              src={imagePreview}
+              alt="New Preview"
+              style={{ width: "150px", marginBottom: "10px" }}
+            />
+          )}
           <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageChange}
             className={styles.formInput}
-            name="imageFilename"
-            value={form.imageFilename}
-            onChange={handleChange}
           />
-        </label>
+        </div>
 
         <label className={styles.formLabel}>
           Price:
