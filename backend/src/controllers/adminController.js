@@ -2,6 +2,7 @@
 const admin = require("../utils/firebaseAdmin");
 const User = require("../models/User");
 const Order = require("../models/Order");
+const Store = require("../models/Store");
 const StoreRequest = require("../models/StoreRequest");
 const Store = require("../models/Store");
 
@@ -159,5 +160,51 @@ exports.updateStoreRequestStatus = async (req, res) => {
   } catch (err) {
     console.error("Error updating store request:", err);
     res.status(500).json({ message: "Server error", error: err.message });
+  }
+};
+// in adminController.js
+exports.getStoreOrdersForAdmin = async (req, res) => {
+  try {
+    const { sellerId } = req.query; // pass sellerId from frontend
+
+    if (!sellerId) {
+      return res.status(400).json({ message: "sellerId query param is required" });
+    }
+
+    const store = await Store.findOne({ sellerId }).lean();
+    if (!store) return res.status(404).json({ message: "Store not found" });
+
+    const productIds = store.productIds.map(String);
+
+    const orders = await Order.find({ "items.productId": { $in: productIds } });
+
+    const filtered = orders.map(order => {
+      const sellerItems = order.items.filter(item => productIds.includes(item.productId));
+      const itemsTotal = sellerItems.reduce(
+        (s, it) => s + (it.price * it.quantity || 0), 0
+      );
+      return {
+        _id: order._id,
+        user: order.user,
+        firstName: order.firstName,
+        lastName: order.lastName,
+        phone: order.phone,
+        email: order.email,
+        houseAddress: order.houseAddress,
+        items: sellerItems,
+        itemsTotal,
+        shippingFee: order.shippingFee,
+        grandTotal: order.grandTotal,
+        paymentMethod: order.paymentMethod,
+        paymentStatus: order.paymentStatus,
+        trackingId: order.trackingId,
+        createdAt: order.createdAt
+      };
+    });
+
+    res.json(filtered);
+  } catch (err) {
+    console.error("Error getStoreOrdersForAdmin:", err);
+    res.status(500).json({ message: err.message });
   }
 };

@@ -3,7 +3,7 @@ const router = express.Router();
 const { requireAuth, requireRole } = require("../middleware/auth");
 const {getAllUsers,getUserById,deleteUser,getOrdersByEmail, getAllStoreRequests,
     getStoreRequestById,
-  updateStoreRequestStatus
+  updateStoreRequestStatus,getStoreOrdersForAdmin
  } = require("../controllers/adminController");
 
 // Get all users
@@ -23,5 +23,6 @@ router.get("/store-requests",getAllStoreRequests);
 // New routes for detail + status update
 router.get("/store-requests/:id", getStoreRequestById);
 router.patch("/store-requests/:id",updateStoreRequestStatus);
+router.get("/orders",requireAuth,requireRole("admin"),getStoreOrdersForAdmin);
 
 module.exports = router;
