@@ -15,55 +15,69 @@ export default function LoginPage() {
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   const { setUser } = useAuth();
 
- const handleLogin = async (e) => {
-  e.preventDefault();
-  setError("");
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    setError("");
 
-  try {
-    // 1️⃣ Firebase login
-    const userCred = await signInWithEmailAndPassword(auth, email, password);
-    const firebaseUser = userCred.user;
-    const token = await firebaseUser.getIdToken(true);
+    try {
+      // 1️⃣ Firebase login
+      const userCred = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseUser = userCred.user;
+      const token = await firebaseUser.getIdToken(true);
 
-    // 2️⃣ Sync with backend
-    const response = await fetch(`${BASE_URL}/api/auth/sync`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ role }),
-    });
+      // 2️⃣ Sync with backend
+      const response = await fetch(`${BASE_URL}/api/auth/sync`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ role }),
+      });
 
-    const data = await response.json(); // ✅ parse once
+      const data = await response.json(); // ✅ parse once
 
-    if (!response.ok) {
-      await signOut(auth);
-      setUser(null);
-      throw new Error(data.error || "Role not allowed");
+      if (!response.ok) {
+        await signOut(auth);
+        setUser(null);
+        throw new Error(data.error || "Role not allowed");
+      }
+
+      // 3️⃣ Check role
+      if (!data.user.roles.includes(role)) {
+        await signOut(auth);
+        setUser(null);
+        throw new Error(
+          `You cannot log in as "${role}". Allowed roles: ${data.user.roles.join(
+            ", "
+          )}`
+        );
+      }
+
+      // 4️⃣ Set user & redirect
+      setUser(data.user);
+      if (role === "admin") {
+        router.push("/admin/dashboard");
+      } else if (role === "seller") {
+        // Check if seller has a store
+        const checkRes = await fetch(`${BASE_URL}/api/stores/check/exists`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const checkData = await checkRes.json();
+
+        if (checkData.hasStore) {
+          router.push("/seller/dashboard");
+        } else {
+          router.push("/seller/create-store-request"); // redirect to new page
+        }
+      } else {
+        router.push("/");
+      }
+    } catch (err) {
+      console.error(err);
+      setError(err.message);
     }
-
-    // 3️⃣ Check role
-    if (!data.user.roles.includes(role)) {
-      await signOut(auth);
-      setUser(null);
-      throw new Error(
-        `You cannot log in as "${role}". Allowed roles: ${data.user.roles.join(", ")}`
-      );
-    }
-
-    // 4️⃣ Set user & redirect
-    setUser(data.user);
-    if (role === "admin") router.push("/admin/dashboard");
-    else if (role === "seller") router.push("/seller/dashboard");
-    else router.push("/");
-
-  } catch (err) {
-    console.error(err);
-    setError(err.message);
-  }
-};
-
+  };
 
   return (
     <div className={styles.container}>

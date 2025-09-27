@@ -36,6 +36,7 @@ app.use(cookieParser());
 app.use("/images", express.static(path.join(__dirname, "../data/images")));
 
 
+
 // ✅ CORS setup
 const cors = require('cors');
 const corsOrigins = (process.env.CORS_ORIGINS || '').trim();

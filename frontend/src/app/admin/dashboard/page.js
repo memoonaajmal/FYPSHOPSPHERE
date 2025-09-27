@@ -8,7 +8,6 @@ export default function AdminDashboard() {
     <ProtectedRoute role="admin">
       <div className={styles.dashboard}>
         <h1 className={styles.title}>Admin Dashboard</h1>
-    
 
         <div className={styles.grid}>
           {/* User Management Box */}
@@ -27,6 +26,16 @@ export default function AdminDashboard() {
               <h2 className={styles.cardTitle}>Store Management</h2>
               <p className={styles.cardText}>
                 Approve sellers, manage stores, and monitor their performance.
+              </p>
+            </div>
+          </Link>
+
+          {/* Store Requests Box */}
+          <Link href="/admin/store-requests">
+            <div className={styles.card}>
+              <h2 className={styles.cardTitle}>Create Store Requests</h2>
+              <p className={styles.cardText}>
+                View all seller store requests and approve or reject them.
               </p>
             </div>
           </Link>
