@@ -32,9 +32,6 @@ app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
 
-// ✅ Serve images from backend/data/images
-app.use("/images", express.static(path.join(__dirname, "../data/images")));
-
 
 
 // ✅ CORS setup
@@ -51,6 +48,18 @@ app.use(cors({
   credentials: true
 }));
 
+// ✅ Add this middleware BEFORE static image serving
+app.use((req, res, next) => {
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
+
+
+// ✅ Serve images from backend/data/images
+app.use("/images", express.static(path.join(__dirname, "../data/images")));
+
+
+
 // ✅ Routes
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
@@ -61,7 +70,6 @@ app.use('/api/jazzcash', jazzcashRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/seller', sellerRoutes);
 app.use("/api/upload", require("./routes/uploadRoutes"));
-app.use("/images", express.static("public/images"));
 
 
 // ✅ Swagger docs (optional)

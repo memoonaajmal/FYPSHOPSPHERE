@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { auth } from "../../../../../../firebase/config";
-import { BASE_URL } from "../../page"; // adjust if needed
+import { BASE_URL } from "../../page";
 import styles from "../../../styles/AddProductPage.module.css";
 
 export default function UpdateProductPage() {
@@ -28,8 +28,8 @@ export default function UpdateProductPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
-  const [imagePreview, setImagePreview] = useState(null); // preview new upload
-  const [newImageFile, setNewImageFile] = useState(null); // store file if chosen
+  const [imagePreview, setImagePreview] = useState(null);
+  const [newImageFile, setNewImageFile] = useState(null);
 
   // ✅ Fetch product details
   useEffect(() => {
@@ -50,6 +50,13 @@ export default function UpdateProductPage() {
 
         if (!product) throw new Error("Product not found");
 
+        // ✅ Strip any accidental path from DB (safety)
+        const cleanFilename = product.imageFilename
+          ? product.imageFilename.split("/").pop()
+          : "";
+
+        console.log("Image filename from DB:", cleanFilename);
+
         setForm({
           productDisplayName: product.productDisplayName || "",
           gender: product.gender || "Unisex",
@@ -60,7 +67,7 @@ export default function UpdateProductPage() {
           season: product.season || "",
           year: product.year || new Date().getFullYear(),
           usage: product.usage || "",
-          imageFilename: product.imageFilename || "",
+          imageFilename: cleanFilename,
           price: product.price ?? 0,
         });
       } catch (err) {
@@ -88,9 +95,9 @@ export default function UpdateProductPage() {
     }
   };
 
-  // ✅ Upload image if selected
+  // ✅ Upload image if new one is selected
   const uploadImageIfNeeded = async () => {
-    if (!newImageFile) return form.imageFilename; // keep existing one
+    if (!newImageFile) return form.imageFilename;
 
     const user = auth.currentUser;
     if (!user) throw new Error("Not logged in");
@@ -121,9 +128,7 @@ export default function UpdateProductPage() {
       if (!user) throw new Error("Not logged in");
       const token = await user.getIdToken();
 
-      // Upload image if new one is selected
       const imageFilename = await uploadImageIfNeeded();
-
       const updatedData = { ...form, imageFilename };
 
       const res = await fetch(`${BASE_URL}/api/seller/products/${productId}`, {
@@ -147,9 +152,12 @@ export default function UpdateProductPage() {
 
   if (loading) return <p>Loading product...</p>;
 
-  const currentImageUrl = form.imageFilename
-    ? `${BASE_URL.replace(/\/$/, "")}/images/${form.imageFilename}`
+  // ✅ Always build a clean, correct image URL
+  const safeFilename = form.imageFilename ? form.imageFilename.split("/").pop() : "";
+  const currentImageUrl = safeFilename
+    ? `${BASE_URL.replace(/\/$/, "")}/images/${safeFilename}`
     : null;
+    console.log("✅ Final preview URL:", currentImageUrl);
 
   return (
     <div className={styles.container}>

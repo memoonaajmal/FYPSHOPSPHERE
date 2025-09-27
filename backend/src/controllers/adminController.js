@@ -4,7 +4,6 @@ const User = require("../models/User");
 const Order = require("../models/Order");
 const Store = require("../models/Store");
 const StoreRequest = require("../models/StoreRequest");
-const Store = require("../models/Store");
 
 exports.getAllUsers = async (req, res) => {
   try {
