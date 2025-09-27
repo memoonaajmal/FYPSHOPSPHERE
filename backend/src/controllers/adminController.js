@@ -3,16 +3,18 @@ const admin = require("../utils/firebaseAdmin");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const StoreRequest = require("../models/StoreRequest");
+const Store = require("../models/Store");
 
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-passwordHash");
     res.json(users); // return array directly ✅
   } catch (err) {
-    res.status(500).json({ message: "Error fetching users", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching users", error: err.message });
   }
 };
-
 
 // GET single user by ID
 exports.getUserById = async (req, res) => {
@@ -23,11 +25,11 @@ exports.getUserById = async (req, res) => {
     }
     res.json(user);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching user", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching user", error: err.message });
   }
 };
-
-
 
 exports.deleteUser = async (req, res) => {
   try {
@@ -47,14 +49,15 @@ exports.deleteUser = async (req, res) => {
       }
     }
 
-    res.json({ message: "User deleted successfully from MongoDB and Firebase" });
+    res.json({
+      message: "User deleted successfully from MongoDB and Firebase",
+    });
   } catch (err) {
-    res.status(500).json({ message: "Error deleting user", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error deleting user", error: err.message });
   }
 };
-
-
-
 
 exports.getOrdersByEmail = async (req, res) => {
   try {
@@ -83,8 +86,6 @@ exports.getOrdersByEmail = async (req, res) => {
   }
 };
 
-
-
 // GET all store requests
 exports.getAllStoreRequests = async (req, res) => {
   try {
@@ -98,9 +99,6 @@ exports.getAllStoreRequests = async (req, res) => {
   }
 };
 
-
-
-
 // GET single store request by ID
 exports.getStoreRequestById = async (req, res) => {
   try {
@@ -110,34 +108,51 @@ exports.getStoreRequestById = async (req, res) => {
       return res.status(404).json({ message: "Store request not found" });
     }
 
-    res.json(request); 
+    res.json(request);
   } catch (err) {
     console.error("Error fetching store request:", err);
-    res.status(500).json({ message: "Error fetching store request", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching store request", error: err.message });
   }
 };
 
-
-
-
-// PATCH store request status (approve/reject)
 exports.updateStoreRequestStatus = async (req, res) => {
   try {
     const { id } = req.params;
-    const { status } = req.body; // expected: "approved" or "rejected"
+    const { status } = req.body;
 
     if (!["approved", "rejected"].includes(status)) {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
+    // Populate sellerId including _id
     const request = await StoreRequest.findByIdAndUpdate(
       id,
       { status },
       { new: true }
-    ).populate("sellerId", "email businessName ownerFullName");
+    ).populate("sellerId", "_id email businessName ownerFullName");
 
     if (!request) {
       return res.status(404).json({ message: "Store request not found" });
+    }
+
+    // ✅ Create store if approved and store doesn't exist
+    if (status === "approved") {
+      const existingStore = await Store.findOne({
+        sellerId: request.sellerId._id,
+      });
+      if (!existingStore) {
+        const newStore = await Store.create({
+          _id: `store_${request.storeName.toLowerCase().replace(/\s+/g, "_")}`,
+          sellerId: request.sellerId._id,
+          name: request.storeName,
+          categories: [request.category],
+          productIds: [],
+        });
+
+        console.log("Store created:", newStore._id);
+      }
     }
 
     res.json({ message: `Store request ${status}`, request });

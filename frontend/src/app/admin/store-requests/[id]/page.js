@@ -11,6 +11,7 @@ export default function StoreRequestDetail() {
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
+  const [storeCreated, setStoreCreated] = useState(false); // ✅ new state
   const router = useRouter();
 
   useEffect(() => {
@@ -53,6 +54,13 @@ export default function StoreRequestDetail() {
 
       const data = await res.json();
       setRequest(data.request); // update local request object
+
+      if (status === "approved") {
+        setStoreCreated(true); // ✅ show store created message
+      } else {
+        setStoreCreated(false);
+      }
+
       alert(`Store request ${status} successfully!`);
     } catch (err) {
       console.error("Error updating status:", err);
@@ -79,7 +87,14 @@ export default function StoreRequestDetail() {
         <p><strong>Email:</strong> {request.email || request.sellerId?.email}</p>
         <p><strong>Phone:</strong> {request.phoneNumber || request.sellerId?.phoneNumber}</p>
         <p><strong>Category:</strong> {request.category}</p>
-        <p><strong>Status:</strong> {request.status}</p>
+        <p>
+          <strong>Status:</strong> {request.status}
+          {storeCreated && (
+            <span style={{ color: "green", fontWeight: "bold", marginLeft: "10px" }}>
+              ✅ Store has been created!
+            </span>
+          )}
+        </p>
         <p><strong>Submitted:</strong> {new Date(request.createdAt).toLocaleString()}</p>
 
         <h3>Address</h3>
