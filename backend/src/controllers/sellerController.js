@@ -175,6 +175,9 @@ exports.deleteProduct = async (req, res) => {
 /**
  * Get orders that include this store's products
  */
+/**
+ * Get orders (filtered, paginated) that include this store's products
+ */
 exports.getMyOrders = async (req, res) => {
   try {
     const store = await getStoreForSeller(req);
@@ -182,11 +185,70 @@ exports.getMyOrders = async (req, res) => {
 
     const productIds = store.productIds.map(String);
 
-    const orders = await Order.find({ "items.productId": { $in: productIds } });
+    // ✅ Extract filters from query
+    const {
+      page = 1,
+      limit = 5,
+      search = "",
+      status = "",
+      from = "",
+      to = "",
+    } = req.query;
 
-    const filtered = orders.map(order => {
-      const sellerItems = order.items.filter(item => productIds.includes(item.productId));
-      const itemsTotal = sellerItems.reduce((s, it) => s + (it.price * it.quantity || 0), 0);
+    const pageNum = parseInt(page);
+    const perPage = parseInt(limit);
+
+    // ✅ Build base query
+    const baseQuery = {
+      "items.productId": { $in: productIds },
+    };
+
+    // 🔍 Search filter (name, email, phone, trackingId)
+    if (search) {
+      baseQuery.$or = [
+        { firstName: { $regex: search, $options: "i" } },
+        { lastName: { $regex: search, $options: "i" } },
+        { email: { $regex: search, $options: "i" } },
+        { phone: { $regex: search, $options: "i" } },
+        { trackingId: { $regex: search, $options: "i" } },
+      ];
+    }
+
+    // 📦 Payment status filter
+    if (status) {
+      baseQuery.paymentStatus = status;
+    }
+
+    // 📅 Date range filter
+    if (from || to) {
+      baseQuery.createdAt = {};
+      if (from) baseQuery.createdAt.$gte = new Date(from);
+      if (to) {
+        const endOfDay = new Date(to);
+        endOfDay.setHours(23, 59, 59, 999);
+        baseQuery.createdAt.$lte = endOfDay;
+      }
+    }
+
+    // ✅ Count total matching docs
+    const totalOrders = await Order.countDocuments(baseQuery);
+    const totalPages = Math.ceil(totalOrders / perPage);
+
+    // ✅ Query with pagination + sorting
+    const ordersRaw = await Order.find(baseQuery)
+      .sort({ createdAt: -1 })
+      .skip((pageNum - 1) * perPage)
+      .limit(perPage);
+
+    // ✅ Filter items per seller
+    const orders = ordersRaw.map((order) => {
+      const sellerItems = order.items.filter((item) =>
+        productIds.includes(item.productId)
+      );
+      const itemsTotal = sellerItems.reduce(
+        (sum, it) => sum + (it.price * it.quantity || 0),
+        0
+      );
       return {
         _id: order._id,
         user: order.user,
@@ -202,13 +264,20 @@ exports.getMyOrders = async (req, res) => {
         paymentMethod: order.paymentMethod,
         paymentStatus: order.paymentStatus,
         trackingId: order.trackingId,
-        createdAt: order.createdAt
+        createdAt: order.createdAt,
       };
     });
 
-    res.json(filtered);
+    // ✅ Respond with paginated format
+    res.json({
+      orders,
+      totalPages,
+      currentPage: pageNum,
+    });
   } catch (err) {
     console.error("Error getMyOrders:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
+

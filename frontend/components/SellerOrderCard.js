@@ -1,0 +1,73 @@
+'use client';
+import styles from './styles/SellerOrderCard.module.css';
+
+export default function OrderCard({ order }) {
+  const getStatusClass = (status) => {
+    switch (status?.toLowerCase()) {
+      case 'paid':
+        return styles.statusPaid;
+      case 'pending':
+        return styles.statusPending;
+      case 'failed':
+      case 'cancelled':
+        return styles.statusFailed;
+      default:
+        return styles.statusDefault;
+    }
+  };
+
+  return (
+    <div className={styles.orderCard}>
+      <div className={styles.orderHeader}>
+        <div>
+          <p className={styles.customerName}>
+            {order.firstName} {order.lastName}
+          </p>
+          <p className={styles.customerInfo}>
+            {order.email} | {order.phone}
+          </p>
+          <p className={styles.customerInfo}>Address: {order.houseAddress}</p>
+        </div>
+        <div className={styles.orderMeta}>
+          <p className={styles.orderTotal}>
+            Total: <span>${order.grandTotal}</span>
+          </p>
+          <span
+            className={`${styles.statusBadge} ${getStatusClass(
+              order.paymentStatus
+            )}`}
+          >
+            {order.paymentStatus}
+          </span>
+          {order.trackingId && (
+            <p className={styles.trackingId}>
+              Tracking: {order.trackingId}
+            </p>
+          )}
+          <p className={styles.timestamp}>
+            {new Date(order.createdAt).toLocaleString()}
+          </p>
+        </div>
+      </div>
+
+      <ul className={styles.itemList}>
+        {order.items.map((item, idx) => (
+          <li key={idx} className={styles.item}>
+            {item.image && <img src={item.image} alt={item.name} />}
+            <span>{item.name}</span>
+            <span>
+              {item.quantity} × ${item.price} = $
+              {item.price * item.quantity}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <div className={styles.totals}>
+        <p>Items Total: ${order.itemsTotal}</p>
+        <p>Shipping Fee: ${order.shippingFee}</p>
+        <p className={styles.grandTotal}>Grand Total: ${order.grandTotal}</p>
+      </div>
+    </div>
+  );
+}

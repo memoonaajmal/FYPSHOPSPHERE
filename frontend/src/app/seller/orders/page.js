@@ -1,15 +1,28 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import { auth } from "../../../../firebase/config";
 import styles from "../styles/SellerOrdersPage.module.css";
 
+// ✅ Components
+import OrderCard from "../../../../components/SellerOrderCard";
+import OrderPagination from "../../../../components/OrderPagination";
+
+import { useSearchParams } from "next/navigation";
+
 export default function SellerOrdersPage() {
+  const params = useSearchParams();
+  const page = parseInt(params.get("page") || "1", 10); // get page from URL
+
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [totalPages, setTotalPages] = useState(1);
 
+  // ✅ Fetch orders whenever the URL page changes
   useEffect(() => {
     const fetchOrders = async () => {
+      setLoading(true);
       try {
         const user = auth.currentUser;
         if (!user) {
@@ -19,20 +32,21 @@ export default function SellerOrdersPage() {
         }
 
         const token = await user.getIdToken();
+        const queryParams = new URLSearchParams({ page });
 
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders`,
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders?${queryParams.toString()}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
 
-        if (!res.ok) {
-          throw new Error(`Error ${res.status}: ${await res.text()}`);
-        }
+        if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
 
         const data = await res.json();
-        setOrders(Array.isArray(data) ? data : []);
+
+        setOrders(Array.isArray(data.orders) ? data.orders : []);
+        setTotalPages(data.totalPages || 1);
       } catch (err) {
         console.error("❌ Fetch orders error:", err);
         setError(err.message);
@@ -42,84 +56,29 @@ export default function SellerOrdersPage() {
     };
 
     fetchOrders();
-  }, []);
+  }, [page]);
 
   if (loading) return <p className={styles.message}>Loading your orders...</p>;
-  if (error) return <p className={`${styles.message} ${styles.error}`}>Error: {error}</p>;
-
-  // ✅ Function to assign badge style based on status
-  const getStatusClass = (status) => {
-    switch (status.toLowerCase()) {
-      case "paid":
-        return styles.statusPaid;
-      case "pending":
-        return styles.statusPending;
-      case "failed":
-      case "cancelled":
-        return styles.statusFailed;
-      default:
-        return styles.statusDefault;
-    }
-  };
+  if (error)
+    return <p className={`${styles.message} ${styles.error}`}>Error: {error}</p>;
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Orders for My Store</h1>
+
+      {/* ✅ Orders List */}
       {orders.length === 0 ? (
         <p className={styles.message}>No orders found for your store yet.</p>
       ) : (
-        <ul className={styles.orderList}>
+        <div className={styles.orderList}>
           {orders.map((order) => (
-            <li key={order._id} className={styles.orderCard}>
-              <div className={styles.orderHeader}>
-                <div>
-                  <p className={styles.customerName}>
-                    {order.firstName} {order.lastName}
-                  </p>
-                  <p className={styles.customerInfo}>
-                    {order.email} | {order.phone}
-                  </p>
-                  <p className={styles.customerInfo}>
-                    Address: {order.houseAddress}
-                  </p>
-                </div>
-                <div className={styles.orderMeta}>
-                  <p className={styles.orderTotal}>
-                    Order Total: <span>${order.grandTotal}</span>
-                  </p>
-                  <span className={`${styles.statusBadge} ${getStatusClass(order.paymentStatus)}`}>
-                    {order.paymentStatus}
-                  </span>
-                  {order.trackingId && (
-                    <p className={styles.trackingId}>
-                      Tracking: {order.trackingId}
-                    </p>
-                  )}
-                  <p className={styles.timestamp}>
-                    {new Date(order.createdAt).toLocaleString()}
-                  </p>
-                </div>
-              </div>
-
-              <ul className={styles.itemList}>
-                {order.items.map((item, idx) => (
-                  <li key={idx} className={styles.item}>
-                    <span>{item.name}</span>
-                    <span>
-                      {item.quantity} × ${item.price} = $
-                      {item.price * item.quantity}
-                    </span>
-                  </li>
-                ))}
-              </ul>
-
-              <p className={styles.sellerTotal}>
-                Seller Items Total: ${order.itemsTotal}
-              </p>
-            </li>
+            <OrderCard key={order._id} order={order} />
           ))}
-        </ul>
+        </div>
       )}
+
+      {/* ✅ Pagination */}
+      {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
     </div>
   );
 }
