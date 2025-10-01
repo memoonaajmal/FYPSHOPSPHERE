@@ -1,10 +1,13 @@
 // backend/src/controllers/orderController.js
-const Order = require('../models/Order');
-const Product = require('../models/Product');
-const User = require('../models/User'); // ✅ added
-const generateTrackingId = require('../utils/trackingId');
+const Order = require("../models/Order");
+const Product = require("../models/Product");
+const User = require("../models/User");
+const Store = require("../models/Store");
+const generateTrackingId = require("../utils/trackingId");
 
+// =============================
 // Create new order
+// =============================
 exports.createOrder = async (req, res) => {
   try {
     const firebaseUid = req.user.uid; // from requireAuth
@@ -19,6 +22,7 @@ exports.createOrder = async (req, res) => {
       paymentMethod,
     } = req.body;
 
+    // ✅ Validate required fields
     if (
       !firstName ||
       !lastName ||
@@ -27,32 +31,42 @@ exports.createOrder = async (req, res) => {
       !houseAddress ||
       !items?.length
     ) {
-      return res.status(400).json({ message: 'Missing required fields' });
+      return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // ✅ Find the MongoDB user based on Firebase UID or email
-    const user = await User.findOne({ email }); // or use firebaseUid if you store it
+    // ✅ Find the MongoDB user based on email
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(404).json({ message: 'User not found' });
+      return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Rebuild items so productId is always the custom one
+    // ✅ Rebuild items with correct productId and storeId
     const rebuiltItems = await Promise.all(
       items.map(async (item) => {
+        // Find the product by MongoDB _id (from frontend cart)
         const product = await Product.findById(item.productId).select(
-          'productId productDisplayName'
+          "productId productDisplayName"
         );
         if (!product) throw new Error(`Product not found: ${item.productId}`);
 
+        // ✅ Find the store that sells this product (match via productId in its productIds array)
+        const store = await Store.findOne({ productIds: product.productId });
+        if (!store) {
+          throw new Error(`Store not found for product ID: ${product.productId}`);
+        }
+
         return {
-          productId: product.productId, // ✅ use custom productId
+          productId: product.productId, // ✅ your dataset product ID
           name: product.productDisplayName || item.name,
           price: item.price,
           quantity: item.quantity,
+          storeId: store._id, // ✅ string ID like "store_watch"
+          itemPaymentStatus: "pending",
         };
       })
     );
 
+    // ✅ Calculate totals
     const itemsTotal = rebuiltItems.reduce(
       (sum, it) => sum + it.price * it.quantity,
       0
@@ -60,7 +74,7 @@ exports.createOrder = async (req, res) => {
     const grandTotal = itemsTotal + Number(shippingFee);
     const trackingId = generateTrackingId();
 
-    // ✅ Use MongoDB _id for user
+    // ✅ Create order document
     const order = new Order({
       user: user._id,
       firstName,
@@ -68,19 +82,19 @@ exports.createOrder = async (req, res) => {
       phone,
       email,
       houseAddress,
-      items: rebuiltItems, // ✅ consistent productId
+      items: rebuiltItems,
       itemsTotal,
       shippingFee,
       grandTotal,
       paymentMethod,
-      paymentStatus: 'pending',
+      paymentStatus: "pending",
       trackingId,
     });
 
     await order.save();
 
-    // If JazzCash, return paymentUrl placeholder
-    if (paymentMethod === 'JazzCash') {
+    // ✅ Payment flow handling
+    if (paymentMethod === "JazzCash") {
       const paymentUrl = `${process.env.CORS_ORIGINS}/checkout?orderId=${order._id}`;
       return res.status(201).json({
         orderId: order._id,
@@ -89,54 +103,56 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // COD success
+    // ✅ COD success
     return res.status(201).json({
       orderId: order._id,
       trackingId: order.trackingId,
     });
   } catch (err) {
-    console.error('createOrder error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("createOrder error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Get a single order by id
+// =============================
+// Get a single order by ID
+// =============================
 exports.getOrder = async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
     const { id } = req.params;
 
-    // ✅ Find the user MongoDB _id first
     const user = await User.findOne({ email: req.user.email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const order = await Order.findById(id);
-    if (!order) return res.status(404).json({ message: 'Order not found' });
+    if (!order) return res.status(404).json({ message: "Order not found" });
 
     if (order.user.toString() !== user._id.toString()) {
-      return res.status(403).json({ message: 'Forbidden' });
+      return res.status(403).json({ message: "Forbidden" });
     }
 
     res.json(order);
   } catch (err) {
-    console.error('getOrder error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getOrder error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// Get all orders for the logged-in user
+// =============================
+// Get all orders for logged-in user
+// =============================
 exports.getMyOrders = async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
 
-    // ✅ Get MongoDB user ID
     const user = await User.findOne({ email: req.user.email });
-    if (!user) return res.status(404).json({ message: 'User not found' });
+    if (!user) return res.status(404).json({ message: "User not found" });
 
     const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
     res.json(orders);
   } catch (err) {
-    console.error('getMyOrders error:', err);
-    res.status(500).json({ message: 'Server error' });
+    console.error("getMyOrders error:", err);
+    res.status(500).json({ message: "Server error" });
   }
 };

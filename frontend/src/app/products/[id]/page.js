@@ -50,6 +50,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
         name: product.productDisplayName,
         price: product.price,   // ✅ real price
         image: imageSrc,
+        storeId: product.storeId, // ✅ add this line
       })
     );
 
@@ -63,6 +64,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
         name: product.productDisplayName,
         price: product.price,   // ✅ real price
         image: imageSrc,
+        storeId: product.storeId, // ✅ add here too (optional but useful)
       })
     );
 

@@ -1,19 +1,18 @@
 const mongoose = require("mongoose");
 
 const orderItemSchema = new mongoose.Schema({
-  // ✅ productId is now a simple String — no casting issues
-  productId: { type: String, required: true }, 
+  productId: { type: String, required: true },
   name: { type: String, required: true },
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
-  image: { type: String }, // optional but useful if you want to show order items with images
+  image: { type: String },
+storeId: { type: String, ref: "Store", required: true }, // ✅ now stores string IDs like "store_watch"
+  itemPaymentStatus: { type: String, default: "pending" } // 🆕 individual status
 });
 
 const orderSchema = new mongoose.Schema(
   {
-    // ✅ Keep user as MongoDB ObjectId reference (this is correct)
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
-
     firstName: String,
     lastName: String,
     phone: String,
@@ -26,7 +25,7 @@ const orderSchema = new mongoose.Schema(
     shippingFee: { type: Number, default: 0 },
     grandTotal: { type: Number, required: true },
     paymentMethod: { type: String, default: "COD" },
-    paymentStatus: { type: String, default: "pending" },
+    paymentStatus: { type: String, default: "pending" }, // ✅ overall payment
     trackingId: { type: String, index: true },
   },
   { timestamps: true }

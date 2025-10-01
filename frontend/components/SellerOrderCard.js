@@ -1,7 +1,13 @@
 'use client';
+import { useState } from 'react';
 import styles from './styles/SellerOrderCard.module.css';
+import { auth } from "../firebase/config";
 
-export default function OrderCard({ order }) {
+export default function OrderCard({ order, storeId, onStatusUpdated }) {
+  // ✅ Initialize with seller-specific payment status
+  const [status, setStatus] = useState(order.myPaymentStatus || order.paymentStatus);
+  const [loading, setLoading] = useState(false);
+
   const getStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case 'paid':
@@ -13,6 +19,41 @@ export default function OrderCard({ order }) {
         return styles.statusFailed;
       default:
         return styles.statusDefault;
+    }
+  };
+
+  // ✅ Seller updates *their part* of the payment
+  const handleStatusUpdate = async () => {
+    try {
+      setLoading(true);
+
+      const token = await auth.currentUser.getIdToken();
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders/${order._id}/pay`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ storeId }),
+        }
+      );
+
+      if (!res.ok) throw new Error('Failed to update payment status');
+
+      const data = await res.json();
+
+      // ✅ Update seller-specific status after response
+      setStatus(data.myPaymentStatus || data.paymentStatus);
+
+      onStatusUpdated?.();
+    } catch (err) {
+      console.error(err);
+      alert('Failed to update payment status');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -32,13 +73,12 @@ export default function OrderCard({ order }) {
           <p className={styles.orderTotal}>
             Total: <span>${order.grandTotal}</span>
           </p>
-          <span
-            className={`${styles.statusBadge} ${getStatusClass(
-              order.paymentStatus
-            )}`}
-          >
-            {order.paymentStatus}
+
+          {/* ✅ Seller-specific badge */}
+          <span className={`${styles.statusBadge} ${getStatusClass(status)}`}>
+            {status}
           </span>
+
           {order.trackingId && (
             <p className={styles.trackingId}>
               Tracking: {order.trackingId}
@@ -56,8 +96,7 @@ export default function OrderCard({ order }) {
             {item.image && <img src={item.image} alt={item.name} />}
             <span>{item.name}</span>
             <span>
-              {item.quantity} × ${item.price} = $
-              {item.price * item.quantity}
+              {item.quantity} × ${item.price} = ${item.price * item.quantity}
             </span>
           </li>
         ))}
@@ -68,6 +107,17 @@ export default function OrderCard({ order }) {
         <p>Shipping Fee: ${order.shippingFee}</p>
         <p className={styles.grandTotal}>Grand Total: ${order.grandTotal}</p>
       </div>
+
+      {/* ✅ Show "Mark as Paid" only if *seller-specific* status is pending */}
+      {status !== 'paid' && (
+        <button
+          className={styles.markPaidBtn}
+          onClick={handleStatusUpdate}
+          disabled={loading}
+        >
+          {loading ? 'Updating...' : 'Mark as Paid'}
+        </button>
+      )}
     </div>
   );
 }

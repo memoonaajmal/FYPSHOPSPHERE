@@ -18,45 +18,80 @@ export default function SellerOrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
+  const [storeId, setStoreId] = useState(null); // ✅ storeId of logged-in seller
 
-  // ✅ Fetch orders whenever the URL page changes
+  // ✅ Fetch storeId for logged-in seller
   useEffect(() => {
-    const fetchOrders = async () => {
-      setLoading(true);
-      try {
-        const user = auth.currentUser;
-        if (!user) {
-          setError("Not logged in");
-          setLoading(false);
-          return;
-        }
+    const fetchStoreId = async () => {
+      const user = auth.currentUser;
+      if (!user) return;
 
-        const token = await user.getIdToken();
-        const queryParams = new URLSearchParams({ page });
+      const token = await user.getIdToken();
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders?${queryParams.toString()}`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
-
+      if (res.ok) {
         const data = await res.json();
-
-        setOrders(Array.isArray(data.orders) ? data.orders : []);
-        setTotalPages(data.totalPages || 1);
-      } catch (err) {
-        console.error("❌ Fetch orders error:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
+        setStoreId(data.storeId); // backend must return storeId
       }
     };
 
-    fetchOrders();
-  }, [page]);
+    fetchStoreId();
+  }, []);
+
+  // ✅ Fetch orders from backend
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const user = auth.currentUser;
+      if (!user) {
+        setError("Not logged in");
+        setLoading(false);
+        return;
+      }
+
+      const token = await user.getIdToken();
+      const queryParams = new URLSearchParams({ page });
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders?${queryParams.toString()}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
+
+      const data = await res.json();
+
+      let ordersList = Array.isArray(data.orders) ? data.orders : [];
+
+      // ✅ Derive `myPaymentStatus` per order based on this seller's items
+      if (storeId) {
+        ordersList = ordersList.map(order => {
+          const myItems = order.items.filter(it => it.storeId === storeId);
+          const myPaymentStatus = myItems.every(it => it.itemPaymentStatus === "paid")
+            ? "paid"
+            : "pending";
+          return { ...order, myPaymentStatus };
+        });
+      }
+
+      setOrders(ordersList);
+      setTotalPages(data.totalPages || 1);
+    } catch (err) {
+      console.error("❌ Fetch orders error:", err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ✅ Fetch orders on load / page change / storeId available
+  useEffect(() => {
+    if (storeId) fetchOrders();
+  }, [page, storeId]);
 
   if (loading) return <p className={styles.message}>Loading your orders...</p>;
   if (error)
@@ -72,7 +107,12 @@ export default function SellerOrdersPage() {
       ) : (
         <div className={styles.orderList}>
           {orders.map((order) => (
-            <OrderCard key={order._id} order={order} />
+            <OrderCard
+              key={order._id}
+              order={order}
+              storeId={storeId}
+              onStatusUpdated={fetchOrders} // refresh after marking paid
+            />
           ))}
         </div>
       )}

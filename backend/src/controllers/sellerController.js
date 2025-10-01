@@ -2,11 +2,11 @@
 const Product = require("../models/Product");
 const Store = require("../models/Store");
 const Order = require("../models/Order");
-const Price = require("../models/Price"); // <-- imported Price model
+const Price = require("../models/Price");
 const mongoose = require("mongoose");
 
 /**
- * Helper: generate a unique productId string (fits your Product.productId)
+ * Helper: generate a unique productId string
  */
 function generateProductId() {
   return `p_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`;
@@ -22,7 +22,7 @@ async function getStoreForSeller(req) {
 }
 
 /**
- * Add a new product for the logged-in seller/store
+ * Add a new product
  */
 exports.addProduct = async (req, res) => {
   try {
@@ -40,7 +40,7 @@ exports.addProduct = async (req, res) => {
       year,
       usage,
       imageFilename,
-      price, // optional: allow setting price at creation
+      price,
     } = req.body;
 
     const productId = generateProductId();
@@ -61,7 +61,6 @@ exports.addProduct = async (req, res) => {
 
     await product.save();
 
-    // Save price if provided
     if (price != null) {
       const priceDoc = new Price({ productId, price });
       await priceDoc.save();
@@ -78,7 +77,7 @@ exports.addProduct = async (req, res) => {
 };
 
 /**
- * Get all products for logged-in seller/store with price
+ * Get all products for this seller/store
  */
 exports.getMyProducts = async (req, res) => {
   try {
@@ -86,18 +85,12 @@ exports.getMyProducts = async (req, res) => {
     if (!store) return res.status(404).json({ message: "Store not found" });
 
     const products = await Product.find({ productId: { $in: store.productIds } });
-
-    // fetch prices for all products
     const productIds = products.map(p => p.productId);
     const prices = await Price.find({ productId: { $in: productIds } });
 
-    // map prices to products
     const productsWithPrice = products.map(p => {
       const priceDoc = prices.find(pr => pr.productId === p.productId);
-      return {
-        ...p.toObject(),
-        price: priceDoc ? priceDoc.price : 0,
-      };
+      return { ...p.toObject(), price: priceDoc ? priceDoc.price : 0 };
     });
 
     res.json(productsWithPrice);
@@ -108,14 +101,14 @@ exports.getMyProducts = async (req, res) => {
 };
 
 /**
- * Update a product (only if it belongs to this store)
+ * Update product
  */
 exports.updateProduct = async (req, res) => {
   try {
     const store = await getStoreForSeller(req);
     if (!store) return res.status(404).json({ message: "Store not found" });
 
-    const { id } = req.params; // productId
+    const { id } = req.params;
     const updates = req.body;
 
     if (!store.productIds.includes(id)) {
@@ -125,7 +118,6 @@ exports.updateProduct = async (req, res) => {
     const product = await Product.findOneAndUpdate({ productId: id }, updates, { new: true });
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    // If price is updated
     if (updates.price != null) {
       await Price.findOneAndUpdate(
         { productId: id },
@@ -142,14 +134,14 @@ exports.updateProduct = async (req, res) => {
 };
 
 /**
- * Delete a product (only if it belongs to this store)
+ * Delete product
  */
 exports.deleteProduct = async (req, res) => {
   try {
     const store = await getStoreForSeller(req);
     if (!store) return res.status(404).json({ message: "Store not found" });
 
-    const { id } = req.params; // productId
+    const { id } = req.params;
 
     if (!store.productIds.includes(id)) {
       return res.status(404).json({ message: "Product not found or not owned by this store" });
@@ -158,11 +150,9 @@ exports.deleteProduct = async (req, res) => {
     const product = await Product.findOneAndDelete({ productId: id });
     if (!product) return res.status(404).json({ message: "Product not found" });
 
-    // remove productId from store.productIds
     store.productIds = store.productIds.filter(pid => pid !== id);
     await store.save();
 
-    // delete price as well
     await Price.findOneAndDelete({ productId: id });
 
     res.json({ message: "Product deleted successfully", product });
@@ -173,10 +163,7 @@ exports.deleteProduct = async (req, res) => {
 };
 
 /**
- * Get orders that include this store's products
- */
-/**
- * Get orders (filtered, paginated) that include this store's products
+ * ✅ Get all orders with seller-specific payment info
  */
 exports.getMyOrders = async (req, res) => {
   try {
@@ -185,7 +172,6 @@ exports.getMyOrders = async (req, res) => {
 
     const productIds = store.productIds.map(String);
 
-    // ✅ Extract filters from query
     const {
       page = 1,
       limit = 5,
@@ -198,12 +184,8 @@ exports.getMyOrders = async (req, res) => {
     const pageNum = parseInt(page);
     const perPage = parseInt(limit);
 
-    // ✅ Build base query
-    const baseQuery = {
-      "items.productId": { $in: productIds },
-    };
+    const baseQuery = { "items.productId": { $in: productIds } };
 
-    // 🔍 Search filter (name, email, phone, trackingId)
     if (search) {
       baseQuery.$or = [
         { firstName: { $regex: search, $options: "i" } },
@@ -214,12 +196,8 @@ exports.getMyOrders = async (req, res) => {
       ];
     }
 
-    // 📦 Payment status filter
-    if (status) {
-      baseQuery.paymentStatus = status;
-    }
+    if (status) baseQuery.paymentStatus = status;
 
-    // 📅 Date range filter
     if (from || to) {
       baseQuery.createdAt = {};
       if (from) baseQuery.createdAt.$gte = new Date(from);
@@ -230,45 +208,32 @@ exports.getMyOrders = async (req, res) => {
       }
     }
 
-    // ✅ Count total matching docs
     const totalOrders = await Order.countDocuments(baseQuery);
     const totalPages = Math.ceil(totalOrders / perPage);
 
-    // ✅ Query with pagination + sorting
     const ordersRaw = await Order.find(baseQuery)
       .sort({ createdAt: -1 })
       .skip((pageNum - 1) * perPage)
-      .limit(perPage);
+      .limit(perPage)
+      .lean();
 
-    // ✅ Filter items per seller
-    const orders = ordersRaw.map((order) => {
-      const sellerItems = order.items.filter((item) =>
-        productIds.includes(item.productId)
-      );
+    const orders = ordersRaw.map(order => {
+      const sellerItems = order.items.filter(item => productIds.includes(item.productId));
+      const myPaymentStatus = sellerItems.every(i => i.itemPaymentStatus === "paid") ? "paid" : "pending";
+
       const itemsTotal = sellerItems.reduce(
         (sum, it) => sum + (it.price * it.quantity || 0),
         0
       );
+
       return {
-        _id: order._id,
-        user: order.user,
-        firstName: order.firstName,
-        lastName: order.lastName,
-        phone: order.phone,
-        email: order.email,
-        houseAddress: order.houseAddress,
+        ...order,
         items: sellerItems,
         itemsTotal,
-        shippingFee: order.shippingFee,
-        grandTotal: order.grandTotal,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
-        trackingId: order.trackingId,
-        createdAt: order.createdAt,
+        myPaymentStatus, // ✅ seller-specific payment status
       };
     });
 
-    // ✅ Respond with paginated format
     res.json({
       orders,
       totalPages,
@@ -280,4 +245,48 @@ exports.getMyOrders = async (req, res) => {
   }
 };
 
+/**
+ * ✅ Mark this seller's items as paid (seller-specific)
+ */
+exports.markItemsPaid = async (req, res) => {
+  try {
+    const store = await getStoreForSeller(req);
+    if (!store) return res.status(404).json({ message: "Store not found" });
 
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId);
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    let updated = false;
+    order.items.forEach(item => {
+      if (item.storeId.toString() === store._id.toString()) {
+        if (item.itemPaymentStatus !== "paid") {
+          item.itemPaymentStatus = "paid";
+          updated = true;
+        }
+      }
+    });
+
+    if (!updated) {
+      return res.status(400).json({ message: "No items to update or already paid" });
+    }
+
+    // ✅ Global payment status if all items are paid
+    const allPaid = order.items.every(it => it.itemPaymentStatus === "paid");
+    if (allPaid) {
+      order.paymentStatus = "paid";
+    }
+
+    await order.save();
+
+    return res.json({
+      message: "Items marked as paid",
+      myPaymentStatus: "paid", // ✅ for seller UI
+      paymentStatus: order.paymentStatus, // ✅ global
+      order,
+    });
+  } catch (err) {
+    console.error("markItemsPaid error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};

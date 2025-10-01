@@ -11,7 +11,10 @@ export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useDispatch();
   const cartItems = useSelector((state) => state.cart.items);
-  const itemsTotal = cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
+  const itemsTotal = cartItems.reduce(
+    (acc, item) => acc + item.price * item.qty,
+    0
+  );
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState(null);
@@ -26,7 +29,7 @@ export default function CheckoutPage() {
   });
   const [trackingId, setTrackingId] = useState("");
 
-  // 🔹 Firebase auth check
+  // 🔐 Check if user is logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
@@ -36,11 +39,10 @@ export default function CheckoutPage() {
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, [router]);
 
-  // 🔹 Update discounted total whenever items change
+  // 🧠 Update discounted total dynamically
   useEffect(() => {
     if (formData.paymentMethod === "JazzCash") {
       const discount = itemsTotal * 0.05;
@@ -60,17 +62,20 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (cartItems.length === 0) {
       alert("Your cart is empty!");
       return;
     }
+
     try {
       setLoading(true);
       const token = await user.getIdToken();
 
-      // 🔹 Use productId (not _id)
+      // ✅ Include storeId when sending items
       const items = cartItems.map((item) => ({
-        productId: item.id, // ✅ item.id is product.productId
+        productId: item.id,         // product._id
+        storeId: item.storeId,      // 🆕 must exist in cart slice now
         name: item.name,
         price: item.price,
         quantity: item.qty,
@@ -129,10 +134,7 @@ export default function CheckoutPage() {
               <strong className={styles.strong}>{trackingId}</strong>
             </p>
           </div>
-          <button
-            className={styles.button}
-            onClick={() => router.push("/")}
-          >
+          <button className={styles.button} onClick={() => router.push("/")}>
             Continue Shopping
           </button>
         </div>
@@ -181,7 +183,7 @@ export default function CheckoutPage() {
             className={styles.textarea}
           />
 
-          {/* 🔹 Payment Method */}
+          {/* 🔐 Payment Method */}
           <div>
             <p className={styles.label}>Payment:</p>
             <div className={styles.radioGroup}>
