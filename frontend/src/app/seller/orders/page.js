@@ -69,11 +69,17 @@ export default function SellerOrdersPage() {
 
       // ✅ Derive `myPaymentStatus` per order based on this seller's items
       if (storeId) {
-        ordersList = ordersList.map(order => {
-          const myItems = order.items.filter(it => it.storeId === storeId);
-          const myPaymentStatus = myItems.every(it => it.itemPaymentStatus === "paid")
-            ? "paid"
-            : "pending";
+        ordersList = ordersList.map((order) => {
+          const myItems = order.items.filter((it) => it.storeId === storeId);
+
+          // ✅ Updated logic to handle "returned"
+          let myPaymentStatus = "pending";
+          if (myItems.every((it) => it.itemPaymentStatus === "paid")) {
+            myPaymentStatus = "paid";
+          } else if (myItems.every((it) => it.itemPaymentStatus === "returned")) {
+            myPaymentStatus = "returned";
+          }
+
           return { ...order, myPaymentStatus };
         });
       }
@@ -111,7 +117,7 @@ export default function SellerOrdersPage() {
               key={order._id}
               order={order}
               storeId={storeId}
-              onStatusUpdated={fetchOrders} // refresh after marking paid
+              onStatusUpdated={fetchOrders} // refresh after marking paid or returned
             />
           ))}
         </div>

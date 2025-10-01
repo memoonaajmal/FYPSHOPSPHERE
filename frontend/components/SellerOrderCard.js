@@ -4,7 +4,6 @@ import styles from './styles/SellerOrderCard.module.css';
 import { auth } from "../firebase/config";
 
 export default function OrderCard({ order, storeId, onStatusUpdated }) {
-  // ✅ Initialize with seller-specific payment status
   const [status, setStatus] = useState(order.myPaymentStatus || order.paymentStatus);
   const [loading, setLoading] = useState(false);
 
@@ -12,46 +11,41 @@ export default function OrderCard({ order, storeId, onStatusUpdated }) {
     switch (status?.toLowerCase()) {
       case 'paid':
         return styles.statusPaid;
+      case 'returned':
+        return styles.statusReturned;
       case 'pending':
         return styles.statusPending;
-      case 'failed':
-      case 'cancelled':
-        return styles.statusFailed;
       default:
         return styles.statusDefault;
     }
   };
 
-  // ✅ Seller updates *their part* of the payment
-  const handleStatusUpdate = async () => {
+  const handleStatusUpdate = async (newStatus) => {
     try {
       setLoading(true);
 
       const token = await auth.currentUser.getIdToken();
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders/${order._id}/pay`,
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/seller/orders/${order._id}/status`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${token}`,
           },
-          body: JSON.stringify({ storeId }),
+          body: JSON.stringify({ storeId, status: newStatus }),
         }
       );
 
-      if (!res.ok) throw new Error('Failed to update payment status');
+      if (!res.ok) throw new Error('Failed to update status');
 
       const data = await res.json();
-
-      // ✅ Update seller-specific status after response
       setStatus(data.myPaymentStatus || data.paymentStatus);
-
       onStatusUpdated?.();
     } catch (err) {
       console.error(err);
-      alert('Failed to update payment status');
+      alert('Failed to update status');
     } finally {
       setLoading(false);
     }
@@ -74,15 +68,12 @@ export default function OrderCard({ order, storeId, onStatusUpdated }) {
             Total: <span>${order.grandTotal}</span>
           </p>
 
-          {/* ✅ Seller-specific badge */}
           <span className={`${styles.statusBadge} ${getStatusClass(status)}`}>
             {status}
           </span>
 
           {order.trackingId && (
-            <p className={styles.trackingId}>
-              Tracking: {order.trackingId}
-            </p>
+            <p className={styles.trackingId}>Tracking: {order.trackingId}</p>
           )}
           <p className={styles.timestamp}>
             {new Date(order.createdAt).toLocaleString()}
@@ -108,15 +99,24 @@ export default function OrderCard({ order, storeId, onStatusUpdated }) {
         <p className={styles.grandTotal}>Grand Total: ${order.grandTotal}</p>
       </div>
 
-      {/* ✅ Show "Mark as Paid" only if *seller-specific* status is pending */}
-      {status !== 'paid' && (
-        <button
-          className={styles.markPaidBtn}
-          onClick={handleStatusUpdate}
-          disabled={loading}
-        >
-          {loading ? 'Updating...' : 'Mark as Paid'}
-        </button>
+      {status !== 'paid' && status !== 'returned' && (
+        <div className={styles.buttonRow}>
+          <button
+            className={styles.markPaidBtn}
+            onClick={() => handleStatusUpdate("paid")}
+            disabled={loading}
+          >
+            {loading ? 'Updating...' : 'Mark as Paid'}
+          </button>
+
+          <button
+            className={styles.returnBtn}
+            onClick={() => handleStatusUpdate("returned")}
+            disabled={loading}
+          >
+            {loading ? 'Updating...' : 'Mark as Returned'}
+          </button>
+        </div>
       )}
     </div>
   );

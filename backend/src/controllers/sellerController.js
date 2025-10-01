@@ -1,4 +1,3 @@
-// backend/src/controllers/sellerController.js
 const Product = require("../models/Product");
 const Store = require("../models/Store");
 const Order = require("../models/Order");
@@ -219,7 +218,9 @@ exports.getMyOrders = async (req, res) => {
 
     const orders = ordersRaw.map(order => {
       const sellerItems = order.items.filter(item => productIds.includes(item.productId));
-      const myPaymentStatus = sellerItems.every(i => i.itemPaymentStatus === "paid") ? "paid" : "pending";
+      const myPaymentStatus = sellerItems.every(i => i.itemPaymentStatus === "paid" || i.itemPaymentStatus === "returned")
+        ? sellerItems[0].itemPaymentStatus
+        : "pending";
 
       const itemsTotal = sellerItems.reduce(
         (sum, it) => sum + (it.price * it.quantity || 0),
@@ -230,7 +231,7 @@ exports.getMyOrders = async (req, res) => {
         ...order,
         items: sellerItems,
         itemsTotal,
-        myPaymentStatus, // ✅ seller-specific payment status
+        myPaymentStatus, 
       };
     });
 
@@ -246,47 +247,52 @@ exports.getMyOrders = async (req, res) => {
 };
 
 /**
- * ✅ Mark this seller's items as paid (seller-specific)
+ * ✅ Mark this seller's items as paid OR returned
  */
-exports.markItemsPaid = async (req, res) => {
+exports.updateItemStatus = async (req, res) => {
   try {
     const store = await getStoreForSeller(req);
     if (!store) return res.status(404).json({ message: "Store not found" });
 
     const { orderId } = req.params;
+    const { status } = req.body; // "paid" or "returned"
+
+    if (!["paid", "returned"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status" });
+    }
+
     const order = await Order.findById(orderId);
     if (!order) return res.status(404).json({ message: "Order not found" });
 
     let updated = false;
     order.items.forEach(item => {
       if (item.storeId.toString() === store._id.toString()) {
-        if (item.itemPaymentStatus !== "paid") {
-          item.itemPaymentStatus = "paid";
+        if (item.itemPaymentStatus !== status) {
+          item.itemPaymentStatus = status;
           updated = true;
         }
       }
     });
 
     if (!updated) {
-      return res.status(400).json({ message: "No items to update or already paid" });
+      return res.status(400).json({ message: "No items to update or already marked" });
     }
 
-    // ✅ Global payment status if all items are paid
-    const allPaid = order.items.every(it => it.itemPaymentStatus === "paid");
-    if (allPaid) {
-      order.paymentStatus = "paid";
+    const allSame = order.items.every(it => it.itemPaymentStatus === status);
+    if (allSame) {
+      order.paymentStatus = status;
     }
 
     await order.save();
 
     return res.json({
-      message: "Items marked as paid",
-      myPaymentStatus: "paid", // ✅ for seller UI
-      paymentStatus: order.paymentStatus, // ✅ global
+      message: `Items marked as ${status}`,
+      myPaymentStatus: status,
+      paymentStatus: order.paymentStatus,
       order,
     });
   } catch (err) {
-    console.error("markItemsPaid error:", err);
+    console.error("updateItemStatus error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
