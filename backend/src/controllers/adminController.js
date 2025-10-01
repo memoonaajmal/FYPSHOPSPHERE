@@ -59,24 +59,32 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+// controllers/orderController.js
 exports.getOrdersByEmail = async (req, res) => {
   try {
     const { email } = req.params;
+    const page = parseInt(req.query.page) || 1;   // default page 1
+    const limit = parseInt(req.query.limit) || 5; // default 5 orders per page
+    const skip = (page - 1) * limit;
 
     if (!email) {
       return res.status(400).json({ message: "Email is required" });
     }
 
-    // Fetch orders by email
-    const orders = await Order.find({ email }).sort({ createdAt: -1 });
+    // Count total documents for pagination
+    const totalOrders = await Order.countDocuments({ email });
 
-    // ✅ If no orders found, return empty array with 200 OK
-    if (!orders || orders.length === 0) {
-      return res.status(200).json([]);
-    }
+    // Fetch paginated orders
+    const orders = await Order.find({ email })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    // ✅ Return found orders
-    return res.status(200).json(orders);
+    return res.status(200).json({
+      orders,
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: page,
+    });
   } catch (err) {
     console.error("Error fetching orders:", err);
     return res.status(500).json({
@@ -85,6 +93,7 @@ exports.getOrdersByEmail = async (req, res) => {
     });
   }
 };
+
 
 // GET all store requests
 exports.getAllStoreRequests = async (req, res) => {
@@ -164,8 +173,7 @@ exports.updateStoreRequestStatus = async (req, res) => {
 // in adminController.js
 exports.getStoreOrdersForAdmin = async (req, res) => {
   try {
-    const { sellerId } = req.query; // pass sellerId from frontend
-
+    const { sellerId, page = 1, limit = 10 } = req.query; // default values
     if (!sellerId) {
       return res.status(400).json({ message: "sellerId query param is required" });
     }
@@ -175,7 +183,15 @@ exports.getStoreOrdersForAdmin = async (req, res) => {
 
     const productIds = store.productIds.map(String);
 
-    const orders = await Order.find({ "items.productId": { $in: productIds } });
+    // ✅ Pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+
+    const totalOrders = await Order.countDocuments({ "items.productId": { $in: productIds } });
+
+    const orders = await Order.find({ "items.productId": { $in: productIds } })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(parseInt(limit));
 
     const filtered = orders.map(order => {
       const sellerItems = order.items.filter(item => productIds.includes(item.productId));
@@ -201,9 +217,15 @@ exports.getStoreOrdersForAdmin = async (req, res) => {
       };
     });
 
-    res.json(filtered);
+    res.json({
+      orders: filtered,
+      totalOrders,
+      totalPages: Math.ceil(totalOrders / limit),
+      currentPage: parseInt(page),
+    });
   } catch (err) {
     console.error("Error getStoreOrdersForAdmin:", err);
     res.status(500).json({ message: err.message });
   }
 };
+
