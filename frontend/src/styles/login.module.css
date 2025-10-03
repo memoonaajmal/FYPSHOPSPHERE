@@ -87,3 +87,17 @@
   text-decoration: underline; /* underline on hover */
   color: #006666;
 }
+
+
+.forgotPasswordLink {
+  color: #0070f3;
+  font-size: 0.9rem;
+  cursor: pointer;
+  margin: 0.5rem 0;
+  text-align: right;
+}
+
+.forgotPasswordLink:hover {
+  text-decoration: underline;
+}
+

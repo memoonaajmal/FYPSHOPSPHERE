@@ -95,6 +95,13 @@ export default function LoginPage() {
           onChange={(e) => setPassword(e.target.value)}
         />
 
+        <p
+          className={styles.forgotPasswordLink}
+          onClick={() => router.push("/forgot-password")}
+        >
+          Forgot Password?
+        </p>
+
         <select value={role} onChange={(e) => setRole(e.target.value)}>
           <option value="user">Login as User</option>
           <option value="seller">Login as Seller</option>
