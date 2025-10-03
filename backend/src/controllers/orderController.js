@@ -140,19 +140,38 @@ exports.getOrder = async (req, res) => {
 };
 
 // =============================
-// Get all orders for logged-in user
+// Get all orders for logged-in user (with pagination)
 // =============================
 exports.getMyOrders = async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
-
     const user = await User.findOne({ email: req.user.email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    const orders = await Order.find({ user: user._id }).sort({ createdAt: -1 });
-    res.json(orders);
+    // ✅ Pagination query params
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5; // default 5 per page
+    const skip = (page - 1) * limit;
+
+    // ✅ Total count
+    const totalOrders = await Order.countDocuments({ user: user._id });
+    const totalPages = Math.ceil(totalOrders / limit);
+
+    // ✅ Paginated orders
+    const orders = await Order.find({ user: user._id })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.json({
+      orders,
+      totalPages,
+      currentPage: page,
+      totalOrders,
+    });
   } catch (err) {
     console.error("getMyOrders error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
+

@@ -1,7 +1,7 @@
 "use client";
-import styles from "./styles/AdminOrderCard.module.css";
+import styles from "./styles/UserOrderCard.module.css";
 
-export default function AdminOrderCard({ order }) {
+export default function UserOrderCard({ order }) {
   const getStatusClass = (status) => {
     switch (status?.toLowerCase()) {
       case "paid":
