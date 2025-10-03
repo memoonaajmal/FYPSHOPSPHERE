@@ -59,6 +59,7 @@ exports.createOrder = async (req, res) => {
           productId: product.productId, // ✅ your dataset product ID
           name: product.productDisplayName || item.name,
           price: item.price,
+          image: item.image,
           quantity: item.quantity,
           storeId: store._id, // ✅ string ID like "store_watch"
           itemPaymentStatus: "pending",
