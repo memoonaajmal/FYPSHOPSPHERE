@@ -9,7 +9,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [role, setRole] = useState("user"); // frontend dropdown
+  const [role, setRole] = useState("user"); // default login type
   const [error, setError] = useState("");
   const router = useRouter();
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -35,7 +35,7 @@ export default function LoginPage() {
         body: JSON.stringify({ role }),
       });
 
-      const data = await response.json(); // ✅ parse once
+      const data = await response.json();
 
       if (!response.ok) {
         await signOut(auth);
@@ -43,7 +43,7 @@ export default function LoginPage() {
         throw new Error(data.error || "Role not allowed");
       }
 
-      // 3️⃣ Check role
+      // 3️⃣ Verify role
       if (!data.user.roles.includes(role)) {
         await signOut(auth);
         setUser(null);
@@ -54,12 +54,12 @@ export default function LoginPage() {
         );
       }
 
-      // 4️⃣ Set user & redirect
+      // 4️⃣ Set user & redirect based on role
       setUser(data.user);
+
       if (role === "admin") {
         router.push("/admin/dashboard");
       } else if (role === "seller") {
-        // Check if seller has a store
         const checkRes = await fetch(`${BASE_URL}/api/stores/check/exists`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -68,10 +68,12 @@ export default function LoginPage() {
         if (checkData.hasStore) {
           router.push("/seller/dashboard");
         } else {
-          router.push("/seller/create-store-request"); // redirect to new page
+          router.push("/seller/create-store-request");
         }
+      } else if (role === "user") {
+        router.push("/"); // ✅ only users go to dashboard
       } else {
-        router.push("/");
+        router.push("/"); // fallback (safe redirect)
       }
     } catch (err) {
       console.error(err);
@@ -82,17 +84,24 @@ export default function LoginPage() {
   return (
     <div className={styles.container}>
       <form onSubmit={handleLogin} className={styles.form}>
+        <h2 className={styles.title}>Login</h2>
+
         <input
           type="email"
-          placeholder="Email"
+          placeholder="Enter your Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
+          className={styles.input}
         />
+
         <input
           type="password"
-          placeholder="Password"
+          placeholder="Enter your Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
+          className={styles.input}
         />
 
         <p
@@ -102,17 +111,24 @@ export default function LoginPage() {
           Forgot Password?
         </p>
 
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
+        <label className={styles.label}>Select Role</label>
+        <select
+          value={role}
+          onChange={(e) => setRole(e.target.value)}
+          className={styles.select}
+        >
           <option value="user">Login as User</option>
           <option value="seller">Login as Seller</option>
           <option value="admin">Login as Admin</option>
         </select>
 
-        <button type="submit">Login</button>
+        <button type="submit" className={styles.button}>
+          Login
+        </button>
+
         {error && <p className={styles.error}>{error}</p>}
       </form>
 
-      {/* Signup link */}
       <p className={styles.signupText}>
         Don&apos;t have an account?{" "}
         <span
