@@ -1,75 +1,177 @@
+
+/* ✅ Container */
 .container {
   width: 100%;
-  min-height: 100vh;
+  min-height: 87vh;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  background: #F8F9FA; /* light gray background */
+  font-family: "Poppins", sans-serif;
+  color: #111827; /* rich black text */
+  overflow: hidden;
+}
+
+/* ✅ Left side (image) */
+.imageWrapper {
+  flex: 1.2;
+  position: relative;
+  overflow: hidden;
+}
+
+.imageWrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  filter: brightness(0.95);
+  animation: fadeIn 1.2s ease forwards;
+}
+
+/* ✅ Right side (form section) */
+.formWrapper {
+  flex: 1;
+  display: flex;
   justify-content: center;
   align-items: center;
-  background: #f0f2f5; /* soft neutral background */
-  color: #333;
-  padding: 2rem;
+  padding: 3rem;
+  z-index: 2;
+  background: #F8F9FA;
 }
 
+/* ✅ Form box */
 .form {
-  width: 350px;
-  padding: 2rem;
-  background: #fdfdf9; /* card background */
-  backdrop-filter: blur(6px);
-  border-radius: 12px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  width: 380px;
+  padding: 2.5rem;
+  background: #ffffff;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(30, 41, 59, 0.25); /* deep slate glow */
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
+  animation: slipIn 0.9s ease forwards;
+  border: 2px solid #3B82F6; /* bright blue border */
 }
 
-.form input {
-  padding: 12px;
-  border: 1px solid #ddd;
-  color: #333;
-  outline: none;
-  border-radius: 8px;
-  font-size: 14px;
-  background: #f9f9f9;
+/* ✅ Title */
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1E293B;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
-.form input:focus {
-  border-color: #999;
+/* Inputs & Selects */
+.form input,
+.form select {
+  padding: 14px;
+  border: 1px solid #3B82F6;
+  border-radius: 10px;
+  font-size: 15px;
+  background: #FAF8F6;
+  transition: all 0.3s ease;
+  color: #111827;
+}
+
+.form input::placeholder,
+.form select {
+  color: #6B7280; /* gray text */
+}
+
+.form input:focus,
+.form select:focus {
+  border-color: #F43F5E; /* warm pink/red */
+  box-shadow: 0 0 12px rgba(244, 63, 94, 0.5); /* glowing CTA effect */
   background: #fff;
+  outline: none;
 }
 
+/* ✅ Button */
 .form button {
-  padding: 12px;
+  padding: 14px;
   border: none;
-  border-radius: 8px;
-  background: #008080; /* teal button */
-  color: white;
-  font-weight: 600;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #1E293B, #3B82F6);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 15px;
   cursor: pointer;
-  transition: background 0.3s;
+  transition: all 0.3s ease;
 }
 
 .form button:hover {
-  background: #006666;
+  background: #F43F5E; /* switch to accent pink/red */
+  color: #fff;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 18px rgba(244, 63, 94, 0.5); /* glowing hover */
 }
 
+/* Error text */
 .error {
-  color: #c0392b;
+  color: #F43F5E;
   font-size: 14px;
-  margin-top: 0.5rem;
+  text-align: center;
 }
 
+/* Switch to login link */
 .loginText {
-  margin-top: 1rem;
+  margin-top: 15px;
+  text-align: center;
+  color: #111827;
   font-size: 14px;
-  color: #555;
 }
 
 .loginLink {
-  color: #0070f3;
+  color: #3B82F6;
+  font-weight: bold;
   text-decoration: none;
-  font-weight: 600;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 .loginLink:hover {
+  color: #F43F5E;
   text-decoration: underline;
+  text-shadow: 0 0 8px rgba(244, 63, 94, 0.5); /* glowing link hover */
+}
+
+/* ✅ Animations */
+@keyframes slipIn {
+  from {
+    transform: translateX(-120%);
+    opacity: 0;
+    filter: blur(8px);
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+    filter: blur(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    transform: translateX(80px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* ✅ Responsive */
+@media (max-width: 900px) {
+  .container {
+    flex-direction: column;
+    padding: 2rem;
+  }
+
+  .formWrapper {
+    margin-bottom: 2rem;
+  }
+
+  .imageWrapper img {
+    width: 100%;
+    max-width: 400px;
+  }
 }

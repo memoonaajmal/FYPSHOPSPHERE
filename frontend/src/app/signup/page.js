@@ -15,7 +15,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
-  const [role, setRole] = useState("user"); // default role
+  const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const router = useRouter();
   const { setUser } = useAuth();
@@ -24,15 +24,10 @@ export default function SignupPage() {
   const handleSignup = async (e) => {
     e.preventDefault();
     setError("");
+
     try {
       // Firebase signup
-      const userCred = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      // Update displayName
+      const userCred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCred.user, { displayName: name });
 
       // Get token
@@ -40,34 +35,27 @@ export default function SignupPage() {
       if (!user) throw new Error("User not available after signup");
       const idToken = await user.getIdToken(true);
 
-
- // Sync with backend, include chosen role
-const response = await fetch(`${BASE_URL}/api/auth/sync`, {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json",
-    Authorization: `Bearer ${idToken}`,
-  },
-  body: JSON.stringify({ role: role.toLowerCase().trim() }), // normalize here
-});
-
+      // Sync with backend
+      const response = await fetch(`${BASE_URL}/api/auth/sync`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${idToken}`,
+        },
+        body: JSON.stringify({ role: role.toLowerCase().trim() }),
+      });
 
       if (!response.ok) {
         const errData = await response.json();
-        throw new Error(
-          errData.error?.message || "Failed to sync user with backend"
-        );
+        throw new Error(errData.error?.message || "Failed to sync user with backend");
       }
 
       const data = await response.json();
-      console.log("Backend user data:", data.user);
-
       setUser(data.user);
 
-      // 🚀 Force logout right after signup
+      // Force logout after signup
       await signOut(auth);
 
-      // Redirect to login (always after signup)
       router.push("/login");
     } catch (err) {
       console.error(err);
@@ -77,42 +65,60 @@ const response = await fetch(`${BASE_URL}/api/auth/sync`, {
 
   return (
     <div className={styles.container}>
-      <form onSubmit={handleSignup} className={styles.form}>
-        <input
-          type="text"
-          placeholder="Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+      {/* ✅ Left side image */}
+      <div className={styles.imageWrapper}>
+        <img
+          src="https://i.pinimg.com/1200x/0c/9b/89/0c9b89b62ba04b4b4740f4ce2da28b54.jpg"
+          alt="Signup Illustration"
         />
-        <input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-        />
+      </div>
 
-        {/* Role Selection */}
-        <select value={role} onChange={(e) => setRole(e.target.value)}>
-          <option value="user">Signup as User</option>
-          <option value="seller">Signup as Seller</option>
-        </select>
+      {/* ✅ Right side form */}
+      <div className={styles.formWrapper}>
+        <form onSubmit={handleSignup} className={styles.form}>
+          <h2 className={styles.title}>Create Account</h2>
 
-        <button type="submit">Sign Up</button>
-        {error && <p className={styles.error}>{error}</p>}
-      </form>
+          <input
+            type="text"
+            placeholder="Full Name"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            required
+          />
 
-      <p className={styles.loginText}>
-        Already have an account?{" "}
-        <Link href="/login" className={styles.loginLink}>
-          Login
-        </Link>
-      </p>
+          <input
+            type="email"
+            placeholder="Email Address"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
+
+          <select value={role} onChange={(e) => setRole(e.target.value)}>
+            <option value="user">Signup as User</option>
+            <option value="seller">Signup as Seller</option>
+          </select>
+
+          <button type="submit">Sign Up</button>
+
+          {error && <p className={styles.error}>{error}</p>}
+
+          <p className={styles.loginText}>
+            Already have an account?{" "}
+            <Link href="/login" className={styles.loginLink}>
+              Login
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 }
