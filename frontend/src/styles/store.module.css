@@ -1,18 +1,22 @@
-/* store.module.css */
+/* ================================
+   Store Page Layout (Responsive)
+================================ */
 
-/* Container for entire store page */
+/* Container */
 .container {
   max-width: 100%;
-
   padding: 2rem;
   font-family: 'Inter', sans-serif;
   color: #333;
+  box-sizing: border-box;
 }
 
-/* Hero Banner */
+/* ================================
+   Hero Banner
+================================ */
 .heroBanner {
   background: linear-gradient(135deg, #0070f3, #da8845);
-  color: white;
+  color: #fff;
   padding: 4rem 2rem;
   border-radius: 12px;
   text-align: center;
@@ -25,7 +29,7 @@
 }
 
 .storeTitle {
-  font-size: 2.5rem;
+  font-size: 2.8rem;
   font-weight: 700;
   margin-bottom: 1rem;
 }
@@ -33,18 +37,25 @@
 .storeSubtitle {
   font-size: 1.2rem;
   opacity: 0.9;
+  line-height: 1.5;
 }
 
-/* Main content wrapper: sidebar + products */
+/* ================================
+   Store Main Section
+================================ */
 .storeContent {
   display: flex;
+  align-items: flex-start;
   gap: 2rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* allows wrapping when screen is small */
 }
 
-/* Products Section */
+/* ================================
+   Products Section
+================================ */
 .productsSection {
   flex: 1;
+  min-width: 250px;
 }
 
 .productsHeading {
@@ -55,7 +66,7 @@
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
   gap: 1.5rem;
 }
 
@@ -66,21 +77,56 @@
   margin-top: 2rem;
 }
 
-/* Responsive adjustments */
-@media (max-width: 1024px) {
-  .storeContent {
-    flex-direction: column;
+/* ================================
+   Responsive Breakpoints
+================================ */
+
+/* 💻 Tablets / Medium screens */
+@media (max-width: 1200px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr); /* 3 per row */
   }
 }
 
+@media (max-width: 900px) {
+  .storeContent {
+    flex-direction: column; /* stack filter and products */
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(2, 1fr); /* 2 per row */
+  }
+
+  .storeTitle {
+    font-size: 2.3rem;
+  }
+
+  .storeSubtitle {
+    font-size: 1.1rem;
+  }
+}
+
+/* 📱 Mobile Screens */
 @media (max-width: 640px) {
   .heroBanner {
-    padding: 3rem 1rem;
+    padding: 2.5rem 1rem;
+    border-radius: 10px;
   }
+
   .storeTitle {
-    font-size: 2rem;
+    font-size: 1.8rem;
   }
+
   .storeSubtitle {
-    font-size: 1rem;
+    font-size: 0.95rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr; /* single column */
+    gap: 1.2rem;
+  }
+
+  .container {
+    padding: 1.5rem 1rem;
   }
 }
