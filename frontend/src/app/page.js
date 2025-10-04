@@ -10,6 +10,7 @@ function HomeContent() {
   const [stores, setStores] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [recentlyViewed, setRecentlyViewed] = useState([]); // ✅ new state
 
   useEffect(() => {
     async function fetchStores() {
@@ -29,6 +30,19 @@ function HomeContent() {
     }
 
     fetchStores();
+
+    // ✅ Fetch recently viewed products from localStorage
+    const stored = localStorage.getItem("recentlyViewed");
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          setRecentlyViewed(parsed);
+        }
+      } catch {
+        console.error("Error parsing recently viewed data");
+      }
+    }
   }, []);
 
   return (
@@ -46,6 +60,8 @@ function HomeContent() {
         </div>
       </section>
 
+      
+
       {/* Stores Section */}
       <section id="stores" className={styles.storesSection}>
         <h2 className={styles.heading}>Our Stores</h2>
@@ -58,12 +74,18 @@ function HomeContent() {
         ) : (
           <div className={styles.grid}>
             {stores.map((store) => (
-              <Link key={store._id} href={`/stores/${store._id}`} className={styles.storeCard}>
+              <Link
+                key={store._id}
+                href={`/stores/${store._id}`}
+                className={styles.storeCard}
+              >
                 <h3 className={styles.storeName}>{store.name}</h3>
                 {Array.isArray(store.categories) && store.categories.length > 0 && (
                   <div className={styles.categories}>
                     {store.categories.map((cat, i) => (
-                      <span key={i} className={styles.categoryBadge}>{cat}</span>
+                      <span key={i} className={styles.categoryBadge}>
+                        {cat}
+                      </span>
                     ))}
                   </div>
                 )}
@@ -72,14 +94,49 @@ function HomeContent() {
           </div>
         )}
       </section>
-
+{/* ✅ Recently Viewed Section */}
+      {recentlyViewed.length > 0 && (
+        <section className={styles.recentlyViewedSection}>
+          <h2 className={styles.heading}>Recently Viewed</h2>
+          <div className={styles.productsGrid}>
+            {recentlyViewed.map((product) => (
+              <Link
+                key={product._id}
+                href={`/products/${product._id}`}
+                className={styles.productCard}
+              >
+                <div className={styles.imageWrapper}>
+                  <img
+                    src={
+                      `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}` ||
+                      "/placeholder.png"
+                    }
+                    alt={product.productDisplayName}
+                    className={styles.productImage}
+                  />
+                </div>
+                <h3 className={styles.productName}>{product.productDisplayName}</h3>
+                <p className={styles.productPrice}>
+                  {product.price ? `PKR ${product.price}` : "N/A"}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
       {/* Footer */}
       <footer className={styles.footer}>
         <div className={styles.footerContent}>
           <div className={styles.footerLinks}>
-            <Link href="/about" className={styles.footerLink}>About Us</Link>
-            <Link href="/contact" className={styles.footerLink}>Contact</Link>
-            <Link href="/privacy" className={styles.footerLink}>Privacy Policy</Link>
+            <Link href="/about" className={styles.footerLink}>
+              About Us
+            </Link>
+            <Link href="/contact" className={styles.footerLink}>
+              Contact
+            </Link>
+            <Link href="/privacy" className={styles.footerLink}>
+              Privacy Policy
+            </Link>
           </div>
           <p className={styles.footerCopy}>
             &copy; {new Date().getFullYear()} SHOPSPHERE. All rights reserved.
@@ -90,7 +147,7 @@ function HomeContent() {
   );
 }
 
-// ✅ HomePage is now strictly protected for "user" role only
+// ✅ HomePage is strictly protected for "user" role only
 export default function HomePage() {
   return (
     <ProtectedRoute role="user">

@@ -39,6 +39,30 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
     loadProduct();
   }, [id]);
 
+  // ✅ New useEffect to store product in localStorage once loaded
+  React.useEffect(() => {
+    if (product) {
+      const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
+
+      // Remove duplicate if exists
+      const filtered = viewed.filter((p) => p._id !== product._id);
+
+      // Add new product at start
+      filtered.unshift({
+        _id: product._id,
+        productDisplayName: product.productDisplayName,
+        price: product.price,
+        imageFilename: product.imageFilename,
+        storeId: product.storeId,
+      });
+
+      // Keep only latest 5 viewed
+      const limited = filtered.slice(0, 5);
+
+      localStorage.setItem("recentlyViewed", JSON.stringify(limited));
+    }
+  }, [product]);
+
   if (!product) return <p>Loading...</p>;
 
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
@@ -48,12 +72,11 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
       addItemToCart({
         id: product._id,
         name: product.productDisplayName,
-        price: product.price,   // ✅ real price
+        price: product.price,
         image: imageSrc,
-        storeId: product.storeId, // ✅ add this line
+        storeId: product.storeId,
       })
     );
-
     router.push("/cart");
   };
 
@@ -62,12 +85,11 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
       addToWishlist({
         id: product._id,
         name: product.productDisplayName,
-        price: product.price,   // ✅ real price
+        price: product.price,
         image: imageSrc,
-        storeId: product.storeId, // ✅ add here too (optional but useful)
+        storeId: product.storeId,
       })
     );
-
     router.push("/wishlist");
   };
 
