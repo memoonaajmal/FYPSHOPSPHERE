@@ -65,7 +65,7 @@ export default function OrderCard({ order, storeId, onStatusUpdated }) {
         </div>
         <div className={styles.orderMeta}>
           <p className={styles.orderTotal}>
-            Total: <span>${order.grandTotal}</span>
+            Total: <span>PKR {order.grandTotal}</span>
           </p>
 
           <span className={`${styles.statusBadge} ${getStatusClass(status)}`}>

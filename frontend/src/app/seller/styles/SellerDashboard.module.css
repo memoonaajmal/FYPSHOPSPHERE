@@ -1,52 +1,267 @@
+/* ======= General Dashboard Layout ======= */
 .dashboard {
-  padding: 24px;
-    color: #333;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 40px 24px;
+  font-family: "Inter", sans-serif;
+  color: #1f2937; /* neutral-800 */
+  background-color: #f9fafb; /* light gray bg */
 }
 
+/* ======= Title ======= */
 .title {
-  font-size: 1.75rem;
-  font-weight: bold;
-  
-  margin-bottom: 16px;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: left;
+  margin-bottom: 32px;
+  color: #111827;
 }
 
-.subtitle {
-  color: #4b5563; /* Tailwind gray-600 */
-  margin-bottom: 24px;
-}
-
+/* ======= Navigation Cards (Top Two Options) ======= */
 .grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 24px;
-}
-
-@media (min-width: 768px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+  margin-bottom: 48px;
 }
 
 .card {
-  background: white;
+  background: #ffffff;
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
   cursor: pointer;
-  transition: box-shadow 0.2s ease, transform 0.2s ease;
+  text-align: center;
 }
 
 .card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  transform: translateY(-2px);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
 }
 
 .cardTitle {
   font-size: 1.25rem;
   font-weight: 600;
+  color: #111827;
   margin-bottom: 8px;
 }
 
 .cardText {
-  color: #4b5563;
+  font-size: 1rem;
+  color: #6b7280;
 }
+
+/* ======= Analytics Section ======= */
+.analytics {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 16px;
+}
+
+/* ======= Stats Grid ======= */
+.statsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+/* ======= Stat Card ======= */
+.statCard {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.statCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Header (icon + title) */
+.statHeader {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.icon {
+  width: 22px;
+  height: 22px;
+  color: #10b981; /* emerald */
+}
+
+.statHeader h3 {
+  font-size: 1rem;
+  font-weight: 500;
+  color: #6b7280; /* neutral-500 */
+}
+
+/* Value + Subtext */
+.statValue {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #111827;
+  margin-top: 6px;
+}
+
+.subText {
+  font-size: 0.85rem;
+  color: #6b7280;
+  display: block;
+  margin-top: 4px;
+}
+
+/* ======= Top Products Section ======= */
+.topProducts {
+  background: #fff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.topProducts h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #111827;
+  margin-bottom: 24px;
+}
+
+/* ======= Endless Horizontal Scroll ======= */
+.scrollContainer {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+
+.scrollContent {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  animation: scrollInfinite 30s linear infinite;
+}
+
+.scrollContent:hover {
+  animation-play-state: paused;
+}
+
+/* Duplicate product list for seamless loop */
+.scrollContent::after {
+  content: "";
+  display: block;
+}
+
+/* ======= Product Card ======= */
+.productCardWrapper {
+  flex: 0 0 auto;
+  width: 260px;
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.productCardWrapper:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.soldCount {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-top: 6px;
+}
+
+/* ======= Keyframes for seamless scroll ======= */
+@keyframes scrollInfinite {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+/* ======= Loading & Error States ======= */
+.loading,
+.error {
+  text-align: center;
+  font-size: 1rem;
+  color: #6b7280;
+}
+
+/* ======= Responsive Adjustments ======= */
+@media (max-width: 768px) {
+  .title {
+    font-size: 1.75rem;
+  }
+
+  .statValue {
+    font-size: 1.5rem;
+  }
+
+  .statsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  }
+
+  .sectionTitle {
+    font-size: 1.25rem;
+  }
+
+  .productCardWrapper {
+    width: 200px;
+  }
+}
+/* ======= Sales Chart Section ======= */
+.salesSection {
+  margin-bottom: 48px; /* Adds space below the chart */
+}
+
+/* ---- SECTION CONTAINER ---- */
+.customersSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch; /* ensures equal height for both cards */
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-top: 32px;
+}
+
+/* ---- MAKE BOTH CARDS EQUAL WIDTH ---- */
+.customersSection > * {
+  flex: 1 1 48%;
+  max-width: 48%;
+  display: flex;
+  flex-direction: column; /* allows internal content to align properly */
+}
+
+/* ---- STACK ON SMALLER SCREENS ---- */
+@media (max-width: 1024px) {
+  .customersSection > * {
+    flex: 1 1 100%;
+    max-width: 100%;
+  }
+}
+
+
+

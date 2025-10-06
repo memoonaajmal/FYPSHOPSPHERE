@@ -30,7 +30,7 @@ export default function AdminOrderCard({ order }) {
 
         <div className={styles.orderMeta}>
           <p className={styles.orderTotal}>
-            Total: <span>${order.grandTotal}</span>
+            Total: <span>PKR {order.grandTotal}</span>
           </p>
           <span className={`${styles.statusBadge} ${getStatusClass(order.paymentStatus)}`}>
             {order.paymentStatus}
@@ -52,7 +52,7 @@ export default function AdminOrderCard({ order }) {
               {item.image && <img src={item.image} alt={item.name} />}
               <span>{item.name}</span>
               <span>
-                {item.quantity} × ${item.price} = ${item.price * item.quantity}
+                {item.quantity} × PKR {item.price} = PKR {item.price * item.quantity}
               </span>
             </li>
           ))}
@@ -61,9 +61,9 @@ export default function AdminOrderCard({ order }) {
 
       {/* Totals */}
       <div className={styles.totals}>
-        <p>Items Total: ${order.itemsTotal}</p>
-        <p>Shipping Fee: ${order.shippingFee}</p>
-        <p className={styles.grandTotal}>Grand Total: ${order.grandTotal}</p>
+        <p>Items Total: PKR {order.itemsTotal}</p>
+        <p>Shipping Fee: PKR {order.shippingFee}</p>
+        <p className={styles.grandTotal}>Grand Total: PKR {order.grandTotal}</p>
       </div>
     </div>
   );

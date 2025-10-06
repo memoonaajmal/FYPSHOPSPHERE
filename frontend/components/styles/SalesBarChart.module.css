@@ -1,0 +1,38 @@
+.chartContainer {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+  margin-top: 32px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.chartContainer:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+}
+
+.title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 1rem;
+}
+
+.loadingText {
+  color: #6b7280;
+  font-size: 0.95rem;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .chartContainer {
+    padding: 16px;
+  }
+
+  .title {
+    font-size: 1rem;
+  }
+}

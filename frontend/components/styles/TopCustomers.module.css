@@ -1,0 +1,47 @@
+.topCustomers {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+  flex-grow: 1; /* allows to expand equally */
+  display: flex;
+  flex-direction: column;
+}
+
+.topCustomers h3 {
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  color: #333;
+}
+
+.customerCard {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f9fafb;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 10px;
+  transition: all 0.2s ease;
+}
+
+.customerCard:hover {
+  background: #eef3ff;
+  transform: translateY(-2px);
+}
+
+.customerCard h4 {
+  font-size: 1rem;
+  margin: 0;
+}
+
+.customerCard p {
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.stats p {
+  text-align: right;
+  margin: 0;
+  font-size: 0.9rem;
+}
