@@ -170,12 +170,14 @@ export default function SellerDashboard() {
         )}
 
         {/* ======= 👥 Customers Insights Section ======= */}
-<div className={styles.customersSection}>
-  <CustomerEngagementCard />
-  <TopCustomers />
-</div>
-
-
+        <div className={styles.customersSection}>
+          <div className={styles.leftSection}>
+            <TopCustomers />
+          </div>
+          <div className={styles.rightSection}>
+            <CustomerEngagementCard />
+          </div>
+        </div>
       </div>
     </ProtectedRoute>
   );

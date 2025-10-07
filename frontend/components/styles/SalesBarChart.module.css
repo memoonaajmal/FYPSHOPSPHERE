@@ -1,38 +1,89 @@
+/* SalesBarChart.module.css
+   Chart container with animation entrance and polished tooltip shell styling
+*/
+
+
+
+/* chart container with gradient accent on top-right */
 .chartContainer {
-  background-color: #ffffff;
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
-  margin-top: 32px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(250,247,243,0.98));
+  border-radius: 14px;
+  padding: 22px;
+  box-shadow: 0 14px 40px rgba(17,24,39,0.06);
+  margin-top: 22px;
+  transition: transform 320ms, box-shadow 320ms;
+  border: 1px solid rgba(112,99,74,0.04);
+  position: relative;
+  overflow: hidden;
+  will-change: transform;
+  animation: chartFadeIn 700ms ease both;
 }
 
-.chartContainer:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
+/* small decorative diagonal accent */
+.chartContainer::after {
+  content: "";
+  position: absolute;
+  right: -120px;
+  top: -80px;
+  width: 260px;
+  height: 260px;
+  transform: rotate(25deg);
+  background: radial-gradient(circle at 30% 20%, rgba(128,150,113,0.08), transparent 20%),
+              radial-gradient(circle at 70% 80%, rgba(210,171,128,0.06), transparent 20%);
+  pointer-events: none;
 }
 
+/* title */
 .title {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #1f2937;
-  margin-bottom: 1rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--carob);
+  margin-bottom: 12px;
 }
 
+/* loading text */
 .loadingText {
-  color: #6b7280;
-  font-size: 0.95rem;
+  color: var(--muted);
+  font-size: 0.96rem;
   text-align: center;
-  margin-top: 1rem;
+  margin-top: 6px;
 }
 
-/* Responsive adjustments */
+/* animation for card entrance */
+@keyframes chartFadeIn {
+  0% { opacity: 0; transform: translateY(12px) scale(0.997); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* tooltip overrides from recharts (applies to inline styles but we keep robust fallback) */
+.recharts-tooltip-wrapper {
+  z-index: 30;
+}
+
+/* responsive */
 @media (max-width: 768px) {
-  .chartContainer {
-    padding: 16px;
-  }
+  .chartContainer { padding: 14px; }
+  .title { font-size: 1rem; }
+}
+.bar {
+  transform-origin: bottom;
+  animation: growBars 1.4s ease-out forwards;
+}
 
-  .title {
-    font-size: 1rem;
+@keyframes growBars {
+  0% {
+    transform: scaleY(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
   }
 }
+
+/* Bar hover glow (optional but nice) */
+.bar:hover path {
+  filter: brightness(1.1) drop-shadow(0px 4px 8px rgba(90, 110, 79, 0.35));
+  transition: filter 220ms ease;
+}
+

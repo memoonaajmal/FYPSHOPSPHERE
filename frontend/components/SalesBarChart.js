@@ -55,16 +55,17 @@ export default function SalesBarChart() {
   return (
     <div className={styles.chartContainer}>
       <h3 className={styles.title}>Sales Overview</h3>
+
       <ResponsiveContainer width="100%" height={320}>
         <BarChart
           data={salesData}
           margin={{ top: 10, right: 30, left: 0, bottom: 5 }}
         >
-          {/* Gradient for bar fill */}
+          {/* 🌿 Softer premium gradient */}
           <defs>
             <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="10%" stopColor="#3b82f6" stopOpacity={0.9} />
-              <stop offset="90%" stopColor="#3b82f6" stopOpacity={0.3} />
+              <stop offset="0%" stopColor="#7f9372" stopOpacity={0.95} />
+              <stop offset="100%" stopColor="#a9b99f" stopOpacity={0.9} />
             </linearGradient>
           </defs>
 
@@ -87,14 +88,19 @@ export default function SalesBarChart() {
               border: "1px solid #e5e7eb",
               boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
               fontSize: "13px",
+              color: "#374151",
             }}
           />
+
           <Bar
             dataKey="value"
             fill="url(#colorSales)"
-            radius={[10, 10, 0, 0]}
+            radius={[14, 14, 0, 0]} // ✅ smoother rounded corners
             barSize={40}
-            animationDuration={1000}
+            animationBegin={0} // ✅ start immediately
+            animationDuration={1400} // ✅ slower, smoother rise
+            animationEasing="ease-out" // ✅ elegant motion
+            className={styles.bar}
           />
         </BarChart>
       </ResponsiveContainer>
