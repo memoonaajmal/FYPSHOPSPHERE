@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "../src/context/AuthContext";
 
+
 export default function ProtectedRoute({ children, role }) {
   const { user, loading } = useAuth();
   const router = useRouter();
@@ -11,7 +12,7 @@ export default function ProtectedRoute({ children, role }) {
   useEffect(() => {
     if (!loading) {
       if (!user) {
-        router.replace("/login");
+        router.replace("/");
       } else {
         // ❌ User tries to access a page not allowed for their role
         if (role && !user.roles?.includes(role)) {
