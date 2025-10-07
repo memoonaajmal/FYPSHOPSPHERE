@@ -97,7 +97,7 @@ exports.getDashboardAnalytics = async (req, res) => {
 };
 
 
-// 📊 GET /api/analytics/sales
+// 📊 GET /api/analytics/sales?range=daily|weekly|monthly
 exports.getSalesAnalytics = async (req, res) => {
   try {
     const sellerId = req.user?.id;
@@ -105,38 +105,77 @@ exports.getSalesAnalytics = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
+    const range = req.query.range || "weekly"; // default: weekly
+
     // 1️⃣ Find seller's stores
     const stores = await Store.find({ sellerId });
     const storeIds = stores.map((s) => s._id);
 
-    // 2️⃣ Get orders with items from those stores
+    // 2️⃣ Define date filter based on range
+    const now = new Date();
+    let startDate;
+
+    if (range === "daily") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    } else if (range === "weekly") {
+      const day = now.getDay(); // 0 = Sunday
+      const diff = now.getDate() - day + (day === 0 ? -6 : 1); // Monday as start
+      startDate = new Date(now.setDate(diff));
+      startDate.setHours(0, 0, 0, 0);
+    } else if (range === "monthly") {
+      startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    }
+
+    // 3️⃣ Get orders since startDate
     const orders = await Order.find({
       "items.storeId": { $in: storeIds },
       paymentStatus: "paid",
+      createdAt: { $gte: startDate },
     });
 
-    // 3️⃣ Create a map to sum daily sales
-    const dailySales = {};
+    // 4️⃣ Create a map based on range
+    const salesMap = {};
 
     orders.forEach((order) => {
+      let key;
       const date = new Date(order.createdAt);
-      const day = date.toLocaleDateString("en-US", { weekday: "short" }); // e.g. Mon, Tue
-      let orderTotal = 0;
 
+      if (range === "daily") {
+        key = date.toLocaleTimeString("en-US", { hour: "2-digit" });
+      } else if (range === "weekly") {
+        key = date.toLocaleDateString("en-US", { weekday: "short" }); // Mon, Tue
+      } else if (range === "monthly") {
+        key = date.toLocaleDateString("en-US", { day: "2-digit" }); // 01, 02, 03...
+      }
+
+      let orderTotal = 0;
       for (const item of order.items) {
         if (storeIds.includes(item.storeId)) {
           orderTotal += item.price * item.quantity;
         }
       }
 
-      dailySales[day] = (dailySales[day] || 0) + orderTotal;
+      salesMap[key] = (salesMap[key] || 0) + orderTotal;
     });
 
-    // 4️⃣ Convert map to array sorted by weekday order
-    const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
-    const sales = weekDays.map((day) => ({
-      name: day,
-      value: dailySales[day] || 0,
+    // 5️⃣ Build chart data in correct order
+    let labels = [];
+    if (range === "daily") {
+      labels = Array.from({ length: 24 }, (_, i) =>
+        new Date(0, 0, 0, i).toLocaleTimeString("en-US", { hour: "2-digit" })
+      );
+    } else if (range === "weekly") {
+      labels = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+    } else if (range === "monthly") {
+      const daysInMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0).getDate();
+      labels = Array.from({ length: daysInMonth }, (_, i) =>
+        (i + 1).toString().padStart(2, "0")
+      );
+    }
+
+    const sales = labels.map((label) => ({
+      name: label,
+      value: salesMap[label] || 0,
     }));
 
     res.json({ sales });
@@ -145,6 +184,7 @@ exports.getSalesAnalytics = async (req, res) => {
     res.status(500).json({ error: "Server error" });
   }
 };
+
 
 // 📊 GET /api/analytics/top-customers
 exports.getTopCustomers = async (req, res) => {

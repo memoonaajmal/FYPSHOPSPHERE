@@ -162,11 +162,11 @@
 }
 
 /* gradient border-left per stat (cycled using nth-child) */
-.statCard:nth-child(1) { border-left-image: linear-gradient(var(--matcha), var(--pistache)); border-left-width: 8px; }
-.statCard:nth-child(2) { border-left-image: linear-gradient(var(--chai), var(--carob)); border-left-width: 8px; }
-.statCard:nth-child(3) { border-left-image: linear-gradient(var(--pistache), var(--matcha)); border-left-width: 8px; }
-.statCard:nth-child(4) { border-left-image: linear-gradient(var(--vanilla), var(--chai)); border-left-width: 8px; }
-.statCard:nth-child(5) { border-left-image: linear-gradient(var(--carob), var(--matcha)); border-left-width: 8px; }
+.statCard:nth-child(1) { border-left-style: linear-gradient(var(--matcha), var(--pistache)); border-left-width: 8px; }
+.statCard:nth-child(2) { border-left-style: linear-gradient(var(--chai), var(--carob)); border-left-width: 8px; }
+.statCard:nth-child(3) { border-left-style: linear-gradient(var(--pistache), var(--matcha)); border-left-width: 8px; }
+.statCard:nth-child(4) { border-left-style: linear-gradient(var(--vanilla), var(--chai)); border-left-width: 8px; }
+.statCard:nth-child(5) { border-left-style: linear-gradient(var(--carob), var(--matcha)); border-left-width: 8px; }
 
 /* header: icon + title */
 .statHeader {
