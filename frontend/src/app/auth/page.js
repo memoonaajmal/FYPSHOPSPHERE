@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "../../styles/auth.module.css";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation"; // ✅ added useSearchParams
 import { auth } from "../../../firebase/config";
 import {
   createUserWithEmailAndPassword,
@@ -19,6 +19,8 @@ export default function AuthPage() {
   const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const router = useRouter();
+  const searchParams = useSearchParams(); // ✅ added
+  const redirect = searchParams.get("redirect"); // ✅ read redirect param
   const { setUser } = useAuth();
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -63,7 +65,7 @@ export default function AuthPage() {
     }
   };
 
-  // Handle Login - automatically uses role from backend
+  // ✅ Handle Login (fixed redirect)
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -78,7 +80,7 @@ export default function AuthPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}), // Don't send role, let backend return user's roles
+        body: JSON.stringify({}), // Let backend return roles
       });
       
       const data = await response.json();
@@ -88,7 +90,7 @@ export default function AuthPage() {
       
       // Route based on user's primary role
       const userRoles = data.user.roles || [];
-      
+
       if (userRoles.includes("admin")) {
         router.push("/admin/dashboard");
       } else if (userRoles.includes("seller")) {
@@ -103,7 +105,12 @@ export default function AuthPage() {
             : "/seller/create-store-request"
         );
       } else {
-        router.push("/");
+        // ✅ For normal user — check redirect param
+        if (redirect) {
+          router.push(redirect); // Go back to intended page (e.g., /checkout)
+        } else {
+          router.push("/"); // Default to home
+        }
       }
     } catch (err) {
       setError(err.message);

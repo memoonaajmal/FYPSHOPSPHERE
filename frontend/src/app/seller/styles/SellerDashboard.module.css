@@ -215,53 +215,21 @@
   .title {
     font-size: 1.75rem;
   }
-
   .statValue {
     font-size: 1.5rem;
   }
-
   .statsGrid {
     grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
   }
-
   .sectionTitle {
     font-size: 1.25rem;
   }
-
   .productCardWrapper {
     width: 200px;
   }
 }
+
 /* ======= Sales Chart Section ======= */
 .salesSection {
   margin-bottom: 48px; /* Adds space below the chart */
 }
-
-/* ---- SECTION CONTAINER ---- */
-.customersSection {
-  display: flex;
-  justify-content: space-between;
-  align-items: stretch; /* ensures equal height for both cards */
-  gap: 24px;
-  flex-wrap: wrap;
-  margin-top: 32px;
-}
-
-/* ---- MAKE BOTH CARDS EQUAL WIDTH ---- */
-.customersSection > * {
-  flex: 1 1 48%;
-  max-width: 48%;
-  display: flex;
-  flex-direction: column; /* allows internal content to align properly */
-}
-
-/* ---- STACK ON SMALLER SCREENS ---- */
-@media (max-width: 1024px) {
-  .customersSection > * {
-    flex: 1 1 100%;
-    max-width: 100%;
-  }
-}
-
-
-
