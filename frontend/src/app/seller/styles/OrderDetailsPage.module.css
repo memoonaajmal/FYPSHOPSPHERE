@@ -1,0 +1,123 @@
+.container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.title {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+}
+
+.backBtn {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 1rem;
+}
+
+.section {
+  margin-bottom: 1.8rem;
+}
+
+.section h2 {
+  font-size: 1.3rem;
+  margin-bottom: 0.8rem;
+}
+
+.statusBadge {
+  display: inline-block;
+  padding: 0.35rem 0.75rem;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  margin-left: 0.5rem;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+.statusBadge.paid {
+  background: #38a169;
+}
+
+.statusBadge.pending {
+  background: #eab308;
+}
+
+.statusBadge.returned {
+  background: #e63946;
+}
+
+.itemList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.8rem;
+  padding-bottom: 0.8rem;
+  border-bottom: 1px solid #eee;
+}
+
+.item img {
+  width: 60px;
+  height: 60px;
+  object-fit: cover;
+  margin-right: 1rem;
+  border-radius: 6px;
+}
+
+.grandTotal {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.buttonRow {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+}
+
+.markPaidBtn {
+  background: #38a169;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.returnBtn {
+  background: #e63946;
+  color: #fff;
+  padding: 0.7rem 1.2rem;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.markPaidBtn:hover {
+  background: #2f855a;
+}
+
+.returnBtn:hover {
+  background: #c53030;
+}
+
+.message {
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.error {
+  color: #e63946;
+}

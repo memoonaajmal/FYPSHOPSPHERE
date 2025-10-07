@@ -1,117 +1,84 @@
-.orderCard {
-  background: #fff;
-  padding: 1.5rem;
-  border-radius: 8px;
-  border: 1px solid #e5e5e5;
-  margin-bottom: 1.5rem;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+/* SellerOrderCard.module.css
+   Table styling for SellerOrderCard component
+   Matches site theme with gradient accents & shadows
+*/
+
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 2rem;
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(245,243,239,0.95));
 }
 
-.orderHeader {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  margin-bottom: 1rem;
+.ordersTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px;
 }
 
-.customerName {
-  font-size: 1.2rem;
+.ordersTable th,
+.ordersTable td {
+  padding: 0.9rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid rgba(112,99,74,0.08);
+}
+
+.ordersTable th {
+  background: linear-gradient(135deg, var(--almond), var(--vanilla));
   font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--text);
 }
 
-.customerInfo {
-  font-size: 0.9rem;
-  color: #555;
-}
-
-.orderMeta {
-  text-align: right;
-}
-
-.orderTotal {
-  font-size: 1.1rem;
-  margin-bottom: 0.3rem;
-}
-
-.orderTotal span {
-  font-weight: 600;
-}
-
-.statusBadge {
-  display: inline-block;
-  padding: 0.3rem 0.8rem;
-  font-size: 0.9rem;
-  border-radius: 4px;
-  margin-bottom: 0.4rem;
-  text-transform: capitalize;
-}
-
-.statusPaid {
-  background: #38a169;
-  color: #fff;
-}
-
-.statusPending {
-  background: #eab308;
-  color: #fff;
-}
-
-.statusReturned {
-  background: #e63946;
-  color: #fff;
-}
-
-.statusDefault {
-  background: #6b7280;
-  color: #fff;
+.ordersTable tr:hover {
+  background: rgba(128,150,113,0.05);
+  transition: background 200ms;
 }
 
 .trackingId {
-  font-size: 0.9rem;
-  color: #333;
-  margin: 0.3rem 0;
+  color: var(--muted);
+  font-size: 0.8rem;
 }
 
-.timestamp {
+.statusBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
   font-size: 0.85rem;
-  color: #777;
-}
-
-.itemList {
-  list-style: none;
-  padding: 0;
-  margin: 1rem 0;
-}
-
-.item {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0.4rem 0;
-  border-bottom: 1px solid #eee;
-}
-
-.item img {
-  width: 40px;
-  height: 40px;
-  object-fit: cover;
-  margin-right: 0.8rem;
-  border-radius: 4px;
-}
-
-.totals {
-  border-top: 1px solid #eee;
-  padding-top: 1rem;
-  text-align: right;
-}
-
-.totals p {
-  margin: 0.3rem 0;
-  font-size: 0.95rem;
-}
-
-.grandTotal {
+  text-transform: capitalize;
+  color: white;
   font-weight: 600;
-  font-size: 1.1rem;
-  color: #222;
+}
+
+.statusBadge.paid { background: var(--matcha); }
+.statusBadge.pending { background: var(--chai); }
+.statusBadge.returned { background: var(--carob); }
+.statusBadge.failed { background: #dc2626; }
+
+.viewBtn {
+  background: var(--matcha);
+  color: #fff;
+  border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.85rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: transform 200ms, box-shadow 200ms;
+}
+
+.viewBtn:hover {
+  background: var(--pistache);
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 8px 20px rgba(128,150,113,0.2);
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .ordersTable th, .ordersTable td { padding: 0.75rem 1rem; }
+}
+
+@media (max-width: 768px) {
+  .ordersTable { min-width: 100%; }
+  .viewBtn { padding: 0.45rem 0.85rem; font-size: 0.8rem; }
 }

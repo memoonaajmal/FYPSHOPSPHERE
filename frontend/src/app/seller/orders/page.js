@@ -3,24 +3,21 @@
 import { useEffect, useState } from "react";
 import { auth } from "../../../../firebase/config";
 import styles from "../styles/SellerOrdersPage.module.css";
-
-// ✅ Components
-import OrderCard from "../../../../components/SellerOrderCard";
+import SellerOrderCard from "../../../../components/SellerOrderCard";
 import OrderPagination from "../../../../components/OrderPagination";
-
 import { useSearchParams } from "next/navigation";
 
 export default function SellerOrdersPage() {
   const params = useSearchParams();
-  const page = parseInt(params.get("page") || "1", 10); // get page from URL
+  const page = parseInt(params.get("page") || "1", 10);
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalPages, setTotalPages] = useState(1);
-  const [storeId, setStoreId] = useState(null); // ✅ storeId of logged-in seller
+  const [storeId, setStoreId] = useState(null);
 
-  // ✅ Fetch storeId for logged-in seller
+  // ✅ Fetch storeId of logged-in seller
   useEffect(() => {
     const fetchStoreId = async () => {
       const user = auth.currentUser;
@@ -33,7 +30,7 @@ export default function SellerOrdersPage() {
 
       if (res.ok) {
         const data = await res.json();
-        setStoreId(data.storeId); // backend must return storeId
+        setStoreId(data.storeId);
       }
     };
 
@@ -64,16 +61,14 @@ export default function SellerOrdersPage() {
       if (!res.ok) throw new Error(`Error ${res.status}: ${await res.text()}`);
 
       const data = await res.json();
-
       let ordersList = Array.isArray(data.orders) ? data.orders : [];
 
-      // ✅ Derive `myPaymentStatus` per order based on this seller's items
+      // ✅ Determine payment status for current store
       if (storeId) {
         ordersList = ordersList.map((order) => {
           const myItems = order.items.filter((it) => it.storeId === storeId);
-
-          // ✅ Updated logic to handle "returned"
           let myPaymentStatus = "pending";
+
           if (myItems.every((it) => it.itemPaymentStatus === "paid")) {
             myPaymentStatus = "paid";
           } else if (myItems.every((it) => it.itemPaymentStatus === "returned")) {
@@ -94,7 +89,6 @@ export default function SellerOrdersPage() {
     }
   };
 
-  // ✅ Fetch orders on load / page change / storeId available
   useEffect(() => {
     if (storeId) fetchOrders();
   }, [page, storeId]);
@@ -105,22 +99,13 @@ export default function SellerOrdersPage() {
 
   return (
     <div className={styles.container}>
-      <h1 className={styles.title}>Orders for My Store</h1>
+      <h1 className={styles.title}>Order History</h1>
 
-      {/* ✅ Orders List */}
+      {/* ✅ Orders Table Component */}
       {orders.length === 0 ? (
         <p className={styles.message}>No orders found for your store yet.</p>
       ) : (
-        <div className={styles.orderList}>
-          {orders.map((order) => (
-            <OrderCard
-              key={order._id}
-              order={order}
-              storeId={storeId}
-              onStatusUpdated={fetchOrders} // refresh after marking paid or returned
-            />
-          ))}
-        </div>
+        <SellerOrderCard orders={orders} page={page} />
       )}
 
       {/* ✅ Pagination */}

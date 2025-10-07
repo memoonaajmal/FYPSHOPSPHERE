@@ -158,15 +158,32 @@
   justify-content: space-between;
   position: relative;
   overflow: visible;
-  border-left: 6px solid transparent;
+  border-left: 8px solid; /* border width for gradient */
+  cursor: pointer;
 }
 
-/* gradient border-left per stat (cycled using nth-child) */
-.statCard:nth-child(1) { border-left-style: linear-gradient(var(--matcha), var(--pistache)); border-left-width: 8px; }
-.statCard:nth-child(2) { border-left-style: linear-gradient(var(--chai), var(--carob)); border-left-width: 8px; }
-.statCard:nth-child(3) { border-left-style: linear-gradient(var(--pistache), var(--matcha)); border-left-width: 8px; }
-.statCard:nth-child(4) { border-left-style: linear-gradient(var(--vanilla), var(--chai)); border-left-width: 8px; }
-.statCard:nth-child(5) { border-left-style: linear-gradient(var(--carob), var(--matcha)); border-left-width: 8px; }
+/* hover effect for the whole card */
+.statCard:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(0,0,0,0.08);
+}
+
+/* gradient left borders using border-image */
+.statCard:nth-child(1) {
+  border-image: linear-gradient(var(--matcha), var(--pistache)) 1;
+}
+.statCard:nth-child(2) {
+  border-image: linear-gradient(var(--chai), var(--carob)) 1;
+}
+.statCard:nth-child(3) {
+  border-image: linear-gradient(var(--pistache), var(--matcha)) 1;
+}
+.statCard:nth-child(4) {
+  border-image: linear-gradient(var(--vanilla), var(--chai)) 1;
+}
+.statCard:nth-child(5) {
+  border-image: linear-gradient(var(--carob), var(--matcha)) 1;
+}
 
 /* header: icon + title */
 .statHeader {
@@ -175,6 +192,7 @@
   gap: 12px;
   margin-bottom: 6px;
 }
+
 .icon {
   width: 28px;
   height: 28px;
@@ -216,6 +234,13 @@
   margin-top: 10px;
   letter-spacing: -0.01em;
 }
+
+/* optional pulse keyframes */
+@keyframes pulse {
+  0%, 100% { transform: scale(1.08); }
+  50% { transform: scale(1.12); }
+}
+
 
 /* ---------- Top products strip (carousel-like) ---------- */
 .topProducts {

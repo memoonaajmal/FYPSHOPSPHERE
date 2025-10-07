@@ -9,6 +9,7 @@ const {
   deleteProduct,
   getMyOrders,
   updateItemStatus,
+  getOrderById,
 } = require('../controllers/sellerController');
 
 const User = require('../models/User');
@@ -42,6 +43,8 @@ router.delete('/products/:id', requireAuth, requireRole('seller'), deleteProduct
 
 // Orders
 router.get('/orders', requireAuth, requireRole('seller'), getMyOrders);
+// Get single order details
+router.get("/orders/:orderId", requireAuth, requireRole('seller'), getOrderById);
 
 // 🆕 Mark items as paid OR returned
 router.put('/orders/:orderId/status', requireAuth, requireRole('seller'), updateItemStatus);

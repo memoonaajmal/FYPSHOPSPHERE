@@ -173,7 +173,7 @@ exports.getMyOrders = async (req, res) => {
 
     const {
       page = 1,
-      limit = 5,
+      limit = 10,
       search = "",
       status = "",
       from = "",
@@ -293,6 +293,46 @@ exports.updateItemStatus = async (req, res) => {
     });
   } catch (err) {
     console.error("updateItemStatus error:", err);
+    return res.status(500).json({ message: "Server error" });
+  }
+};
+
+/**
+ * ✅ Get single order details for this seller
+ */
+exports.getOrderById = async (req, res) => {
+  try {
+    const store = await getStoreForSeller(req);
+    if (!store) return res.status(404).json({ message: "Store not found" });
+
+    const { orderId } = req.params;
+    const order = await Order.findById(orderId).lean();
+    if (!order) return res.status(404).json({ message: "Order not found" });
+
+    // Only include this seller’s items
+    const sellerItems = order.items.filter(
+      (item) => item.storeId?.toString() === store._id.toString()
+    );
+
+    const myPaymentStatus = sellerItems.every(
+      (it) => it.itemPaymentStatus === "paid" || it.itemPaymentStatus === "returned"
+    )
+      ? sellerItems[0].itemPaymentStatus
+      : "pending";
+
+    const itemsTotal = sellerItems.reduce(
+      (sum, it) => sum + (it.price * it.quantity || 0),
+      0
+    );
+
+    return res.json({
+      ...order,
+      items: sellerItems,
+      myPaymentStatus,
+      itemsTotal,
+    });
+  } catch (err) {
+    console.error("getOrderById error:", err);
     return res.status(500).json({ message: "Server error" });
   }
 };
