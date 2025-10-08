@@ -1,10 +1,10 @@
 /* CustomerEngagementCard.module.css
-   Navy/blue/white color scheme for professional dashboard cards
+   Unified color scheme with AdminDashboard (TopCustomers) styling
 */
 
 .card {
   position: relative;
-  background: var(--white);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
   border-radius: 14px;
   padding: 18px;
   box-shadow: var(--card-shadow);
@@ -30,9 +30,9 @@
   height: 140%;
   background: conic-gradient(
     from 120deg,
-    rgba(62,91,169,0.12),   /* blue-light */
-    rgba(39,70,144,0.10),   /* blue */
-    rgba(234,240,251,0.10)  /* blue-soft */
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(234,240,251,0.10)
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -47,18 +47,20 @@
 
 /* stronger hover lift + slight scale */
 .card:hover {
-  transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(39,70,144,0.18);
-  background: var(--blue-soft);
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
+  background: linear-gradient(180deg, var(--bg) 96%, var(--blue-soft) 95%);
   border: 1px solid var(--blue-light);
 }
 
 /* title */
 .title {
-  font-size: 1.08rem;
-  font-weight: 700;
-  margin-bottom: 12px;
-  color: var(--navy);
+ font-size: 1.70rem;
+  font-weight: 800;
+  text-align: center;
+  color: var(--blue);
+  letter-spacing: -0.5px;
+  margin-bottom: 0.75rem;
 }
 
 /* each stat row */
@@ -87,9 +89,9 @@
   height: 180%;
   background: conic-gradient(
     from 120deg,
-    rgba(62,91,169,0.14),   /* blue-light */
-    rgba(39,70,144,0.12),   /* blue */
-    rgba(234,240,251,0.12)  /* blue-soft */
+    rgba(62,91,169,0.14),
+    rgba(39,70,144,0.12),
+    rgba(234,240,251,0.12)
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -104,11 +106,11 @@
   opacity: 1;
 }
 
-/* stronger hover effect to match "visible" animations */
+/* stronger hover effect */
 .stat:hover {
-  background: linear-gradient(90deg, var(--blue-soft) 92%, var(--white) 94%);
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 30px rgba(39,70,144,0.08);
+  background: linear-gradient(90deg, var(--white) 95%, var(--blue-soft) 94%);
+  transform: translateY(-6px) scale(1.015);
+  box-shadow: 0 20px 50px rgba(39,70,144,0.14);
   border: 1px solid var(--blue-light);
   position: relative;
   z-index: 1;
