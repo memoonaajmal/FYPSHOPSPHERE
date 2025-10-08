@@ -198,43 +198,45 @@ export default function AdminDashboard() {
     <div className={styles.chartHeader}>
       <h3>🏪 Top Store Sales</h3>
       <p className={styles.chartSubtitle}>Highest performing stores this month</p>
-    </div>
-    <ResponsiveContainer width="100%" height={300}>
-      <BarChart data={stats.storeSales}>
-        <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
-        <XAxis
-          dataKey="_id"
-          tickFormatter={(id) =>
-            id?.length > 10 ? id.slice(0, 10) + "..." : id
-          }
-          tick={{ fill: "var(--muted)" }}
-        />
-        <YAxis tick={{ fill: "var(--muted)" }} />
-        <Tooltip
-          contentStyle={{
-            background: "var(--glass)",
-            backdropFilter: "blur(8px)",
-            borderRadius: "8px",
-            border: "1px solid rgba(0,0,0,0.05)",
-          }}
-        />
-        <defs>
-          {/* Gradient fill for bars */}
-          <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="var(--matcha)" stopOpacity={0.9} />
-            <stop offset="100%" stopColor="var(--matcha)" stopOpacity={0.4} />
-          </linearGradient>
-        </defs>
-        <Bar
-          dataKey="total"
-          fill="url(#barGradient)"
-          radius={[12, 12, 0, 0]}
-          barSize={70}
-        />
-      </BarChart>
-    </ResponsiveContainer>
-  </div>
+   </div>
+<ResponsiveContainer width="100%" height={300}>
+  <BarChart data={stats.storeSales}>
+    <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
+    <XAxis
+      dataKey="_id"
+      tickFormatter={(id) =>
+        id?.length > 10 ? id.slice(0, 10) + "..." : id
+      }
+      tick={{ fill: "var(--blue-soft)" }}
+    />
+    <YAxis tick={{ fill: "var(--blue-soft)" }} />
+    <Tooltip
+      contentStyle={{
+        background: "var(--blue-light)",
+        backdropFilter: "blur(8px)",
+        borderRadius: "8px",
+        border: "var(--blue-soft)",
+        color: "var(--blue-soft)",
+      }}
+    />
+    <defs>
+      {/* Gradient fill for bars */}
+      <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stopColor="var(--blue)" stopOpacity={0.9} />
+        <stop offset="100%" stopColor="var(--blue-light)" stopOpacity={0.4} />
+      </linearGradient>
+    </defs>
+    <Bar
+      dataKey="total"
+      fill="url(#barGradient)"
+      radius={[12, 12, 0, 0]}
+      barSize={70}
+    />
+  </BarChart>
+</ResponsiveContainer>
 </div>
+</div>
+
 
 
         {/* ✅ Management Links */}

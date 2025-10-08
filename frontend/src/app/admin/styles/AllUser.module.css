@@ -1,29 +1,29 @@
 /* Wrapper (main container) */
 .wrapper {
   padding: 2.5rem;
-  background: var(--glass);
+  background: var(--blue-soft);
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
+  box-shadow: var(--card-shadow);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--border);
   animation: fadeIn 0.6s ease-in-out;
   transition: all 0.3s ease;
 }
 
 .wrapper:hover {
   transform: translateY(-2px);
-  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 32px rgba(39, 70, 144, 0.12);
 }
 
 /* Main Title */
 .title {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--carob);
+  color: var(--navy);
   margin-bottom: 2rem;
   text-align: center;
   letter-spacing: 0.4px;
-  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  text-shadow: 0 1px 2px rgba(39, 70, 144, 0.1);
 }
 
 /* Section Subtitle */
@@ -31,8 +31,8 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin: 2.5rem 0 1.25rem;
-  color: var(--matcha);
-  border-left: 4px solid var(--carob);
+  color: var(--blue);
+  border-left: 4px solid var(--blue-light);
   padding-left: 12px;
   position: relative;
   display: inline-block;
@@ -45,22 +45,23 @@
   bottom: -4px;
   width: 40%;
   height: 2px;
-  background: linear-gradient(to right, var(--matcha), transparent);
+  background: linear-gradient(to right, var(--blue-light), transparent);
 }
 
 /* Table Container */
 .tableWrapper {
   overflow-x: auto;
   border-radius: 12px;
-  background: #ffffff;
+  background: var(--white);
   margin-bottom: 2rem;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 16px rgba(39, 70, 144, 0.06);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
+  border: 1px solid var(--border);
 }
 
 .tableWrapper:hover {
   transform: translateY(-3px);
-  box-shadow: 0 6px 22px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 6px 22px rgba(39, 70, 144, 0.1);
 }
 
 /* Table */
@@ -73,8 +74,8 @@
 
 /* Header Row */
 .theadRow {
-  background: linear-gradient(90deg, var(--matcha), var(--carob));
-  color: #fff;
+  background: var(--accent-gradient);
+  color: var(--white);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
@@ -83,19 +84,19 @@
 .td {
   padding: 14px 18px;
   font-size: 0.95rem;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  border-bottom: 1px solid var(--border);
   text-align: left;
   transition: color 0.2s ease;
 }
 
 /* Body Cells */
 .td {
-  color: #333;
+  color: var(--text);
 }
 
 .th {
   font-weight: 600;
-  color: #f1f5f9;
+  color: var(--white);
 }
 
 /* Table Row Hover */
@@ -104,33 +105,33 @@
 }
 
 .row:hover {
-  background: rgba(243, 244, 246, 0.6);
+  background: var(--blue-soft);
   transform: scale(1.005);
 }
 
 /* Button */
 .button {
   padding: 8px 14px;
-  background: var(--carob);
-  color: var(--vanilla);
+  background: var(--blue);
+  color: var(--white);
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
 }
 
 .button:hover {
-  background: var(--matcha);
-  color: #fff;
+  background: var(--blue-light);
+  color: var(--white);
   transform: translateY(-2px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
 }
 
 .button:focus-visible {
-  outline: 3px solid var(--matcha);
+  outline: 3px solid var(--blue-light);
   outline-offset: 2px;
 }
 

@@ -1,7 +1,7 @@
 .dashboard {
   padding: 2rem 2.5rem;
   color: var(--text);
-  background: linear-gradient(180deg, var(--bg) 0%, #f9fafb 100%);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
@@ -13,7 +13,8 @@
 .title {
   font-size: 2rem;
   font-weight: 800;
-  color: var(--carob);
+  text-align: center;
+  color: var(--blue);
   letter-spacing: -0.5px;
   margin-bottom: 0.75rem;
 }
@@ -33,12 +34,11 @@
 }
 
 .summaryCard {
-  background: var(--glass);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(14px);
+  background: var(--blue-soft);
+  border: 1px solid var(--border);
   border-radius: 14px;
   padding: 1.75rem 1.5rem;
-  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--card-shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
@@ -47,7 +47,7 @@
 
 .summaryCard:hover {
   transform: translateY(-5px);
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 28px rgba(39, 70, 144, 0.15);
 }
 
 .cardHeader {
@@ -63,7 +63,7 @@
 .value {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--carob);
+  color: var(--blue);
   margin-bottom: 0.2rem;
 }
 
@@ -73,11 +73,11 @@
 }
 
 .positive {
-  color: var(--matcha);
+  color: var(--success);
 }
 
 .negative {
-  color: #dc2626;
+  color: var(--danger);
 }
 
 /* ===== Store Cards ===== */
@@ -89,12 +89,12 @@
 }
 
 .card {
-  background: var(--carob);
-  color: #fff;
+  background: var(--blue-light);
+  color: var(--white);
   border-radius: 12px;
   text-align: center;
   padding: 2.2rem 1rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 6px 16px rgba(39, 70, 144, 0.2);
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   cursor: pointer;
   position: relative;
@@ -124,8 +124,8 @@
 
 .card:hover {
   transform: translateY(-6px);
-  background: linear-gradient(145deg, var(--matcha), #4f6f52);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.2);
+  background: linear-gradient(145deg, var(--blue), var(--blue));
+  box-shadow: 0 12px 28px rgba(39, 70, 144, 0.25);
 }
 
 .icon {
@@ -138,13 +138,13 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-bottom: 0.5rem;
-  color: var(--vanilla);
+  color: var(--white);
 }
 
 .cardText {
   font-size: 0.9rem;
   opacity: 0.85;
-  color: var(--almond);
+  color: var(--blue-soft);
   line-height: 1.4;
 }
 
@@ -156,21 +156,19 @@
 }
 
 .chartBox {
-  background: var(--glass);
+  background: var(--blue-soft);
   border-radius: 14px;
   padding: 1.8rem 1.5rem;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.06);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .chartBox:hover {
   transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 10px 24px rgba(39, 70, 144, 0.15);
 }
 
-/* Chart Header & Subtitle */
 .chartHeader {
   display: flex;
   flex-direction: column;
@@ -181,7 +179,7 @@
 .chartHeader h3 {
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--carob);
+  color: var(--blue);
   margin-bottom: 0.3rem;
 }
 

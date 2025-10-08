@@ -7,8 +7,8 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function StoresPage() {
   const [stores, setStores] = useState([]);
-  const [loading, setLoading] = useState(true);  // ✅ define loading state
-  const [error, setError] = useState(null);      // ✅ define error state
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     async function fetchStores() {
@@ -31,21 +31,18 @@ export default function StoresPage() {
   }, []);
 
   return (
-    <div style={{ padding: "24px" }}>
-      <h1 className={styles.heading}>
-        Store Management
-      </h1>
+    <div className={styles.wrapper}>
+      <h1 className={styles.mainHeading}>Store Management</h1>
 
-      {/* Stores Section */}
       <section id="stores" className={styles.storesSection}>
-        <h2 className={styles.heading}>Our Stores</h2>
+        <h2 className={styles.subHeading}>Our Stores</h2>
 
         {loading ? (
-          <p>Loading stores...</p>
+          <p className={styles.loading}>Loading stores...</p>
         ) : error ? (
           <p className={styles.error}>{error}</p>
         ) : stores.length === 0 ? (
-          <p>No stores found.</p>
+          <p className={styles.empty}>No stores found.</p>
         ) : (
           <div className={styles.grid}>
             {stores.map((store) => (
