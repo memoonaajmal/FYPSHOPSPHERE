@@ -1,8 +1,8 @@
 /* SellerDashboard.module.css
-   Modern, clean seller dashboard using your palette.
-   - Visible interactive effects (gradient moves, lift/slide).
+   Professional e-commerce dashboard using white, navy, and blue accents.
    - Uses CSS variables for palette & reusability.
 */
+
 .dashboard {
   width: 100vw;
   min-height: 100vh;
@@ -10,39 +10,36 @@
   padding: 44px 28px;
   font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   color: var(--text);
-
-  /* full-screen background */
-  background-image: radial-gradient(circle at 10% 10%, rgba(128,150,113,0.035), transparent 10%),
-                    radial-gradient(circle at 90% 90%, rgba(249, 249, 2, 0.03), transparent 10%),
-                    var(--bg);
-
+  background: var(--bg); /* solid white from globals.css */
   border-radius: 0;
   display: flex;
   flex-direction: column;
 }
-
 
 /* ---------- Title ---------- */
 .title {
   font-size: 2rem;
   font-weight: 700;
   margin-bottom: 28px;
-  color: var(--text);
+  color: var(--navy);
   letter-spacing: -0.02em;
-  display: inline-block;
+  display: block;
   position: relative;
+  text-align: center; /* Center the title horizontally */
+  width: 100%;
 }
 
 /* subtle underline accent */
 .title::after {
   content: "";
   display: block;
+  margin: 0 auto;           /* Center the underline */
   height: 6px;
   width: 160px;
   margin-top: 10px;
   border-radius: 8px;
-  background: linear-gradient(90deg, rgba(128,150,113,0.9), rgba(211,171,128,0.9));
-  opacity: 0.15;
+  background: var(--accent-gradient); /* blue gradient */
+  opacity: 0.18;
 }
 
 /* ---------- Top navigation cards ---------- */
@@ -54,16 +51,16 @@
   padding: 0 20px;
 }
 
-/* glassy cards with gradient accent border & hover animation */
+/* glassy cards with accent border & hover animation */
 .card {
-  background: linear-gradient(180deg, rgba(255,255,255,0.85), rgba(255,255,255,0.72));
+  background: var(--section-bg);
   border-radius: 14px;
   padding: 22px;
   box-shadow: var(--card-shadow);
   transition: transform 260ms cubic-bezier(.2,.9,.2,1), box-shadow 260ms, background 300ms;
   cursor: pointer;
   text-align: left;
-  border: 1px solid rgba(112,99,74,0.06);
+  border: 1px solid var(--border);
   position: relative;
   overflow: hidden;
   min-height: 110px;
@@ -80,7 +77,12 @@
   top: -30%;
   width: 220%;
   height: 140%;
-  background: conic-gradient(from 120deg, rgba(128,150,113,0.12), rgba(179,183,146,0.10), rgba(210,171,128,0.10));
+  background: conic-gradient(
+    from 120deg,
+    rgba(39,70,144,0.10), /* blue */
+    rgba(62,91,169,0.10), /* blue-light */
+    rgba(234,240,251,0.10)  /* blue-soft */
+  );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
   opacity: 0;
@@ -91,18 +93,16 @@
 /* --- Stronger hover for cards --- */
 .card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(17, 24, 39, 0.18);
-  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(240,237,230,0.92));
-  border: 1px solid rgba(128,150,113,0.25); /* darker accent border */
+  box-shadow: 0 20px 60px rgba(39,70,144,0.12); /* blue shadow */
+  background: var(--white);
+  border: 1px solid var(--blue);
 }
-
-
 
 /* card titles & text */
 .cardTitle {
   font-size: 1.15rem;
   font-weight: 700;
-  color: var(--carob);
+  color: var(--blue);
   margin-bottom: 6px;
 }
 .cardText {
@@ -119,9 +119,9 @@
   border-radius: 999px;
   font-size: 0.8rem;
   font-weight: 600;
-  background: linear-gradient(90deg, var(--matcha), var(--chai));
-  color: white;
-  box-shadow: 0 6px 18px rgba(115,92,55,0.08);
+  background: var(--accent-gradient);
+  color: var(--white);
+  box-shadow: 0 6px 18px rgba(39,70,144,0.08); /* blue */
 }
 
 /* ---------- Analytics section ---------- */
@@ -135,7 +135,7 @@
 .sectionTitle {
   font-size: 1.4rem;
   font-weight: 700;
-  color: var(--text);
+  color: var(--navy);
   margin-bottom: 8px;
 }
 
@@ -146,43 +146,54 @@
   gap: 18px;
 }
 
-/* stat card with left gradient band and hover animation */
+/* stat card with left accent band and subtle hover */
 .statCard {
-  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(245,243,239,0.96));
+  background: var(--section-bg);
   border-radius: 14px;
   padding: 18px 20px 20px 22px;
   box-shadow: var(--card-shadow);
-  transition: transform 300ms cubic-bezier(.2,.9,.2,1), box-shadow 300ms, opacity 400ms;
+  transition: box-shadow 300ms, background 400ms, border 400ms;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
-  overflow: visible;
-  border-left: 8px solid; /* border width for gradient */
-  cursor: pointer;
+  overflow: hidden;
+  border-left: 8px solid var(--blue);
+  cursor: default; /* Not a button */
+}
+
+/* subtle gradient streak on stat card hover */
+.statCard::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(39,70,144,0.06),   /* blue */
+    rgba(62,91,169,0.04),   /* blue-light */
+    rgba(234,240,251,0.04)  /* blue-soft */
+  );
+  opacity: 0;
+  transition: opacity 400ms;
+  pointer-events: none;
+  border-radius: 14px;
+  z-index: 0;
+}
+
+.statCard:hover::before {
+  opacity: 1;
 }
 
 /* hover effect for the whole card */
 .statCard:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 16px 32px rgba(0,0,0,0.08);
-}
-
-/* gradient left borders using border-image */
-.statCard:nth-child(1) {
-  border-image: linear-gradient(var(--matcha), var(--pistache)) 1;
-}
-.statCard:nth-child(2) {
-  border-image: linear-gradient(var(--chai), var(--carob)) 1;
-}
-.statCard:nth-child(3) {
-  border-image: linear-gradient(var(--pistache), var(--matcha)) 1;
-}
-.statCard:nth-child(4) {
-  border-image: linear-gradient(var(--vanilla), var(--chai)) 1;
-}
-.statCard:nth-child(5) {
-  border-image: linear-gradient(var(--carob), var(--matcha)) 1;
+  box-shadow: 0 16px 32px rgba(39,70,144,0.08); /* softer blue shadow */
+  background: var(--section-bg); /* keep background same */
+  border: 1px solid var(--border); /* keep border same */
+  position: relative;
+  z-index: 1;
 }
 
 /* header: icon + title */
@@ -200,16 +211,16 @@
   align-items: center;
   justify-content: center;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.65));
-  color: var(--matcha);
-  box-shadow: 0 6px 14px rgba(115,92,55,0.04);
+  background: var(--blue-soft); /* icon background is light blue */
+  color: var(--blue);           /* icon itself is blue */
+  box-shadow: 0 6px 14px rgba(39,70,144,0.04);
   transition: transform 300ms, box-shadow 300ms;
 }
 
 /* pulsing icon effect on hover */
 .statCard:hover .icon {
   transform: scale(1.08);
-  box-shadow: 0 10px 20px rgba(115,92,55,0.08);
+  box-shadow: 0 10px 20px rgba(39,70,144,0.08);
   animation: pulse 1.4s infinite;
 }
 
@@ -217,7 +228,7 @@
 .statHeader h3 {
   font-size: 0.98rem;
   margin: 0;
-  color: var(--carob);
+  color: var(--blue);
   font-weight: 600;
 }
 .subText {
@@ -230,7 +241,7 @@
 .statValue {
   font-size: 1.6rem;
   font-weight: 800;
-  color: #0f1724;
+  color: var(--navy);
   margin-top: 10px;
   letter-spacing: -0.01em;
 }
@@ -241,10 +252,9 @@
   50% { transform: scale(1.12); }
 }
 
-
 /* ---------- Top products strip (carousel-like) ---------- */
 .topProducts {
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(245,243,239,0.98));
+  background: var(--section-bg);
   border-radius: 14px;
   padding: 20px;
   box-shadow: var(--card-shadow);
@@ -254,12 +264,12 @@
 .topProducts h3 {
   font-size: 1.1rem;
   font-weight: 700;
-  color: var(--carob);
+  color: var(--blue);
   margin-bottom: 18px;
 }
 
 .scrollContainer {
-  overflow: hidden; /* ✅ keeps cards inside the strip */
+  overflow: hidden;
   position: relative;
   width: 100%;
   padding: 11px 2px;
@@ -273,9 +283,7 @@
   animation: scrollInfinite 28s linear infinite;
 }
 
-
-
-/* pause on hover (already set) and add subtle 3D */
+/* pause on hover and add subtle 3D */
 .scrollContent:hover {
   animation-play-state: paused;
 }
@@ -283,35 +291,27 @@
 .productCardWrapper {
   flex: 0 0 auto;
   width: 260px;
-  background: linear-gradient(
-    180deg,
-    rgba(255, 255, 255, 0.99),
-    rgba(245, 242, 238, 0.98)
-  );
+  background: var(--white);
   border-radius: 12px;
   padding: 12px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 12px 30px rgba(17, 24, 39, 0.06);
+  box-shadow: 0 12px 30px rgba(39,70,144,0.06); /* blue shadow */
   transform: translateZ(0);
-  transform-origin: center top; /* ✅ grow from center-top, not outwards */
+  transform-origin: center top;
   transition: transform 260ms ease, box-shadow 260ms ease, background 260ms ease;
-  border: 1px solid rgba(112, 99, 74, 0.04);
+  border: 1px solid var(--border);
   position: relative;
-  z-index: 1; /* ✅ ensures card appears above neighbors when hovered */
+  z-index: 1;
 }
 
-/* --- Hover State (safe scale) --- */
+/* --- Hover State --- */
 .productCardWrapper:hover {
-  transform: translateY(-8px) scale(1.02); /* ✅ slightly smaller scale to prevent overflow */
-  background: linear-gradient(
-    135deg,
-    rgba(245, 243, 239, 1),
-    rgba(232, 229, 221, 0.95)
-  );
-  box-shadow: 0 30px 70px rgba(17, 24, 39, 0.18);
-  border: 1px solid rgba(128, 150, 113, 0.25); /* ✅ matcha accent */
+  transform: translateY(-8px) scale(1.02);
+  background: var(--section-bg);
+  box-shadow: 0 30px 70px rgba(39,70,144,0.18); /* blue shadow */
+  border: 1px solid var(--blue);
 }
 
 /* soldCount style */
@@ -324,7 +324,7 @@
 /* keyframes */
 @keyframes scrollInfinite {
   0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); } /* list duplicated in JS for seamless */
+  100% { transform: translateX(-50%); }
 }
 
 @keyframes pulse {
@@ -361,7 +361,7 @@
 
 /* small tweak for print */
 @media print {
-  .dashboard { background: white; box-shadow: none; }
+  .dashboard { background: var(--white); box-shadow: none; }
 }
 
 /* ======= Customers Insights 60/40 layout ======= */
@@ -375,5 +375,7 @@
 
 .leftSection,
 .rightSection {
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
 }

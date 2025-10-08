@@ -1,10 +1,13 @@
-/* card container - matches dashboard cards but scoped */
+/* CustomerEngagementCard.module.css
+   Navy/blue/white color scheme for professional dashboard cards
+*/
+
 .card {
   position: relative;
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(250,248,244,0.98));
+  background: var(--white);
   border-radius: 14px;
   padding: 18px;
-  box-shadow: 0 10px 30px rgba(17,24,39,0.06);
+  box-shadow: var(--card-shadow);
   width: 100%;
   transition: transform 320ms cubic-bezier(.2,.9,.2,1),
               box-shadow 320ms,
@@ -13,11 +16,11 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  border: 1px solid rgba(112,99,74,0.05);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
-/* ✅ animated gradient streak reveal on card hover */
+/* animated gradient streak reveal on card hover */
 .card::before {
   content: "";
   position: absolute;
@@ -27,9 +30,9 @@
   height: 140%;
   background: conic-gradient(
     from 120deg,
-    rgba(128,150,113,0.12),
-    rgba(179,183,146,0.10),
-    rgba(210,171,128,0.10)
+    rgba(62,91,169,0.12),   /* blue-light */
+    rgba(39,70,144,0.10),   /* blue */
+    rgba(234,240,251,0.10)  /* blue-soft */
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -42,12 +45,12 @@
   opacity: 1;
 }
 
-/* ✅ stronger hover lift + slight scale */
+/* stronger hover lift + slight scale */
 .card:hover {
   transform: translateY(-8px) scale(1.02);
-  box-shadow: 0 20px 60px rgba(17, 24, 39, 0.18);
-  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(240,237,230,0.92));
-  border: 1px solid rgba(128,150,113,0.25);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.18);
+  background: var(--blue-soft);
+  border: 1px solid var(--blue-light);
 }
 
 /* title */
@@ -55,7 +58,7 @@
   font-size: 1.08rem;
   font-weight: 700;
   margin-bottom: 12px;
-  color: var(--carob);
+  color: var(--navy);
 }
 
 /* each stat row */
@@ -66,15 +69,15 @@
   align-items: center;
   margin: 10px 0;
   font-size: 0.95rem;
-  background: linear-gradient(180deg, rgba(249,250,251,0.8), rgba(255,255,255,0.6));
+  background: linear-gradient(90deg, var(--blue-soft) 0%, var(--white) 100%);
   border-radius: 10px;
   padding: 10px 12px;
   transition: background 260ms, transform 260ms, box-shadow 260ms, border 260ms;
-  border: 1px solid rgba(112,99,74,0.03);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
-/* ✅ animated gradient streak on stat hover */
+/* animated gradient streak on stat hover */
 .stat::before {
   content: "";
   position: absolute;
@@ -84,9 +87,9 @@
   height: 180%;
   background: conic-gradient(
     from 120deg,
-    rgba(128,150,113,0.14),
-    rgba(179,183,146,0.12),
-    rgba(210,171,128,0.12)
+    rgba(62,91,169,0.14),   /* blue-light */
+    rgba(39,70,144,0.12),   /* blue */
+    rgba(234,240,251,0.12)  /* blue-soft */
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -101,18 +104,18 @@
   opacity: 1;
 }
 
-/* ✅ stronger hover effect to match "visible" animations */
+/* stronger hover effect to match "visible" animations */
 .stat:hover {
-  background: linear-gradient(90deg, rgba(233,227,214,0.92), rgba(255,255,255,0.94));
+  background: linear-gradient(90deg, var(--blue-soft) 92%, var(--white) 94%);
   transform: translateY(-4px) scale(1.02);
-  box-shadow: 0 14px 30px rgba(112,99,74,0.08);
-  border: 1px solid rgba(128,150,113,0.25);
+  box-shadow: 0 14px 30px rgba(39,70,144,0.08);
+  border: 1px solid var(--blue-light);
   position: relative;
   z-index: 1;
 }
 
-.stat span { color: var(--mutilla); }
-.stat strong { color: #111827; font-weight: 700; }
+.stat span { color: var(--blue-light); }
+.stat strong { color: var(--navy); font-weight: 700; }
 
 /* icon + label */
 .iconLabel {
@@ -120,12 +123,12 @@
   align-items: center;
   gap: 10px;
   font-weight: 600;
-  color: var(--carob);
+  color: var(--navy);
 }
 
 /* icon style */
 .icon {
-  color: var(--matcha);
+  color: var(--blue);
   font-size: 1.15rem;
   display: inline-flex;
   align-items: center;
@@ -133,8 +136,8 @@
   width: 34px;
   height: 34px;
   border-radius: 8px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.7));
-  box-shadow: 0 8px 20px rgba(115,92,55,0.04);
+  background: var(--blue-soft);
+  box-shadow: 0 8px 20px rgba(39,70,144,0.04);
   transition: transform 320ms, box-shadow 320ms;
   z-index: 1;
 }
@@ -142,12 +145,12 @@
 /* animate icon on stat hover */
 .stat:hover .icon {
   transform: rotate(-8deg) scale(1.08);
-  box-shadow: 0 16px 38px rgba(115,92,55,0.08);
+  box-shadow: 0 16px 38px rgba(39,70,144,0.08);
 }
 
 /* loading/empty */
 .loading, .empty {
-  color: var(--mutilla);
+  color: var(--blue-light);
   font-size: 0.95rem;
   text-align: center;
   padding: 8px 0;

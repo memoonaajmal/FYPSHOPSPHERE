@@ -61,14 +61,14 @@ export default function SellerDashboard() {
         <div className={styles.grid}>
           <Link href="/seller/products">
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>My Products</h2>
+              <h2 className={styles.cardTitle}>View My Products</h2>
               <p className={styles.cardText}>Manage, add, or update products</p>
             </div>
           </Link>
 
           <Link href="/seller/orders">
             <div className={styles.card}>
-              <h2 className={styles.cardTitle}>My Orders</h2>
+              <h2 className={styles.cardTitle}>Order History</h2>
               <p className={styles.cardText}>Track all placed orders easily</p>
             </div>
           </Link>

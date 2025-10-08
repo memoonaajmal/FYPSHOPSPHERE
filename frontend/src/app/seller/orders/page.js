@@ -101,6 +101,13 @@ export default function SellerOrdersPage() {
     <div className={styles.container}>
       <h1 className={styles.title}>Order History</h1>
 
+      {/* Animated info text above the table */}
+      <div className={styles.tableInfo}>
+        Here you can view and manage all orders placed in your store.
+        {"\n"}
+        Click "View" to see order details or update status.
+      </div>
+
       {/* ✅ Orders Table Component */}
       {orders.length === 0 ? (
         <p className={styles.message}>No orders found for your store yet.</p>

@@ -1,6 +1,6 @@
 /* SellerOrderCard.module.css
    Table styling for SellerOrderCard component
-   Matches site theme with gradient accents & shadows
+   Navy/blue/white color scheme for consistency with dashboard
 */
 
 .tableWrapper {
@@ -9,7 +9,7 @@
   margin-top: 2rem;
   border-radius: 14px;
   box-shadow: var(--card-shadow);
-  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(245,243,239,0.95));
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), var(--blue-soft) 98%);
 }
 
 .ordersTable {
@@ -18,22 +18,27 @@
   min-width: 600px;
 }
 
+.ordersTable thead {
+  background: linear-gradient(90deg, var(--blue-soft) 80%, var(--white) 100%);
+}
+
 .ordersTable th,
 .ordersTable td {
   padding: 0.9rem 1.2rem;
   text-align: left;
-  border-bottom: 1px solid rgba(112,99,74,0.08);
+  border-bottom: 1px solid var(--border);
 }
 
 .ordersTable th {
-  background: linear-gradient(135deg, var(--almond), var(--vanilla));
+  background: transparent; /* Remove individual th backgrounds */
   font-weight: 600;
   font-size: 0.95rem;
-  color: var(--text);
+  color: var(--navy);
+  border-bottom: 2px solid var(--blue-light);
 }
 
 .ordersTable tr:hover {
-  background: rgba(128,150,113,0.05);
+  background: linear-gradient(90deg, var(--blue-soft) 70%, var(--white) 100%);
   transition: background 200ms;
 }
 
@@ -51,26 +56,26 @@
   font-weight: 600;
 }
 
-.statusBadge.paid { background: var(--matcha); }
-.statusBadge.pending { background: var(--chai); }
-.statusBadge.returned { background: var(--carob); }
-.statusBadge.failed { background: #dc2626; }
+.statusBadge.paid { background: var(--blue); }
+.statusBadge.pending { background: var(--blue-light); }
+.statusBadge.returned { background: var(--muted); }
+.statusBadge.failed { background: var(--danger); }
 
 .viewBtn {
-  background: var(--matcha);
+  background: var(--blue);
   color: #fff;
   border: none;
   padding: 0.5rem 1rem;
   font-size: 0.85rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: transform 200ms, box-shadow 200ms;
+  transition: transform 200ms, box-shadow 200ms, background 200ms;
 }
 
 .viewBtn:hover {
-  background: var(--pistache);
-  transform: translateY(-2px) scale(1.03);
-  box-shadow: 0 8px 20px rgba(128,150,113,0.2);
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(39,70,144,0.12);
 }
 
 /* Responsive */

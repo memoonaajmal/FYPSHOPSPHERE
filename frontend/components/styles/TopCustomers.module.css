@@ -1,24 +1,25 @@
 /* TopCustomers.module.css
    Compact, clean list of top customers with animated hover interactions
+   Navy/blue/white color scheme
 */
 
 /* container */
 .topCustomers {
   position: relative;
-  background: linear-gradient(180deg, rgba(255,255,255,0.99), rgba(250,248,244,0.99));
+  background: linear-gradient(180deg, var(--white) 99%, var(--blue-soft) 99%);
   border-radius: 14px;
-  box-shadow: 0 12px 36px rgba(17,24,39,0.06);
+  box-shadow: var(--card-shadow);
   padding: 18px;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  border: 1px solid rgba(112,99,74,0.04);
+  border: 1px solid var(--border);
   overflow: hidden;
   transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms, background 320ms, border 320ms;
 }
 
-/* ✅ animated streak reveal for container */
+/* animated streak reveal for container */
 .topCustomers::before {
   content: "";
   position: absolute;
@@ -28,9 +29,9 @@
   height: 140%;
   background: conic-gradient(
     from 120deg,
-    rgba(128,150,113,0.12),
-    rgba(179,183,146,0.10),
-    rgba(210,171,128,0.10)
+    rgba(62,91,169,0.12),   /* blue-light */
+    rgba(39,70,144,0.10),   /* blue */
+    rgba(234,240,251,0.10)  /* blue-soft */
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -45,16 +46,16 @@
 
 .topCustomers:hover {
   transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 20px 60px rgba(17, 24, 39, 0.16);
-  background: linear-gradient(180deg, rgba(255,255,255,0.96), rgba(243,241,236,0.95));
-  border: 1px solid rgba(128,150,113,0.25);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
+  background: linear-gradient(180deg, var(--white) 96%, var(--blue-soft) 95%);
+  border: 1px solid var(--blue-light);
 }
 
 /* heading */
 .topCustomers h3 {
   font-size: 1.06rem;
   margin-bottom: 8px;
-  color: #3f2f1e;
+  color: var(--navy);
 }
 
 /* list */
@@ -72,16 +73,16 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(180deg, rgba(249,250,251,0.9), rgba(255,255,255,0.9));
+  background: linear-gradient(90deg, var(--blue-soft) 0%, var(--white) 100%);
   border-radius: 10px;
   padding: 12px 14px;
   margin-bottom: 0;
   transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms, background 300ms, border 300ms;
-  border: 1px solid rgba(112,99,74,0.03);
+  border: 1px solid var(--border);
   overflow: hidden;
 }
 
-/* ✅ animated streak for each row */
+/* animated streak for each row */
 .customerCard::before {
   content: "";
   position: absolute;
@@ -91,9 +92,9 @@
   height: 180%;
   background: conic-gradient(
     from 120deg,
-    rgba(128,150,113,0.14),
-    rgba(179,183,146,0.12),
-    rgba(210,171,128,0.12)
+    rgba(62,91,169,0.14),   /* blue-light */
+    rgba(39,70,144,0.12),   /* blue */
+    rgba(234,240,251,0.12)  /* blue-soft */
   );
   transform: rotate(8deg) translateX(-10%);
   transition: transform 700ms ease, opacity 500ms;
@@ -106,19 +107,19 @@
   opacity: 1;
 }
 
-/* ✅ hover effect - premium style */
+/* hover effect - premium style */
 .customerCard:hover {
-  background: linear-gradient(180deg, rgba(255,255,255,0.95), rgba(243,241,236,0.94));
+  background: linear-gradient(90deg, var(--white) 95%, var(--blue-soft) 94%);
   transform: translateY(-6px) scale(1.015);
-  box-shadow: 0 20px 50px rgba(17,24,39,0.14);
-  border: 1px solid rgba(128,150,113,0.25);
+  box-shadow: 0 20px 50px rgba(39,70,144,0.14);
+  border: 1px solid var(--blue-light);
 }
 
 /* name & email */
 .customerCard h4 {
   font-size: 1rem;
   margin: 0;
-  color: #2b1f12;
+  color: var(--navy);
 }
 
 .customerCard p {
@@ -139,7 +140,7 @@
 .stats p {
   margin: 0;
   font-size: 0.9rem;
-  color: #1f2937;
+  color: var(--blue);
 }
 
 /* responsive */

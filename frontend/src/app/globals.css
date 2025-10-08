@@ -1,23 +1,36 @@
 :root {
-  --matcha: #809671;
-  --almond: #E5E0D8;
-  --pistache: #B3B792;
-  --chai: #D2AB80;
-  --carob: #725C3A;
-  --vanilla: #E5D2B8;
-  --bg: linear-gradient(135deg, rgba(232,229,221,0.6), rgba(255,255,255,0.9));
-  --glass: rgba(255,255,255,0.7);
-  --muted: #6b7280;
-  --text: #111827;
-  --card-shadow: 0 8px 28px rgba(17,24,39,0.06);
-  --accent-gradient: linear-gradient(90deg, var(--matcha), var(--pistache) 40%, var(--chai) 75%, var(--carob));
+  --white: #ffffff;
+  --navy: #1a2236;            /* Dark navy for headers, accents */
+  --blue: #274690;            /* Primary blue for buttons, links */
+  --blue-light: #3e5ba9;      /* Lighter blue for hover, highlights */
+  --blue-soft: #eaf0fb;       /* Very light blue for card backgrounds/sections */
+  --success: #00b894;         /* Emerald */
+  --warning: #e17055;         /* Coral */
+  --danger: #d63031;          /* Crimson */
+  --muted: #8f9bb3;           /* Muted text */
+  --border: #dbe4ee;          /* Soft blue border */
+  --card-shadow: 0 8px 28px rgba(39, 70, 144, 0.08); /* Blue shadow */
+  --bg: var(--white);         /* Keep background white */
+  --accent-gradient: linear-gradient(90deg, var(--blue), var(--blue-light));
+  --button-bg: var(--blue);
+  --button-text: var(--white);
+  --section-bg: var(--blue-soft);
+  --text: var(--navy);
 }
 
+body {
+  color: var(--text);
+  background: var(--bg);
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+/* ...rest of your code... */
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ededed;
-    --foreground: #ededed;
+    --background: #222;
+    --foreground: #eee;
   }
 }
 
@@ -27,13 +40,7 @@ body {
   overflow-x: hidden;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
+
 
 * {
   box-sizing: border-box;
@@ -45,7 +52,6 @@ a {
   color: inherit;
   text-decoration: none;
 }
-
 
 @media (prefers-color-scheme: dark) {
   html {

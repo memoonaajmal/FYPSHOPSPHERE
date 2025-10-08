@@ -96,49 +96,48 @@ export default function SalesBarChart() {
           >
             <defs>
               <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stopColor="#7f9372" stopOpacity={0.95} />
-                <stop offset="100%" stopColor="#a9b99f" stopOpacity={0.9} />
+                <stop offset="0%" stopColor="#274690" stopOpacity={0.95} />
+                <stop offset="100%" stopColor="#eaf0fb" stopOpacity={0.9} />
               </linearGradient>
             </defs>
 
             <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" opacity={0.4} />
 
             <XAxis
-  dataKey="name"
-  tick={{ fill: "var(--muted)", fontSize: 12 }}
-  tickLine={false}
-  axisLine={false}
->
-  <Label
-    value={xLabel}
-    offset={-15}
-    position="insideBottom"
-    style={{
-      fill: "var(--carob)",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  />
-</XAxis>
+              dataKey="name"
+              tick={{ fill: "var(--muted)", fontSize: 12 }}
+              tickLine={false}
+              axisLine={false}
+            >
+              <Label
+                value={xLabel}
+                offset={-15}
+                position="insideBottom"
+                style={{
+                  fill: "var(--blue)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              />
+            </XAxis>
 
-<YAxis
-  tick={{ fill: "var(--muted)", fontSize: 12 }}
-  tickLine={false}
-  axisLine={false}
->
-  <Label
-    value="Sales Revenue"
-    angle={-90}
-    position="center"
-    dx={-24} // 👈 pushes label left so it’s visible
-    style={{
-      fill: "var(--carob)",
-      fontSize: 13,
-      fontWeight: 600,
-    }}
-  />
-</YAxis>
-
+            <YAxis
+              tick={{ fill: "var(--muted)", fontSize: 12 }}
+              tickLine={false}
+              axisLine={false}
+            >
+              <Label
+                value="Sales Revenue"
+                angle={-90}
+                position="center"
+                dx={-24} // 👈 pushes label left so it’s visible
+                style={{
+                  fill: "var(--blue)",
+                  fontSize: 13,
+                  fontWeight: 600,
+                }}
+              />
+            </YAxis>
 
             <Tooltip
               contentStyle={{
@@ -147,7 +146,7 @@ export default function SalesBarChart() {
                 border: "1px solid #e5e7eb",
                 boxShadow: "0 2px 8px rgba(0,0,0,0.08)",
                 fontSize: "13px",
-                color: "#374151",
+                color: "#222b45",
               }}
             />
             <Bar
@@ -158,6 +157,7 @@ export default function SalesBarChart() {
               animationBegin={0}
               animationDuration={1400}
               animationEasing="ease-out"
+              className={styles.bar} // <-- Apply the CSS class for bar styling
             />
           </BarChart>
         </ResponsiveContainer>
