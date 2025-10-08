@@ -1,128 +1,123 @@
-// backend/src/controllers/adminController.js
 const admin = require("../utils/firebaseAdmin");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const Store = require("../models/Store");
 const StoreRequest = require("../models/StoreRequest");
 
+// ======================================================
+// 🧩 USERS
+// ======================================================
+
 exports.getAllUsers = async (req, res) => {
   try {
     const users = await User.find().select("-passwordHash");
-    res.json(users); // return array directly ✅
+    res.status(200).json(users);
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching users", error: err.message });
+    res.status(500).json({
+      message: "Error fetching users",
+      error: err.message,
+    });
   }
 };
 
-// GET single user by ID
 exports.getUserById = async (req, res) => {
   try {
     const user = await User.findById(req.params.id).select("-passwordHash");
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-    res.json(user);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.status(200).json(user);
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error fetching user", error: err.message });
+    res.status(500).json({
+      message: "Error fetching user",
+      error: err.message,
+    });
   }
 };
 
 exports.deleteUser = async (req, res) => {
   try {
     const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    // Delete from Firebase
     if (user.firebaseUid) {
       try {
         await admin.auth().deleteUser(user.firebaseUid);
         console.log(`✅ Firebase user ${user.firebaseUid} deleted`);
       } catch (firebaseErr) {
-        console.error("❌ Error deleting user from Firebase:", firebaseErr);
+        console.error("❌ Firebase delete error:", firebaseErr);
       }
     }
 
-    res.json({
+    res.status(200).json({
       message: "User deleted successfully from MongoDB and Firebase",
     });
   } catch (err) {
-    res
-      .status(500)
-      .json({ message: "Error deleting user", error: err.message });
+    res.status(500).json({
+      message: "Error deleting user",
+      error: err.message,
+    });
   }
 };
 
-// controllers/orderController.js
+// ======================================================
+// 🛒 ORDERS (BY EMAIL)
+// ======================================================
+
 exports.getOrdersByEmail = async (req, res) => {
   try {
     const { email } = req.params;
-    const page = parseInt(req.query.page) || 1;   // default page 1
-    const limit = parseInt(req.query.limit) || 5; // default 5 orders per page
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 5;
     const skip = (page - 1) * limit;
 
-    if (!email) {
-      return res.status(400).json({ message: "Email is required" });
-    }
-
-    // Count total documents for pagination
     const totalOrders = await Order.countDocuments({ email });
-
-    // Fetch paginated orders
     const orders = await Order.find({ email })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit);
 
-    return res.status(200).json({
+    res.status(200).json({
       orders,
       totalPages: Math.ceil(totalOrders / limit),
       currentPage: page,
     });
   } catch (err) {
     console.error("Error fetching orders:", err);
-    return res.status(500).json({
+    res.status(500).json({
       message: "Server error",
       error: err.message,
     });
   }
 };
 
+// ======================================================
+// 🏪 STORE REQUESTS
+// ======================================================
 
-// GET all store requests
 exports.getAllStoreRequests = async (req, res) => {
   try {
-    const requests = await StoreRequest.find({ status: "pending" }) // only pending
-      .populate("sellerId", "email businessName ownerFullName")
+    const requests = await StoreRequest.find({ status: "pending" })
+      .populate("sellerId", "email name")
       .sort({ createdAt: -1 });
-    res.json(requests);
+    res.status(200).json(requests);
   } catch (err) {
     console.error("Error fetching store requests:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-// GET single store request by ID
 exports.getStoreRequestById = async (req, res) => {
   try {
     const request = await StoreRequest.findById(req.params.id);
-
-    if (!request) {
+    if (!request)
       return res.status(404).json({ message: "Store request not found" });
-    }
-
-    res.json(request);
+    res.status(200).json(request);
   } catch (err) {
-    console.error("Error fetching store request:", err);
-    res
-      .status(500)
-      .json({ message: "Error fetching store request", error: err.message });
+    res.status(500).json({
+      message: "Error fetching store request",
+      error: err.message,
+    });
   }
 };
 
@@ -135,18 +130,16 @@ exports.updateStoreRequestStatus = async (req, res) => {
       return res.status(400).json({ message: "Invalid status value" });
     }
 
-    // Populate sellerId including _id
     const request = await StoreRequest.findByIdAndUpdate(
       id,
       { status },
       { new: true }
-    ).populate("sellerId", "_id email businessName ownerFullName");
+    ).populate("sellerId", "_id email name");
 
-    if (!request) {
+    if (!request)
       return res.status(404).json({ message: "Store request not found" });
-    }
 
-    // ✅ Create store if approved and store doesn't exist
+    // ✅ Create store if approved
     if (status === "approved") {
       const existingStore = await Store.findOne({
         sellerId: request.sellerId._id,
@@ -159,73 +152,137 @@ exports.updateStoreRequestStatus = async (req, res) => {
           categories: [request.category],
           productIds: [],
         });
-
-        console.log("Store created:", newStore._id);
+        console.log("✅ New Store Created:", newStore._id);
       }
     }
 
-    res.json({ message: `Store request ${status}`, request });
+    res.status(200).json({ message: `Store request ${status}`, request });
   } catch (err) {
     console.error("Error updating store request:", err);
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
-// in adminController.js
+
+// ======================================================
+// 📦 STORE ORDERS (ADMIN VIEW)
+// ======================================================
+
 exports.getStoreOrdersForAdmin = async (req, res) => {
   try {
-    const { sellerId, page = 1, limit = 10 } = req.query; // default values
-    if (!sellerId) {
+    const { sellerId, page = 1, limit = 10 } = req.query;
+    if (!sellerId)
       return res.status(400).json({ message: "sellerId query param is required" });
-    }
 
     const store = await Store.findOne({ sellerId }).lean();
     if (!store) return res.status(404).json({ message: "Store not found" });
 
     const productIds = store.productIds.map(String);
-
-    // ✅ Pagination
     const skip = (parseInt(page) - 1) * parseInt(limit);
 
-    const totalOrders = await Order.countDocuments({ "items.productId": { $in: productIds } });
+    const totalOrders = await Order.countDocuments({
+      "items.productId": { $in: productIds },
+    });
 
     const orders = await Order.find({ "items.productId": { $in: productIds } })
       .sort({ createdAt: -1 })
       .skip(skip)
       .limit(parseInt(limit));
 
-    const filtered = orders.map(order => {
-      const sellerItems = order.items.filter(item => productIds.includes(item.productId));
+    const filteredOrders = orders.map((order) => {
+      const sellerItems = order.items.filter((item) =>
+        productIds.includes(item.productId)
+      );
       const itemsTotal = sellerItems.reduce(
-        (s, it) => s + (it.price * it.quantity || 0), 0
+        (sum, item) => sum + item.price * item.quantity,
+        0
       );
       return {
-        _id: order._id,
-        user: order.user,
-        firstName: order.firstName,
-        lastName: order.lastName,
-        phone: order.phone,
-        email: order.email,
-        houseAddress: order.houseAddress,
+        ...order.toObject(),
         items: sellerItems,
         itemsTotal,
-        shippingFee: order.shippingFee,
-        grandTotal: order.grandTotal,
-        paymentMethod: order.paymentMethod,
-        paymentStatus: order.paymentStatus,
-        trackingId: order.trackingId,
-        createdAt: order.createdAt
       };
     });
 
-    res.json({
-      orders: filtered,
+    res.status(200).json({
+      orders: filteredOrders,
       totalOrders,
       totalPages: Math.ceil(totalOrders / limit),
       currentPage: parseInt(page),
     });
   } catch (err) {
-    console.error("Error getStoreOrdersForAdmin:", err);
+    console.error("Error in getStoreOrdersForAdmin:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
+// ======================================================
+// 📊 ANALYTICS / DASHBOARD DATA
+// ======================================================
+
+const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+];
+
+exports.getAnalytics = async (req, res) => {
+  try {
+    // ✅ Total Sales
+    const totalSalesAgg = await Order.aggregate([
+      { $group: { _id: null, total: { $sum: "$grandTotal" } } },
+    ]);
+    const totalSales = totalSalesAgg[0]?.total || 0;
+
+    // ✅ Total Users
+    const totalUsers = await User.countDocuments();
+
+    // ✅ Active Stores (with products)
+    const activeStores = await Store.countDocuments({
+      productIds: { $exists: true, $ne: [] },
+    });
+
+    // ✅ Pending Orders
+    const pendingOrders = await Order.countDocuments({
+      paymentStatus: "pending",
+    });
+
+    // ✅ Monthly Sales (last 12 months)
+    const salesByMonth = await Order.aggregate([
+      {
+        $group: {
+          _id: { $month: "$createdAt" },
+          total: { $sum: "$grandTotal" },
+        },
+      },
+      { $sort: { "_id": 1 } },
+    ]);
+
+    const salesData = monthNames.map((month, i) => {
+      const match = salesByMonth.find((s) => s._id === i + 1);
+      return { month, sales: match ? match.total : 0 };
+    });
+
+    // ✅ Store-wise Sales (Top 5)
+    const storeSales = await Order.aggregate([
+      { $unwind: "$items" },
+      {
+        $group: {
+          _id: "$items.storeId",
+          total: { $sum: { $multiply: ["$items.price", "$items.quantity"] } },
+        },
+      },
+      { $sort: { total: -1 } },
+      { $limit: 5 },
+    ]);
+
+    res.status(200).json({
+      totalSales,
+      totalUsers,
+      activeStores,
+      pendingOrders,
+      salesData,
+      storeSales,
+    });
+  } catch (err) {
+    console.error("Error in getAnalytics:", err);
+    res.status(500).json({ message: "Failed to load analytics", error: err.message });
+  }
+};

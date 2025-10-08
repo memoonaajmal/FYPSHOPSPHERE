@@ -17,7 +17,7 @@ return () => unsubscribe();
 return ( <nav className={styles.navbar}>
 {/* Left: Logo */} <h1 className={styles.logo}> <Link href="/">ShopSphere</Link> </h1>
 
-```
+
   {/* Center: Hello, username */}
   {user && (
     <Link href="/profile" className={styles.userGreeting}>
