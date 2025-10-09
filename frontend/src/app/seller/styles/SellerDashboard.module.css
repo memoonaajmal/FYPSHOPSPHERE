@@ -1,7 +1,4 @@
-/* SellerDashboard.module.css
-   Now matches AdminDashboard color scheme for a unified look.
-*/
-
+/* SellerDashboard.module.css */
 .dashboard {
   padding: 2rem 2.5rem;
   color: var(--text);
@@ -323,6 +320,8 @@
   gap: 24px;
   width: 100%;
   align-items: start;
+  padding-right: 1.5rem; /* balanced space on both sides */
+  box-sizing: border-box;
 }
 
 .leftSection,

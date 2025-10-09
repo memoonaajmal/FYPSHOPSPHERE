@@ -1,7 +1,4 @@
-/* CustomerEngagementCard.module.css
-   Unified color scheme with AdminDashboard (TopCustomers) styling
-*/
-
+/* CustomerEngagementCard.module.css */
 .card {
   position: relative;
   background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);

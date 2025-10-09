@@ -1,8 +1,9 @@
 :root {
   --white: #ffffff;
-  --navy: #1a2236;            /* Dark navy for headers, accents */
+  --navy: #26314a;            /* Dark navy for headers, accents */
   --blue: #274690;            /* Primary blue for buttons, links */
-  --blue-light: #3e5ba9;      /* Lighter blue for hover, highlights */
+  --blue-light: #3e5ba9;
+  --blue-verylight: #6e82b8;      /* Lighter blue for hover, highlights */
   --blue-soft: #eaf0fb;       /* Very light blue for card backgrounds/sections */
   --success: #00b894;         /* Emerald */
   --warning: #e17055;         /* Coral */
