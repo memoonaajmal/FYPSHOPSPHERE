@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import styles from "../../../styles/UserDetails.module.css";
+import styles from "../../../styles/AdminOrderDetailPage.module.css";
 import AdminOrderCard from "../../../../../../components/AdminOrderCard";
 import OrderPagination from "../../../../../../components/OrderPagination"; // ✅ import your pagination component
 
@@ -64,23 +64,26 @@ export default function AdminOrderDetailPage() {
     fetchOrders();
   }, [userId, firebaseUser, currentPage]);
 
-  return (
-    <div className={styles.container}>
-      <h2 className={styles.sectionTitle}>Your Store Orders</h2>
-      {loadingOrders ? (
-        <p>Loading...</p>
-      ) : orders.length > 0 ? (
-        <>
-          {orders.map((order) => (
-            <AdminOrderCard key={order._id} order={order} />
-          ))}
+ return (
+   <div className={styles.container}>
+  <h2 className={styles.sectionTitle}>User Orders</h2>
 
-          {/* ✅ Add pagination component here */}
-          <OrderPagination totalPages={totalPages} />
-        </>
-      ) : (
-        <p>No orders found</p>
-      )}
-    </div>
+  {loadingOrders ? (
+    <p>Loading...</p>
+  ) : orders.length > 0 ? (
+    <>
+      <div className={styles.ordersGrid}>
+        {orders.map((order) => (
+          <AdminOrderCard key={order._id} order={order} />
+        ))}
+      </div>
+
+      <OrderPagination totalPages={totalPages} />
+    </>
+  ) : (
+    <p>No orders found</p>
+  )}
+</div>
+
   );
 }

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import styles from "../../styles/AdminDashboard.module.css";
+import styles from "../../styles/AllStoreRequestDetail.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -11,7 +11,7 @@ export default function StoreRequestDetail() {
   const [request, setRequest] = useState(null);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
-  const [storeCreated, setStoreCreated] = useState(false); // ✅ new state
+  const [storeCreated, setStoreCreated] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -20,9 +20,7 @@ export default function StoreRequestDetail() {
         const res = await fetch(`${BASE_URL}/api/admin/store-requests/${id}`, {
           credentials: "include",
         });
-
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
         const data = await res.json();
         setRequest(data);
       } catch (err) {
@@ -32,7 +30,6 @@ export default function StoreRequestDetail() {
         setLoading(false);
       }
     };
-
     fetchRequest();
   }, [id]);
 
@@ -43,23 +40,15 @@ export default function StoreRequestDetail() {
     try {
       const res = await fetch(`${BASE_URL}/api/admin/store-requests/${id}`, {
         method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         credentials: "include",
         body: JSON.stringify({ status }),
       });
 
       if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-
       const data = await res.json();
-      setRequest(data.request); // update local request object
-
-      if (status === "approved") {
-        setStoreCreated(true); // ✅ show store created message
-      } else {
-        setStoreCreated(false);
-      }
+      setRequest(data.request);
+      setStoreCreated(status === "approved");
 
       alert(`Store request ${status} successfully!`);
     } catch (err) {
@@ -70,13 +59,13 @@ export default function StoreRequestDetail() {
     }
   };
 
-  if (loading) return <p style={{ padding: "24px" }}>Loading store request...</p>;
-  if (!request) return <p style={{ padding: "24px" }}>Store request not found.</p>;
+  if (loading) return <p className={styles.loading}>Loading store request...</p>;
+  if (!request) return <p className={styles.error}>Store request not found.</p>;
 
   return (
     <div className={styles.dashboard}>
       <h1 className={styles.title}>Store Request Details</h1>
-      <button onClick={() => router.back()} style={{ marginBottom: "16px" }}>
+      <button onClick={() => router.back()} className={styles.backButton}>
         ← Back
       </button>
 
@@ -90,7 +79,7 @@ export default function StoreRequestDetail() {
         <p>
           <strong>Status:</strong> {request.status}
           {storeCreated && (
-            <span style={{ color: "green", fontWeight: "bold", marginLeft: "10px" }}>
+            <span className={styles.successTag}>
               ✅ Store has been created!
             </span>
           )}
@@ -102,12 +91,12 @@ export default function StoreRequestDetail() {
 
         <h3>Verification / Identification</h3>
         <p><strong>CNIC Number:</strong> {request.cnicNumber || "N/A"}</p>
-        {request.cnicImageUrl && <img src={request.cnicImageUrl} alt="CNIC" style={{ maxWidth: "300px" }} />}
+        {request.cnicImageUrl && <img src={request.cnicImageUrl} alt="CNIC" className={styles.image} />}
 
         <h3>Branding</h3>
-        {request.logoUrl && <img src={request.logoUrl} alt="Logo" style={{ maxWidth: "150px" }} />}
-        {request.bannerUrl && <img src={request.bannerUrl} alt="Banner" style={{ maxWidth: "300px" }} />}
-        
+        {request.logoUrl && <img src={request.logoUrl} alt="Logo" className={styles.imageSmall} />}
+        {request.bannerUrl && <img src={request.bannerUrl} alt="Banner" className={styles.image} />}
+
         {request.description && (
           <>
             <h3>Description</h3>
@@ -115,21 +104,20 @@ export default function StoreRequestDetail() {
           </>
         )}
 
-        {/* Approve / Reject buttons */}
-        <div style={{ marginTop: "20px" }}>
+        <div className={styles.buttonGroup}>
           <button
             onClick={() => updateStatus("approved")}
             disabled={updating || request.status === "approved"}
-            style={{ marginRight: "10px", backgroundColor: "green", color: "white", padding: "8px 16px", cursor: "pointer" }}
+            className={`${styles.button} ${styles.approveButton}`}
           >
-            Approve
+            {updating && request.status !== "approved" ? "Updating..." : "Approve"}
           </button>
           <button
             onClick={() => updateStatus("rejected")}
             disabled={updating || request.status === "rejected"}
-            style={{ backgroundColor: "red", color: "white", padding: "8px 16px", cursor: "pointer" }}
+            className={`${styles.button} ${styles.rejectButton}`}
           >
-            Reject
+            {updating && request.status !== "rejected" ? "Updating..." : "Reject"}
           </button>
         </div>
       </div>

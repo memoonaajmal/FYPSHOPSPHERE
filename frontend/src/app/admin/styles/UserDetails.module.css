@@ -2,16 +2,20 @@
 .container {
   padding: 24px;
   max-width: 1100px;
+  background-color: var(--blue-light);
   margin: 0 auto;
+  align-items: center;
+  margin-top: 40px;
+  border-radius: 22px;
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI",
     Roboto, "Helvetica Neue", Arial;
-  color: #111827;
 }
 
 /* Header / user title */
 .heading {
   font-size: 1.5rem; /* 24px */
   font-weight: 700;
+  color: var(--blue-light);
   margin-bottom: 12px;
 }
 
@@ -28,27 +32,28 @@
 
 /* Danger / delete */
 .btnDanger {
-  background: #dc2626;
-  color: #fff;
+  background: var(--danger);
+  color: var(--white);
   margin-right: 12px;
 }
 
 /* Primary */
 .btnPrimary {
-  background: #2563eb;
-  color: #fff;
+  background: var(--blue);
+  color: var(--white);
 }
 
 /* Small gray link-like button */
 .btnGhost {
   background: transparent;
-  border: 1px solid #e6e9ee;
-  color: #374151;
+  border: 1px solid var(--border);
+  color: var(--muted);
 }
 
 /* Section title (orders) */
 .sectionTitle {
   margin-top: 28px;
+  color: var(--blue);
   margin-bottom: 12px;
   font-size: 1.125rem; /* 18px */
   font-weight: 700;
@@ -56,7 +61,7 @@
 
 /* Message when no orders */
 .noOrders {
-  color: #6b7280;
+  color: var(--muted);
   padding: 12px 0;
 }
 
@@ -65,7 +70,7 @@
   width: 100%;
   overflow-x: auto;
   border-radius: 8px;
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border);
 }
 
 /* Actual table styles */
@@ -73,7 +78,7 @@
   width: 100%;
   border-collapse: collapse;
   min-width: 720px; /* ensures columns keep readable width on large screens */
-  background: #fff;
+  background: var(--white);
 }
 
 /* Header row */
@@ -82,33 +87,33 @@
   padding: 12px 16px;
   font-weight: 700;
   font-size: 0.9rem;
-  border-bottom: 1px solid #e6e9ee;
-  background: #f8fafc;
-  color: #374151;
+  border-bottom: 1px solid var(--border);
+  background: var(--blue-soft);
+  color: var(--blue);
   white-space: nowrap;
 }
 
 /* Table data cells */
 .tbody td {
   padding: 12px 16px;
-  border-bottom: 1px solid #f1f5f9;
+  border-bottom: 1px solid var(--border);
   font-size: 0.95rem;
-  color: #111827;
+  color: var(--navy);
   vertical-align: middle;
 }
 
 /* Row hover */
 .rowHover:hover {
-  background: #fbfdff;
+  background: var(--blue-soft);
 }
 
 /* Order card style (if you prefer cards) */
 .orderCard {
-  border: 1px solid #e6e9ee;
+  border: 1px solid var(--border);
   border-radius: 10px;
   padding: 14px;
-  background: #fff;
-  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04);
+  background: var(--white);
+  box-shadow: var(--card-shadow);
 }
 
 /* Buttons group inside each card */

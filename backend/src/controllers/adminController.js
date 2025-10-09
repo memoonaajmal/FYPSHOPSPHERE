@@ -2,6 +2,7 @@ const admin = require("../utils/firebaseAdmin");
 const User = require("../models/User");
 const Order = require("../models/Order");
 const Store = require("../models/Store");
+;
 const StoreRequest = require("../models/StoreRequest");
 
 // ======================================================
@@ -284,5 +285,60 @@ exports.getAnalytics = async (req, res) => {
   } catch (err) {
     console.error("Error in getAnalytics:", err);
     res.status(500).json({ message: "Failed to load analytics", error: err.message });
+  }
+};
+
+exports.getAllStoresWithStats = async (req, res) => {
+  try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = parseInt(req.query.limit) || 6; // ✅ 5 stores per page
+    const skip = (page - 1) * limit;
+
+    // ✅ Count total stores for pagination
+    const totalStores = await Store.countDocuments();
+
+    // ✅ Get paginated stores
+    const stores = await Store.find().skip(skip).limit(limit).lean();
+
+    // ✅ Add stats for each store (orders + sales)
+    const storesWithStats = await Promise.all(
+      stores.map(async (store) => {
+        // Fetch all orders containing this store's products
+        const orders = await Order.find({
+          "items.storeId": store._id,
+        }).select("items");
+
+        let totalSales = 0;
+        let totalOrders = orders.length;
+
+        // Calculate total sales
+        orders.forEach((order) => {
+          order.items.forEach((item) => {
+            if (item.storeId === store._id) {
+              totalSales += item.price * item.quantity;
+            }
+          });
+        });
+
+        return {
+          ...store,
+          totalOrders,
+          totalSales,
+        };
+      })
+    );
+
+    // ✅ Send paginated result
+    res.status(200).json({
+      stores: storesWithStats,
+      totalPages: Math.ceil(totalStores / limit),
+      currentPage: page,
+    });
+  } catch (err) {
+    console.error("❌ Error fetching stores with stats:", err);
+    res.status(500).json({
+      message: "Failed to load stores with stats",
+      error: err.message,
+    });
   }
 };

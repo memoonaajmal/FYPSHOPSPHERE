@@ -1,0 +1,181 @@
+/* 🌐 Main Container */
+.container {
+  width: 100%;
+  min-height: 100vh;
+  padding: 2rem 4rem;
+  margin: 0 auto;
+  background: var(--white);
+  color: var(--blue);
+  border-top: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
+  animation: fadeIn 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  font-family: "Inter", "Poppins", sans-serif; /* ✅ clean, modern font */
+  line-height: 1.6;
+}
+
+/* 🏷️ Section Title */
+.sectionTitle {
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 2.5rem;
+  text-align: center;
+  letter-spacing: 0.5px;
+  text-transform: capitalize;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+}
+
+/* 📦 Orders Grid */
+.ordersGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+  justify-items: stretch;
+}
+
+/* 📦 Individual Order Card */
+.ordersGrid > div {
+  background: var(--blue);
+  color: var(--white);
+  border-radius: 16px;
+  padding: 2rem 2.2rem;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 1.2rem;
+  min-height: 250px;
+}
+
+.ordersGrid > div:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* 🏷️ Order Headings (e.g., Order ID or Date) */
+.ordersGrid h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--white);
+  letter-spacing: 0.3px;
+}
+
+/* 📋 Order Details */
+.ordersGrid p {
+  margin: 0.3rem 0;
+  font-size: 1rem;
+  font-weight: 400;
+  opacity: 0.95;
+  color: rgba(255, 255, 255, 0.95);
+}
+
+/* 💬 Highlight Key Values */
+.ordersGrid p span {
+  font-weight: 600;
+  color: #fff;
+  margin-left: 0.3rem;
+}
+
+/* ✨ Card Footer or Status */
+.orderFooter {
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.95rem;
+  opacity: 0.9;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  padding-top: 1rem;
+}
+
+/* 🕓 Loading / Empty states */
+.container p {
+  font-size: 1rem;
+  color: var(--blue-soft);
+  margin-top: 1.5rem;
+  text-align: center;
+  opacity: 0.9;
+}
+
+/* 🔢 Pagination */
+.container :global(.pagination) {
+  margin-top: 3rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* ✅ Pagination Buttons */
+.container :global(.pagination button) {
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  padding: 0.7rem 1.4rem;
+  border-radius: 8px;
+  font-weight: 500;
+  letter-spacing: 0.4px;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.container :global(.pagination button:hover) {
+  background: var(--blue-soft);
+  color: var(--blue);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.container :global(.pagination button:disabled) {
+  background: var(--muted);
+  cursor: not-allowed;
+}
+
+/* ✨ Fade-in Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 📱 Responsive Tweaks */
+@media (max-width: 1024px) {
+  .ordersGrid {
+    gap: 1.5rem;
+    padding: 0 1rem;
+  }
+
+  .ordersGrid > div {
+    padding: 1.5rem;
+  }
+
+  .ordersGrid h3 {
+    font-size: 1.2rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 1.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.6rem;
+  }
+
+  .ordersGrid {
+    grid-template-columns: 1fr;
+  }
+}

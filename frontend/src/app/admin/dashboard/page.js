@@ -3,7 +3,7 @@
 import ProtectedRoute from "../../../../components/ProtectedRoute";
 import Link from "next/link";
 import styles from "../styles/AdminDashboard.module.css";
-import { app } from "../../../../firebase/config";
+import app from "../../../../firebase/config";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";

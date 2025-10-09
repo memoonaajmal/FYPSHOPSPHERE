@@ -1,0 +1,174 @@
+.dashboard {
+  padding: 2.5rem;
+  background: var(--glass, rgba(255, 255, 255, 0.7));
+  border-radius: 16px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  max-width: 900px;
+  margin: 40px auto;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+.card {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eee;
+  animation: slideUp 0.4s ease-in-out;
+}
+
+.card h2 {
+  font-size: 1.5rem;
+  color: #111827;
+  margin-bottom: 0.8rem;
+}
+
+.card p {
+  font-size: 0.95rem;
+  color: #374151;
+  margin: 6px 0;
+}
+
+.card strong {
+  color: #111827;
+}
+
+.card h3 {
+  margin-top: 1.5rem;
+  color: #1f2937;
+  font-size: 1.1rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 4px;
+}
+
+.image {
+  display: block;
+  border-radius: 8px;
+  margin-top: 0.8rem;
+  max-width: 300px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.imageSmall {
+  display: block;
+  border-radius: 8px;
+  margin-top: 0.8rem;
+  max-width: 150px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease;
+}
+
+.image:hover,
+.imageSmall:hover {
+  transform: scale(1.03);
+}
+
+.backButton {
+  background: none;
+  border: none;
+  color: #2563eb;
+  font-weight: 500;
+  cursor: pointer;
+  margin-bottom: 1rem;
+  transition: color 0.2s ease;
+}
+
+.backButton:hover {
+  color: #1d4ed8;
+}
+
+.successTag {
+  color: #16a34a;
+  font-weight: bold;
+  margin-left: 10px;
+}
+
+.buttonGroup {
+  display: flex;
+  gap: 12px;
+  margin-top: 1.5rem;
+}
+
+.button {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.approveButton {
+  background-color: #16a34a;
+}
+
+.rejectButton {
+  background-color: #dc2626;
+}
+
+.approveButton:hover:not(:disabled) {
+  background-color: #15803d;
+  transform: translateY(-2px);
+}
+
+.rejectButton:hover:not(:disabled) {
+  background-color: #b91c1c;
+  transform: translateY(-2px);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.loading,
+.error {
+  padding: 24px;
+  text-align: center;
+  font-weight: 500;
+  color: #4b5563;
+}
+
+.error {
+  color: #dc2626;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard {
+    padding: 1.5rem;
+  }
+
+  .card {
+    padding: 1.25rem;
+  }
+
+  .buttonGroup {
+    flex-direction: column;
+  }
+
+  .button {
+    width: 100%;
+  }
+}
