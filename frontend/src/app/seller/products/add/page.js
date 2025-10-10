@@ -103,142 +103,140 @@ export default function AddProductPage() {
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit} className={styles.form}>
-        <label className={styles.formLabel}>
-          Product Name:
-          <input
-            className={styles.formInput}
-            name="productDisplayName"
-            value={form.productDisplayName}
-            onChange={handleChange}
-            required
-          />
-        </label>
+  <div className={styles.leftColumn}>
+    <label className={styles.formLabel}>
+      Product Name:
+      <input
+        className={styles.formInput}
+        name="productDisplayName"
+        value={form.productDisplayName}
+        onChange={handleChange}
+        required
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Gender:
-          <select
-            className={styles.formSelect}
-            name="gender"
-            value={form.gender}
-            onChange={handleChange}
-          >
-            <option>Men</option>
-            <option>Women</option>
-            <option>Unisex</option>
-          </select>
-        </label>
+    <label className={styles.formLabel}>
+      Gender:
+      <select
+        className={styles.formSelect}
+        name="gender"
+        value={form.gender}
+        onChange={handleChange}
+      >
+        <option>Men</option>
+        <option>Women</option>
+        <option>Unisex</option>
+      </select>
+    </label>
 
-        <label className={styles.formLabel}>
-          Master Category:
-          <input
-            className={styles.formInput}
-            name="masterCategory"
-            value={form.masterCategory}
-            onChange={handleChange}
-            required
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Master Category:
+      <input
+        className={styles.formInput}
+        name="masterCategory"
+        value={form.masterCategory}
+        onChange={handleChange}
+        required
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Sub Category:
-          <input
-            className={styles.formInput}
-            name="subCategory"
-            value={form.subCategory}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Sub Category:
+      <input
+        className={styles.formInput}
+        name="subCategory"
+        value={form.subCategory}
+        onChange={handleChange}
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Article Type:
-          <input
-            className={styles.formInput}
-            name="articleType"
-            value={form.articleType}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Article Type:
+      <input
+        className={styles.formInput}
+        name="articleType"
+        value={form.articleType}
+        onChange={handleChange}
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Base Colour:
-          <input
-            className={styles.formInput}
-            name="baseColour"
-            value={form.baseColour}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Base Colour:
+      <input
+        className={styles.formInput}
+        name="baseColour"
+        value={form.baseColour}
+        onChange={handleChange}
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Season:
-          <input
-            className={styles.formInput}
-            name="season"
-            value={form.season}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Season:
+      <input
+        className={styles.formInput}
+        name="season"
+        value={form.season}
+        onChange={handleChange}
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Year:
-          <input
-            className={styles.formInput}
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Year:
+      <input
+        className={styles.formInput}
+        type="number"
+        name="year"
+        value={form.year}
+        onChange={handleChange}
+      />
+    </label>
 
-        <label className={styles.formLabel}>
-          Usage:
-          <input
-            className={styles.formInput}
-            name="usage"
-            value={form.usage}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Usage:
+      <input
+        className={styles.formInput}
+        name="usage"
+        value={form.usage}
+        onChange={handleChange}
+      />
+    </label>
+  </div>
 
-        {/* ✅ Image upload */}
-        <label className={styles.formLabel}>
-          Product Image:
-          <input
-            type="file"
-            accept="image/*"
-            className={styles.formInput}
-            onChange={handleImageChange}
-          />
-        </label>
+  <div className={styles.rightColumn}>
+    <label className={styles.formLabel}>
+      Product Image:
+      <input
+        type="file"
+        accept="image/*"
+        className={styles.formInput}
+        onChange={handleImageChange}
+      />
+    </label>
 
-        {/* ✅ Preview */}
-        {previewUrl && (
-          <div className={styles.previewContainer}>
-            <p>Preview:</p>
-            <img
-              src={previewUrl}
-              alt="Preview"
-              className={styles.previewImage}
-              style={{ maxWidth: "200px", marginTop: "0.5rem" }}
-            />
-          </div>
-        )}
+    {previewUrl && (
+      <div className={styles.previewContainer}>
+        <p>Preview:</p>
+        <img src={previewUrl} alt="Preview" className={styles.previewImage} />
+      </div>
+    )}
 
-        <label className={styles.formLabel}>
-          Price:
-          <input
-            className={styles.formInput}
-            type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-          />
-        </label>
+    <label className={styles.formLabel}>
+      Price:
+      <input
+        className={styles.formInput}
+        type="number"
+        name="price"
+        value={form.price}
+        onChange={handleChange}
+      />
+    </label>
 
-        <button className={styles.formButton} type="submit" disabled={loading}>
-          {loading ? "Adding..." : "Add Product"}
-        </button>
-      </form>
+    <button className={styles.formButton} type="submit" disabled={loading}>
+      {loading ? "Adding..." : "Add Product"}
+    </button>
+  </div>
+</form>
+
     </div>
   );
 }

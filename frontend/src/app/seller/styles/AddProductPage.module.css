@@ -1,62 +1,139 @@
+/* ---------- Page Container ---------- */
 .container {
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4rem 1.5rem;
+  background: linear-gradient(135deg, var(--blue-soft) 0%, var(--white) 100%);
+  animation: fadeIn 0.6s ease-in-out;
 }
 
 .title {
   text-align: center;
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  font-weight: bold;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 2.5rem;
+
+  background: var(--accent-gradient);
+  background-clip: text;
+  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .form {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+  background: var(--white);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 1000px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 2rem 2.5rem;
+  color: var(--text);
 }
 
+/* stack on mobile */
+@media (max-width: 900px) {
+  .form {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+
+
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+/* ---------- Labels ---------- */
 .formLabel {
   display: flex;
   flex-direction: column;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--navy);
+  font-size: 0.95rem;
 }
 
-.formInput {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-}
-
+/* ---------- Inputs & Select ---------- */
+.formInput,
 .formSelect {
-  padding: 0.5rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
   font-size: 1rem;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  background: var(--white);
+  color: var(--navy);
+  outline: none;
+  transition: all 0.2s ease;
 }
 
+.formInput:focus,
+.formSelect:focus {
+  border-color: var(--blue-light);
+  box-shadow: 0 0 0 3px rgba(39, 70, 144, 0.12);
+}
+
+/* ---------- Image Upload ---------- */
+.previewContainer {
+  background: var(--blue-soft);
+  border: 1px dashed var(--blue-verylight);
+  border-radius: 10px;
+  padding: 1rem;
+  text-align: center;
+  color: var(--navy);
+}
+
+.previewImage {
+  width: 100%;
+  max-width: 200px;
+  margin-top: 0.5rem;
+  border-radius: 8px;
+  border: 2px solid var(--blue-light);
+}
+
+/* ---------- Button ---------- */
 .formButton {
-  padding: 0.5rem 1rem;
-  font-size: 1rem;
+  padding: 0.8rem 1.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
   border: none;
-  background-color: #353c35;
-  color: white;
-  border-radius: 5px;
+  border-radius: 8px;
+  background: var(--accent-gradient);
+  color: var(--white);
   cursor: pointer;
   margin-top: 1rem;
-  transition: background-color 0.2s;
+  align-self: flex-start;
+  transition: all 0.3s ease;
+  box-shadow: 0 6px 16px rgba(39, 70, 144, 0.2);
 }
 
-.formButton:hover {
-  background-color: #353c35;
+.formButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 22px rgba(39, 70, 144, 0.25);
 }
 
 .formButton:disabled {
-  background-color: #aaa;
+  background: var(--muted);
   cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
