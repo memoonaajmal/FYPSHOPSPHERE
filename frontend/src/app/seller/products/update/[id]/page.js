@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { auth } from "../../../../../../firebase/config";
 import { BASE_URL } from "../../page";
-import styles from "../../../styles/AddProductPage.module.css";
+import styles from "../../../styles/UpdateProductPage.module.css";
 
 export default function UpdateProductPage() {
   const router = useRouter();
@@ -31,7 +31,6 @@ export default function UpdateProductPage() {
   const [imagePreview, setImagePreview] = useState(null);
   const [newImageFile, setNewImageFile] = useState(null);
 
-  // ✅ Fetch product details
   useEffect(() => {
     async function fetchProduct() {
       try {
@@ -47,15 +46,11 @@ export default function UpdateProductPage() {
         if (!res.ok) throw new Error(await res.text());
         const products = await res.json();
         const product = products.find((p) => p.productId === productId);
-
         if (!product) throw new Error("Product not found");
 
-        // ✅ Strip any accidental path from DB (safety)
         const cleanFilename = product.imageFilename
           ? product.imageFilename.split("/").pop()
           : "";
-
-        console.log("Image filename from DB:", cleanFilename);
 
         setForm({
           productDisplayName: product.productDisplayName || "",
@@ -86,7 +81,6 @@ export default function UpdateProductPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ Handle image selection
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -95,7 +89,6 @@ export default function UpdateProductPage() {
     }
   };
 
-  // ✅ Upload image if new one is selected
   const uploadImageIfNeeded = async () => {
     if (!newImageFile) return form.imageFilename;
 
@@ -117,7 +110,6 @@ export default function UpdateProductPage() {
     return result.filename;
   };
 
-  // ✅ Submit update
   const handleSubmit = async (e) => {
     e.preventDefault();
     setSaving(true);
@@ -152,155 +144,165 @@ export default function UpdateProductPage() {
 
   if (loading) return <p>Loading product...</p>;
 
-  // ✅ Always build a clean, correct image URL
   const safeFilename = form.imageFilename ? form.imageFilename.split("/").pop() : "";
   const currentImageUrl = safeFilename
     ? `${BASE_URL.replace(/\/$/, "")}/images/${safeFilename}`
     : null;
-    console.log("✅ Final preview URL:", currentImageUrl);
 
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Update Product</h1>
+      <h3 className={styles.formIntro}>
+        Update your product details, images, and descriptions to keep your listings fresh and engaging for customers on SHOPSPHERE.
+      </h3>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit} className={styles.form}>
-        <label className={styles.formLabel}>
-          Product Name:
-          <input
-            className={styles.formInput}
-            name="productDisplayName"
-            value={form.productDisplayName}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Gender:
-          <select
-            className={styles.formSelect}
-            name="gender"
-            value={form.gender}
-            onChange={handleChange}
-          >
-            <option>Men</option>
-            <option>Women</option>
-            <option>Unisex</option>
-          </select>
-        </label>
-
-        <label className={styles.formLabel}>
-          Master Category:
-          <input
-            className={styles.formInput}
-            name="masterCategory"
-            value={form.masterCategory}
-            onChange={handleChange}
-            required
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Sub Category:
-          <input
-            className={styles.formInput}
-            name="subCategory"
-            value={form.subCategory}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Article Type:
-          <input
-            className={styles.formInput}
-            name="articleType"
-            value={form.articleType}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Base Colour:
-          <input
-            className={styles.formInput}
-            name="baseColour"
-            value={form.baseColour}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Season:
-          <input
-            className={styles.formInput}
-            name="season"
-            value={form.season}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Year:
-          <input
-            className={styles.formInput}
-            type="number"
-            name="year"
-            value={form.year}
-            onChange={handleChange}
-          />
-        </label>
-
-        <label className={styles.formLabel}>
-          Usage:
-          <input
-            className={styles.formInput}
-            name="usage"
-            value={form.usage}
-            onChange={handleChange}
-          />
-        </label>
-
-        {/* ✅ Image Upload Section */}
-        <div className={styles.formLabel}>
-          <p>Current Image:</p>
-          {currentImageUrl && !imagePreview && (
-            <img
-              src={currentImageUrl}
-              alt="Current Product"
-              style={{ width: "150px", marginBottom: "10px" }}
+        <div className={styles.leftColumn}>
+          <label className={styles.formLabel}>
+            Product Name:
+            <input
+              className={styles.formInput}
+              name="productDisplayName"
+              value={form.productDisplayName}
+              onChange={handleChange}
+              required
             />
-          )}
-          {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="New Preview"
-              style={{ width: "150px", marginBottom: "10px" }}
+          </label>
+
+          <label className={styles.formLabel}>
+            Gender:
+            <select
+              className={styles.formSelect}
+              name="gender"
+              value={form.gender}
+              onChange={handleChange}
+            >
+              <option>Men</option>
+              <option>Women</option>
+              <option>Unisex</option>
+            </select>
+          </label>
+
+          <label className={styles.formLabel}>
+            Master Category:
+            <input
+              className={styles.formInput}
+              name="masterCategory"
+              value={form.masterCategory}
+              onChange={handleChange}
+              required
             />
-          )}
-          <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className={styles.formInput}
-          />
+          </label>
+
+          <label className={styles.formLabel}>
+            Sub Category:
+            <input
+              className={styles.formInput}
+              name="subCategory"
+              value={form.subCategory}
+              onChange={handleChange}
+            />
+          </label>
+
+          <label className={styles.formLabel}>
+            Article Type:
+            <input
+              className={styles.formInput}
+              name="articleType"
+              value={form.articleType}
+              onChange={handleChange}
+            />
+          </label>
         </div>
 
-        <label className={styles.formLabel}>
-          Price:
-          <input
-            className={styles.formInput}
-            type="number"
-            name="price"
-            value={form.price}
-            onChange={handleChange}
-          />
-        </label>
+        <div className={styles.rightColumn}>
+          <label className={styles.formLabel}>
+            Base Colour:
+            <input
+              className={styles.formInput}
+              name="baseColour"
+              value={form.baseColour}
+              onChange={handleChange}
+            />
+          </label>
 
-        <button className={styles.formButton} type="submit" disabled={saving}>
-          {saving ? "Updating..." : "Update Product"}
-        </button>
+          <label className={styles.formLabel}>
+            Season:
+            <input
+              className={styles.formInput}
+              name="season"
+              value={form.season}
+              onChange={handleChange}
+            />
+          </label>
+
+          <label className={styles.formLabel}>
+            Year:
+            <input
+              className={styles.formInput}
+              type="number"
+              name="year"
+              value={form.year}
+              onChange={handleChange}
+            />
+          </label>
+
+          <label className={styles.formLabel}>
+            Usage:
+            <input
+              className={styles.formInput}
+              name="usage"
+              value={form.usage}
+              onChange={handleChange}
+            />
+          </label>
+
+          {/* Image Upload */}
+<label className={styles.formLabel}>
+  <p>Current Image:</p>
+  <div className={styles.previewContainer}>
+    {currentImageUrl && !imagePreview && (
+      <img
+        src={currentImageUrl}
+        alt="Current Product"
+        className={styles.previewImage}
+      />
+    )}
+    {imagePreview && (
+      <img
+        src={imagePreview}
+        alt="New Preview"
+        className={styles.previewImage}
+      />
+    )}
+  </div>
+  <input
+    type="file"
+    accept="image/*"
+    onChange={handleImageChange}
+    className={styles.formInput}
+  />
+</label>
+
+
+          <label className={styles.formLabel}>
+            Price:
+            <input
+              className={styles.formInput}
+              type="number"
+              name="price"
+              value={form.price}
+              onChange={handleChange}
+            />
+          </label>
+        </div>
+
+        <div className={styles.buttonContainer}>
+          <button className={styles.formButton} type="submit" disabled={saving}>
+            {saving ? "Updating..." : "Update Product"}
+          </button>
+        </div>
       </form>
     </div>
   );

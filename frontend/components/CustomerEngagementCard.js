@@ -40,7 +40,7 @@ export default function CustomerEngagementCard() {
 
   return (
     <div className={styles.card}>
-      <h3 className={styles.title}>Customer Engagement</h3>
+      <h3 className={styles.title}>👤 Customer Engagement</h3>
 
       <div className={styles.stat}>
         <div className={styles.iconLabel}>
