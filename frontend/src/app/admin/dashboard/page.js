@@ -38,7 +38,6 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [recentOrders, setRecentOrders] = useState([]);
 
-  // ✅ Fetch analytics + recent orders when admin logs in
 // ✅ Fetch analytics + most recent order when admin logs in
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -290,6 +289,7 @@ useEffect(() => {
     ))
   )}
 </div>
+
 
 </div>
 

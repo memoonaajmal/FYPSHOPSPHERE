@@ -358,16 +358,3 @@ exports.getRecentOrders = async (req, res) => {
   }
 };
 // ✅ Get the most recently created stores
-exports.getRecentStores = async (req, res) => {
-  try {
-    const stores = await Store.find({})
-      .sort({ createdAt: -1 }) // latest first
-      .limit(10) // only last 10 stores
-      .select("storeName ownerName email createdAt");
-
-    res.status(200).json({ stores });
-  } catch (error) {
-    console.error("❌ Error fetching recent stores:", error);
-    res.status(500).json({ message: "Failed to fetch recent stores" });
-  }
-};

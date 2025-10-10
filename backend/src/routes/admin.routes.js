@@ -53,6 +53,6 @@ router.get("/orders", requireAuth, requireRole("admin"), getStoreOrdersForAdmin)
 router.get("/analytics", requireAuth, requireRole("admin"), getAnalytics); // ✅ fixed
 router.get("/stores", getAllStoresWithStats);
 router.get("/recent-orders",  getRecentOrders);
-router.get("/recent-stores", getRecentStores);
+
 
 module.exports = router;
