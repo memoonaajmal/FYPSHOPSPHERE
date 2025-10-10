@@ -7,10 +7,10 @@ import {
   onAuthStateChanged,
   updatePassword,
   verifyBeforeUpdateEmail,
-  updateEmail, 
+  updateEmail,
   reauthenticateWithCredential,
   EmailAuthProvider,
-  sendEmailVerification
+  sendEmailVerification,
 } from "firebase/auth";
 import { useRouter } from "next/navigation";
 
@@ -158,117 +158,119 @@ export default function ProfilePage() {
     }
   };
 
-// Replace your current handleChangeEmail function with this:
+  // Replace your current handleChangeEmail function with this:
 
-const handleChangeEmail = async (e) => {
-  e.preventDefault();
+  const handleChangeEmail = async (e) => {
+    e.preventDefault();
 
-  if (!newEmail || !emailPassword) {
-    alert("Please fill in both fields.");
-    return;
-  }
-
-  // Basic email validation
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  if (!emailRegex.test(newEmail)) {
-    alert("Please enter a valid email address.");
-    return;
-  }
-
-  // Check if new email is same as current
-  if (newEmail.toLowerCase() === user.email.toLowerCase()) {
-    alert("The new email is the same as your current email.");
-    return;
-  }
-
-  try {
-    // Step 1: Reauthenticate with current password
-    const credential = EmailAuthProvider.credential(user.email, emailPassword);
-    await reauthenticateWithCredential(user, credential);
-
-    // Step 2: Use verifyBeforeUpdateEmail (more secure approach)
-    // This sends verification email to new address before changing
-    await verifyBeforeUpdateEmail(user, newEmail);
-    
-    alert(
-      "Verification email sent! Please check your new email address (" + 
-      newEmail + 
-      ") and click the verification link to complete the email change. " +
-      "Check your spam folder if you don't see it."
-    );
-
-    // Clear form
-    setNewEmail("");
-    setEmailPassword("");
-    setIsChangingEmail(false);
-
-  } catch (err) {
-    console.error("Email change error:", err);
-    
-    // Detailed error handling
-    switch (err.code) {
-      case "auth/requires-recent-login":
-        alert(
-          "For security reasons, please log out and log back in, then try changing your email again."
-        );
-        break;
-      
-      case "auth/email-already-in-use":
-        alert("This email address is already registered to another account.");
-        break;
-      
-      case "auth/invalid-email":
-        alert("The email address format is invalid.");
-        break;
-      
-      case "auth/wrong-password":
-      case "auth/invalid-credential":
-        alert("Incorrect password. Please try again.");
-        break;
-      
-      case "auth/operation-not-allowed":
-        // If verifyBeforeUpdateEmail doesn't work, suggest alternative
-        alert(
-          "Email verification is required. Please ensure:\n\n" +
-          "1. Your current email is verified\n" +
-          "2. You're logged in recently (try logging out and back in)\n" +
-          "3. Email/Password provider is enabled in Firebase Console\n\n" +
-          "If the issue persists, please contact support."
-        );
-        break;
-      
-      case "auth/too-many-requests":
-        alert("Too many attempts. Please wait a few minutes and try again.");
-        break;
-
-      case "auth/unverified-email":
-        alert(
-          "Your current email is not verified. Please verify your current email first, then try changing it."
-        );
-        break;
-      
-      default:
-        alert(
-          `Error changing email: ${err.message || err.code}\n\n` +
-          "Please try:\n" +
-          "1. Logging out and back in\n" +
-          "2. Verifying your current email\n" +
-          "3. Contacting support if the issue persists"
-        );
+    if (!newEmail || !emailPassword) {
+      alert("Please fill in both fields.");
+      return;
     }
-  }
-};
 
+    // Basic email validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(newEmail)) {
+      alert("Please enter a valid email address.");
+      return;
+    }
+
+    // Check if new email is same as current
+    if (newEmail.toLowerCase() === user.email.toLowerCase()) {
+      alert("The new email is the same as your current email.");
+      return;
+    }
+
+    try {
+      // Step 1: Reauthenticate with current password
+      const credential = EmailAuthProvider.credential(
+        user.email,
+        emailPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Step 2: Use verifyBeforeUpdateEmail (more secure approach)
+      // This sends verification email to new address before changing
+      await verifyBeforeUpdateEmail(user, newEmail);
+
+      alert(
+        "Verification email sent! Please check your new email address (" +
+          newEmail +
+          ") and click the verification link to complete the email change. " +
+          "Check your spam folder if you don't see it."
+      );
+
+      // Clear form
+      setNewEmail("");
+      setEmailPassword("");
+      setIsChangingEmail(false);
+    } catch (err) {
+      console.error("Email change error:", err);
+
+      // Detailed error handling
+      switch (err.code) {
+        case "auth/requires-recent-login":
+          alert(
+            "For security reasons, please log out and log back in, then try changing your email again."
+          );
+          break;
+
+        case "auth/email-already-in-use":
+          alert("This email address is already registered to another account.");
+          break;
+
+        case "auth/invalid-email":
+          alert("The email address format is invalid.");
+          break;
+
+        case "auth/wrong-password":
+        case "auth/invalid-credential":
+          alert("Incorrect password. Please try again.");
+          break;
+
+        case "auth/operation-not-allowed":
+          // If verifyBeforeUpdateEmail doesn't work, suggest alternative
+          alert(
+            "Email verification is required. Please ensure:\n\n" +
+              "1. Your current email is verified\n" +
+              "2. You're logged in recently (try logging out and back in)\n" +
+              "3. Email/Password provider is enabled in Firebase Console\n\n" +
+              "If the issue persists, please contact support."
+          );
+          break;
+
+        case "auth/too-many-requests":
+          alert("Too many attempts. Please wait a few minutes and try again.");
+          break;
+
+        case "auth/unverified-email":
+          alert(
+            "Your current email is not verified. Please verify your current email first, then try changing it."
+          );
+          break;
+
+        default:
+          alert(
+            `Error changing email: ${err.message || err.code}\n\n` +
+              "Please try:\n" +
+              "1. Logging out and back in\n" +
+              "2. Verifying your current email\n" +
+              "3. Contacting support if the issue persists"
+          );
+      }
+    }
+  };
 
   return (
     <div className={styles.profileContainer}>
       <h1>Account Information</h1>
       <div className={styles.profileCard}>
         {/* ✅ Full Name row */}
+        {/* ✅ Name row */}
         <div className={styles.row}>
           <div className={styles.label}>Full Name</div>
           <div className={styles.valueArea}>
-            {editField === "fullName" ? (
+            {editField === "name" ? (
               <div className={styles.editArea}>
                 <input
                   type="text"
@@ -291,9 +293,9 @@ const handleChangeEmail = async (e) => {
             ) : (
               <div
                 className={styles.rowValue}
-                onClick={() => handleEdit("fullName", profile?.fullName)}
+                onClick={() => handleEdit("name", profile?.name)}
               >
-                {profile?.fullName || user.displayName || "Not Set"}
+                {profile?.name || user.displayName || "Not Set"}
               </div>
             )}
           </div>
@@ -355,7 +357,6 @@ const handleChangeEmail = async (e) => {
           </div>
         ))}
 
-
         {/* 🔹 Change Password Collapsible Section */}
         <div className={styles.passwordSection}>
           <div
@@ -363,7 +364,6 @@ const handleChangeEmail = async (e) => {
             onClick={() => setIsChangingPassword((prev) => !prev)}
           >
             <span>Change Password</span>
-
           </div>
 
           {isChangingPassword && (
@@ -408,10 +408,6 @@ const handleChangeEmail = async (e) => {
             </form>
           )}
         </div>
-
-
-
-        
 
         {/* 🔹 Change Email Collapsible Section */}
         <div className={styles.passwordSection}>
@@ -464,7 +460,6 @@ const handleChangeEmail = async (e) => {
             </form>
           )}
         </div>
-
 
         <div className={styles.buttonGroup}>
           <button onClick={() => router.push("/orders")}>My Orders</button>
