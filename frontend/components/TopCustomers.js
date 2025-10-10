@@ -39,7 +39,7 @@ export default function TopCustomers() {
 
   return (
     <div className={styles.topCustomers}>
-      <h3>Top 5 Customers</h3>
+      <h3>🏆 Top 5 Customers</h3>
       <ul>
         {customers.map((c, i) => (
           <li key={i} className={styles.customerCard}>
