@@ -1,13 +1,14 @@
 // Sync Firebase user with MongoDB
 const User = require("../models/User");
 
-
 exports.sync = async function (req, res, next) {
   try {
     if (req.method === "OPTIONS") return res.status(204).end();
 
     if (!req.user) {
-      return res.status(400).json({ error: "req.user is missing. Did you send a valid Firebase token?" });
+      return res.status(400).json({
+        error: "req.user is missing. Did you send a valid Firebase token?",
+      });
     }
 
     const { uid, email, name, mongoUser } = req.user;
@@ -32,6 +33,9 @@ exports.sync = async function (req, res, next) {
         passwordHash: "",
         roles: [finalRole],
         firebaseUid: uid,
+        phone: "",
+        gender: "Not Set",
+        birthday: null,
       });
       await user.save();
       console.log("Created new user with role:", finalRole);
@@ -66,8 +70,8 @@ exports.sync = async function (req, res, next) {
     // ✅ Response back with both Firebase + Mongo info
     res.json({
       user: {
-        _id: user._id,      // MongoDB ObjectId
-        uid,                // Firebase UID
+        _id: user._id, // MongoDB ObjectId
+        uid, // Firebase UID
         email,
         name: user.name,
         roles: user.roles,
@@ -79,7 +83,6 @@ exports.sync = async function (req, res, next) {
     next(err);
   }
 };
-
 
 // Get current logged-in user info
 exports.me = async function (req, res, next) {
@@ -117,6 +120,51 @@ exports.me = async function (req, res, next) {
         name: mongoUser.name,
         roles: mongoUser.roles,
         firebaseUid: mongoUser.firebaseUid || uid,
+        phone: mongoUser.phone || "",
+        gender: mongoUser.gender || "Not Set",
+        birthday: mongoUser.birthday || null,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+// PUT /api/auth/profile
+exports.updateProfile = async function (req, res, next) {
+  try {
+    if (req.method === "OPTIONS") return res.status(204).end();
+
+    // middleware should have attached req.user and req.user.mongoUser
+    const mongoUser = req.user && req.user.mongoUser;
+    if (!mongoUser)
+      return res.status(401).json({ error: "Unauthorized - user not found" });
+
+    // Only allow these fields to be updated from the client
+    const allowed = ["name", "phone", "gender", "birthday"];
+    allowed.forEach((field) => {
+      if (Object.prototype.hasOwnProperty.call(req.body, field)) {
+        if (field === "birthday") {
+          mongoUser[field] = req.body[field] ? new Date(req.body[field]) : null;
+        } else {
+          mongoUser[field] = req.body[field];
+        }
+      }
+    });
+
+    await mongoUser.save();
+
+    res.json({
+      user: {
+        _id: mongoUser._id,
+        uid: mongoUser.firebaseUid,
+        email: mongoUser.email,
+        name: mongoUser.name,
+        phone: mongoUser.phone,
+        gender: mongoUser.gender,
+        birthday: mongoUser.birthday,
+        quickLoginEnabled: mongoUser.quickLoginEnabled,
+        roles: mongoUser.roles,
       },
     });
   } catch (err) {

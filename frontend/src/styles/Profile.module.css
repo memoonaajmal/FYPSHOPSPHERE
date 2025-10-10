@@ -1,82 +1,369 @@
-/* Container for the whole profile page */
 .profileContainer {
-  max-width: 700px;
-  margin: 3rem auto;
-  padding: 1.5rem;
+  width: 100%;
+  margin: 0;
+  padding: 3rem 1.5rem;
+  font-family: "Inter", sans-serif;
+  color: #26314a;
+  background: linear-gradient(135deg, #eaf0fb 0%, #d5e3f7 100%);
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
-  font-family: 'Inter', sans-serif;
-  color: #111111;
+  align-items: center;
 }
 
-/* Page heading */
 .profileContainer h1 {
-  font-size: 1.8rem;
+  font-size: 2rem;
   font-weight: 700;
   text-align: center;
-  margin-bottom: 1rem;
+  margin-bottom: 2rem;
+  background: linear-gradient(90deg, #274690, #3e5ba9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  letter-spacing: -0.5px;
+  max-width: 700px;
+  width: 100%;
 }
 
-/* Card that holds profile info */
 .profileCard {
-  background-color: #ffffff;
-  border: 1px solid #e0e0e0;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+  background: #ffffff;
+  border: 1px solid #dbe4ee;
+  border-radius: 16px;
+  box-shadow: 0 8px 28px rgba(39, 70, 144, 0.08);
+  padding: 2.5rem;
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: 1.2rem;
+  transition: box-shadow 0.3s ease;
+  max-width: 700px;
+  width: 100%;
 }
 
-/* Profile info rows */
-.profileCard p {
+.profileCard:hover {
+  box-shadow: 0 12px 36px rgba(39, 70, 144, 0.12);
+}
+
+/* Each row */
+.row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 0;
+  border-bottom: 1px solid #dbe4ee;
+  transition: background-color 0.2s ease;
+}
+
+.row:hover {
+  background-color: #eaf0fb;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  margin-left: -1rem;
+  margin-right: -1rem;
+  border-radius: 8px;
+}
+
+.label {
+  font-weight: 600;
+  color: #26314a;
+  font-size: 0.95rem;
+  letter-spacing: 0.3px;
+}
+
+.valueArea {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.rowValue {
+  color: #6e82b8;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+  background-color: transparent;
+}
+
+.rowValue:hover {
+  color: #274690;
+  background-color: #eaf0fb;
+  transform: translateX(-4px);
+}
+
+/* Inline editing */
+.editArea {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.input,
+.select {
+  border: 2px solid #dbe4ee;
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 0.95rem;
+  width: 100%;
+  color: #26314a;
+  background-color: #ffffff;
+  transition: all 0.2s ease;
+  outline: none;
+}
+
+.input:focus,
+.select:focus {
+  border-color: #274690;
+  box-shadow: 0 0 0 3px rgba(39, 70, 144, 0.1);
+  background-color: #eaf0fb;
+}
+
+.editButtons {
+  display: flex;
+  gap: 0.5rem;
+  width: 100%;
+  justify-content: flex-end;
+}
+
+.saveBtn,
+.cancelBtn {
+  border: none;
+  border-radius: 8px;
+  padding: 0.5rem 1.2rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.saveBtn {
+  background: linear-gradient(90deg, #274690, #3e5ba9);
+  color: #ffffff;
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+}
+
+.saveBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(39, 70, 144, 0.3);
+}
+
+.saveBtn:active {
+  transform: translateY(0);
+}
+
+.saveBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.cancelBtn {
+  background-color: #eaf0fb;
+  color: #26314a;
+  border: 1px solid #dbe4ee;
+}
+
+.cancelBtn:hover {
+  background-color: #dbe4ee;
+  transform: translateY(-1px);
+}
+
+/* Reset Password button */
+.resetBtn {
+  border: none;
+  background: linear-gradient(135deg, #d63031, #e17055);
+  color: white;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(214, 48, 49, 0.2);
+}
+
+.resetBtn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(214, 48, 49, 0.3);
+}
+
+/* Collapsible Password Section */
+.passwordSection {
+  margin-top: 0.5rem;
+  padding: 1.2rem;
+  border-top: 2px solid #dbe4ee;
+  background: linear-gradient(135deg, #eaf0fb 0%, #ffffff 100%);
+  border-radius: 12px;
+  transition: all 0.3s ease;
+}
+
+.passwordSection:hover {
+  background: #eaf0fb;
+}
+
+.passwordHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   font-size: 1rem;
-  margin: 0.5rem 0;
+  font-weight: 600;
+  color: #26314a;
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.2s ease-in-out;
+  padding: 0.5rem;
+  border-radius: 8px;
 }
 
-/* Labels */
-.profileCard strong {
-  color: #333333;
-  margin-right: 0.5rem;
+.passwordHeader:hover {
+  color: #274690;
+  background-color: rgba(39, 70, 144, 0.05);
 }
 
-/* Buttons container */
+.arrow {
+  font-size: 18px;
+  font-weight: bold;
+  color: #274690;
+  transition: transform 0.3s ease;
+  display: inline-block;
+}
+
+.arrowUp {
+  transform: rotate(90deg);
+}
+
+.arrowDown {
+  transform: rotate(-90deg);
+}
+
+.passwordForm {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 100%;
+  overflow: hidden;
+  max-height: 0;
+  opacity: 0;
+  transition: all 0.3s ease-in-out;
+  margin-top: 0;
+}
+
+.passwordFormVisible {
+  max-height: 500px;
+  opacity: 1;
+  margin-top: 1rem;
+}
+
+.passwordButtons {
+  display: flex;
+  justify-content: flex-start;
+  gap: 10px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.passwordButtons button {
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+  font-size: 0.9rem;
+}
+
+.passwordButtons .saveBtn {
+  background: linear-gradient(90deg, #274690, #3e5ba9);
+  color: #ffffff;
+  border: none;
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+}
+
+.passwordButtons .saveBtn:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(39, 70, 144, 0.3);
+}
+
+.passwordButtons .cancelBtn {
+  background-color: #eaf0fb;
+  color: #26314a;
+  border: 1px solid #dbe4ee;
+}
+
+.passwordButtons .cancelBtn:hover {
+  background-color: #dbe4ee;
+  transform: translateY(-1px);
+}
+
+/* Bottom buttons */
 .buttonGroup {
   display: flex;
   justify-content: center;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid #dbe4ee;
 }
 
-/* Buttons styling */
 .buttonGroup button {
-  padding: 0.6rem 1.2rem;
+  padding: 0.8rem 2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 0.95rem;
-  background-color: #2563eb;
-  color: white;
-  transition: background 0.2s, transform 0.1s;
+  font-weight: 600;
+  font-size: 1rem;
+  background: linear-gradient(90deg, #274690, #3e5ba9);
+  color: #ffffff;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+  letter-spacing: 0.3px;
 }
 
 .buttonGroup button:hover {
-  background-color: #1e4bb8;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(39, 70, 144, 0.3);
 }
 
-/* Responsive: card width and padding on smaller screens */
+.buttonGroup button:active {
+  transform: translateY(0);
+}
+
+/* Responsive */
 @media (max-width: 640px) {
   .profileContainer {
     padding: 1rem;
-    margin: 2rem auto;
+    margin: 1.5rem auto;
+  }
+
+  .profileContainer h1 {
+    font-size: 1.6rem;
   }
 
   .profileCard {
     padding: 1.5rem;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .valueArea {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .editArea {
+    max-width: 100%;
+  }
+
+  .editButtons {
+    width: 100%;
   }
 
   .buttonGroup {
@@ -85,6 +372,14 @@
   }
 
   .buttonGroup button {
+    width: 100%;
+  }
+
+  .passwordButtons {
+    flex-direction: column;
+  }
+
+  .passwordButtons button {
     width: 100%;
   }
 }
