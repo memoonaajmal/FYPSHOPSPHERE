@@ -342,3 +342,19 @@ exports.getAllStoresWithStats = async (req, res) => {
     });
   }
 };
+
+// ✅ Fetch recently placed orders (sorted by creation time)
+exports.getRecentOrders = async (req, res) => {
+  try {
+    const orders = await Order.findOne()
+      .sort({ createdAt: -1 }) // latest first
+      .limit(3) 
+      .select("firstName lastName email grandTotal paymentStatus createdAt");
+
+    res.status(200).json({ orders });
+  } catch (error) {
+    console.error("❌ Error fetching recent orders:", error);
+    res.status(500).json({ message: "Failed to fetch recent orders" });
+  }
+};
+// ✅ Get the most recently created stores

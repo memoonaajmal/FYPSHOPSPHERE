@@ -1,42 +1,44 @@
 /* Navbar.module.css */
 
-/* Overall Navbar */
+/* Main Navbar */
 .navbar {
-  background-color: var(--white);
-  color: var(--text);
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  color: var(--light);
   padding: 1rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: var(--card-shadow);
-  border-bottom: 1px solid var(--border);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 100;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(8px);
   transition: background 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* Logo on the left */
+/* Logo */
 .logo {
   font-size: 1.5rem;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--white);
   text-decoration: none;
-  transition: color 0.3s ease;
+  letter-spacing: 0.5px;
+  transition: color 0.3s ease, transform 0.2s ease;
 }
 
 .logo:hover {
-  color: var(--blue-light);
+  color: var(--white);
+  transform: translateY(-2px);
 }
 
-/* Centered greeting */
+/* Greeting (center) */
 .userGreeting {
   font-size: 1.1rem;
   font-weight: 500;
   text-align: center;
   flex: 1;
-  cursor: pointer;
-  color: var(--text);
+  color: var(--light);
   text-decoration: none;
   display: flex;
   justify-content: center;
@@ -45,11 +47,11 @@
 }
 
 .userGreeting:hover {
-  color: var(--blue);
+  color: var(--white);
   transform: translateY(-1px);
 }
 
-/* Right icons container */
+/* Icons container */
 .icons {
   display: flex;
   gap: 1rem;
@@ -60,20 +62,20 @@
 .icons a {
   display: flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: 0.4rem;
   text-decoration: none;
-  color: var(--text);
+  color: var(--light);
   font-weight: 500;
   padding: 0.5rem 0.75rem;
-  border-radius: 8px;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.2s ease;
+  border-radius: 10px;
+  transition: all 0.25s ease;
 }
 
 .icons a:hover {
-  background-color: var(--blue-soft);
-  color: var(--blue);
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.15);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* Hide text span on small screens */

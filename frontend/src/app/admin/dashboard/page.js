@@ -36,44 +36,60 @@ export default function AdminDashboard() {
     storeSales: [],
   });
   const [loading, setLoading] = useState(true);
+  const [recentOrders, setRecentOrders] = useState([]);
 
-  // ✅ FIXED: Properly fetch analytics after user session is restored
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        console.warn("⚠️ No user logged in");
-        setLoading(false);
-        return;
-      }
+// ✅ Fetch analytics + most recent order when admin logs in
+useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (!user) {
+      console.warn("⚠️ No user logged in");
+      setLoading(false);
+      return;
+    }
 
-      try {
-        const token = await user.getIdToken();
+    try {
+      const token = await user.getIdToken();
 
-        const res = await fetch(`${BASE_URL}/api/admin/analytics`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        });
+      // Fetch Analytics Data
+      const analyticsRes = await fetch(`${BASE_URL}/api/admin/analytics`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-        if (!res.ok) {
-          throw new Error(`HTTP error! Status: ${res.status}`);
-        }
+      if (!analyticsRes.ok) throw new Error(`Analytics error: ${analyticsRes.status}`);
+      const analyticsData = await analyticsRes.json();
+      setStats(analyticsData);
 
-        const data = await res.json();
-        setStats(data);
-      } catch (err) {
-        console.error("❌ Failed to load analytics:", err);
-      } finally {
-        setLoading(false);
-      }
-    });
+      // ✅ Fetch Most Recent Order
+      const orderRes = await fetch(`${BASE_URL}/api/admin/recent-orders`, {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
 
-    return () => unsubscribe();
-  }, []);
+      if (!orderRes.ok) throw new Error(`Order error: ${orderRes.status}`);
+      const orderData = await orderRes.json();
 
-  // ✅ GSAP Animations
+      // Backend returns a single object, not an array
+      setRecentOrders(orderData.orders ? [orderData.orders] : []);
+
+    } catch (err) {
+      console.error("❌ Failed to load dashboard data:", err);
+    } finally {
+      setLoading(false);
+    }
+  });
+
+  return () => unsubscribe();
+}, []);
+
+
+  // ✅ GSAP animations
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(`.${styles.title}`, {
@@ -94,63 +110,57 @@ export default function AdminDashboard() {
           start: "top 85%",
         },
       });
-
-      const cards = gsap.utils.toArray(`.${styles.card}`);
-      cards.forEach((card) => {
-        card.addEventListener("mouseenter", () => {
-          gsap.to(card, { scale: 1.05, duration: 0.3, ease: "power2.out" });
-        });
-        card.addEventListener("mouseleave", () => {
-          gsap.to(card, { scale: 1, duration: 0.3, ease: "power2.out" });
-        });
-      });
     }, dashboardRef);
 
     return () => ctx.revert();
   }, []);
 
-  if (loading)
-    return <p className={styles.loading}>Loading analytics...</p>;
+  if (loading) return <p className={styles.loading}>Loading analytics...</p>;
+
 
   return (
     <ProtectedRoute role="admin">
       <div ref={dashboardRef} className={styles.dashboard}>
         <h1 className={styles.title}>Admin Dashboard</h1>
 
-        {/* ✅ Summary Cards */}
-        <div className={styles.summaryGrid}>
-          <div className={styles.summaryCard}>
-            <div className={styles.cardHeader}>
-              <h4>Total Sales</h4>
-              <span className={styles.icon}>📈</span>
-            </div>
-            <p className={styles.value}>${stats?.totalSales?.toLocaleString() || 0}</p>
-          </div>
+        {/* ✅ Admin Overview Summary */}
+<div className={styles.summaryGrid}>
+  <div className={styles.summaryCard}>
+    <div className={styles.cardHeader}>
+      <h4>Revenue Generated</h4>
+      <span className={styles.icon}>💰</span>
+    </div>
+    <p className={styles.value}>${stats?.totalSales?.toLocaleString() || 0}</p>
+    <p className={styles.subtext}>Total income from all completed orders</p>
+  </div>
 
-          <div className={styles.summaryCard}>
-            <div className={styles.cardHeader}>
-              <h4>Total Users</h4>
-              <span className={styles.icon}>👤</span>
-            </div>
-            <p className={styles.value}>{stats?.totalUsers ?? 0}</p>
-          </div>
+  <div className={styles.summaryCard}>
+    <div className={styles.cardHeader}>
+      <h4>Registered Users</h4>
+      <span className={styles.icon}>👥</span>
+    </div>
+    <p className={styles.value}>{stats?.totalUsers ?? 0}</p>
+    <p className={styles.subtext}>Total users currently active in the system</p>
+  </div>
 
-          <div className={styles.summaryCard}>
-            <div className={styles.cardHeader}>
-              <h4>Active Stores</h4>
-              <span className={styles.icon}>🏬</span>
-            </div>
-            <p className={styles.value}>{stats?.activeStores ?? 0}</p>
-          </div>
+  <div className={styles.summaryCard}>
+    <div className={styles.cardHeader}>
+      <h4>Verified Stores</h4>
+      <span className={styles.icon}>🏪</span>
+    </div>
+    <p className={styles.value}>{stats?.activeStores ?? 0}</p>
+    <p className={styles.subtext}>Stores approved and actively selling</p>
+  </div>
 
-          <div className={styles.summaryCard}>
-            <div className={styles.cardHeader}>
-              <h4>Pending Orders</h4>
-              <span className={styles.icon}>🛒</span>
-            </div>
-            <p className={styles.value}>{stats?.pendingOrders ?? 0}</p>
-          </div>
-        </div>
+  <div className={styles.summaryCard}>
+    <div className={styles.cardHeader}>
+      <h4>Orders Awaiting Action</h4>
+      <span className={styles.icon}>🕒</span>
+    </div>
+    <p className={styles.value}>{stats?.pendingOrders ?? 0}</p>
+    <p className={styles.subtext}>Orders pending confirmation or dispatch</p>
+  </div>
+</div>
 
         {/* ✅ Charts Section */}
  <div className={styles.chartsGrid}>
@@ -235,6 +245,52 @@ export default function AdminDashboard() {
   </BarChart>
 </ResponsiveContainer>
 </div>
+<div className={styles.recentOrdersSection}>
+  <h2 className={styles.recentTitle}>Last Order Placed</h2>
+
+  {recentOrders.length === 0 ? (
+    <p className={styles.noOrders}>No orders have been placed yet.</p>
+  ) : (
+    recentOrders.map((order) => (
+      <div key={order._id} className={styles.orderCard}>
+        {/* Row 1: Name + Status */}
+        <div className={styles.orderHeader}>
+          <h3 className={styles.customerName}>
+            {order.firstName} {order.lastName}
+          </h3>
+          <span
+            className={`${styles.statusBadge} ${
+              order.paymentStatus === "completed"
+                ? styles.completed
+                : styles.pending
+            }`}
+          >
+            {order.paymentStatus}
+          </span>
+        </div>
+
+        {/* Row 2: Other Details */}
+        <div className={styles.orderDetails}>
+          <p>
+            <strong>Email:</strong> {order.email}
+          </p>
+          <p>
+            <strong>Amount:</strong> ${order.grandTotal?.toLocaleString()}
+          </p>
+          <p>
+            <strong>Placed At:</strong>{" "}
+            {new Date(order.createdAt).toLocaleString("en-US", {
+              dateStyle: "medium",
+              timeStyle: "short",
+            })}
+          </p>
+        </div>
+      </div>
+    ))
+  )}
+</div>
+
+
 </div>
 
 
@@ -270,6 +326,9 @@ export default function AdminDashboard() {
           </Link>
         </div>
       </div>
+
+ 
     </ProtectedRoute>
+    
   );
 }

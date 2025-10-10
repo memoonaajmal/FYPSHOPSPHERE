@@ -30,40 +30,59 @@
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  gap: 1.8rem;
+  gap: 1.5rem;
+  margin-top: 0rem;
 }
 
 .summaryCard {
-  background: var(--blue-soft);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.75rem 1.5rem;
-  box-shadow: var(--card-shadow);
+  background:var(--blue);
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  cursor: pointer;
 }
 
 .summaryCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(39, 70, 144, 0.15);
+  transform: translateY(-4px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 .cardHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-weight: 500;
-  margin-bottom: 0.6rem;
+ 
+  justify-content: space-between;
+  margin-bottom: 0.75rem;
+}
+
+.cardHeader h4 {
+  font-size: 1.1rem;
+   color: var(--blue-soft);
+  font-weight: 600;
+ 
+}
+
+.icon {
+  font-size: 1.5rem;
+}
+
+.value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.subtext {
+  font-size: 0.85rem;
+ color: var(--blue-soft);
+  margin-top: 0.25rem;
 }
 
 .value {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-soft);
   margin-bottom: 0.2rem;
 }
 
@@ -89,7 +108,7 @@
 }
 
 .card {
-  background: var(--blue-light);
+  background: var(--blue);
   color: var(--white);
   border-radius: 12px;
   text-align: center;
@@ -195,6 +214,67 @@
   font-size: 1rem;
   margin-top: 4rem;
 }
+.orderCard {
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+  padding: 1.2rem 1.5rem;
+  margin-top: 1rem;
+  max-width: 600px;
+  border-left: 5px solid var(--primary, #0070f3);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.orderCard:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* ✅ Top row (name + status) */
+.orderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.8rem;
+}
+
+.customerName {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #222;
+}
+
+/* ✅ Status badge */
+.statusBadge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: capitalize;
+  font-size: 0.9rem;
+}
+
+.completed {
+  background-color: #e6ffed;
+  color: #0f9d58;
+}
+
+.pending {
+  background-color: #fff4e5;
+  color: #e67e22;
+}
+
+/* ✅ Vertical info section */
+.orderDetails p {
+  margin: 0.4rem 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.orderDetails strong {
+  color: #333;
+}
+
+
 
 /* ===== Animations ===== */
 @keyframes fadeIn {

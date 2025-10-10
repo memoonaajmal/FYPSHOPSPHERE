@@ -13,7 +13,10 @@ const {
   updateStoreRequestStatus,
   getStoreOrdersForAdmin,
   getAnalytics, // ✅ added
-  getAllStoresWithStats
+
+  getAllStoresWithStats,
+  getRecentOrders,
+ getRecentStores
 } = require("../controllers/adminController");
 
 // ==================== USER ROUTES ====================
@@ -49,5 +52,7 @@ router.get("/orders", requireAuth, requireRole("admin"), getStoreOrdersForAdmin)
 // Admin: Get analytics summary
 router.get("/analytics", requireAuth, requireRole("admin"), getAnalytics); // ✅ fixed
 router.get("/stores", getAllStoresWithStats);
+router.get("/recent-orders",  getRecentOrders);
+
 
 module.exports = router;
