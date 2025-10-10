@@ -9,14 +9,8 @@ import styles from "../styles/SellerDashboard.module.css";
 import SellerProductCard from "../../../../components/SellerProductCard";
 import TopCustomers from "../../../../components/TopCustomers";
 import CustomerEngagementCard from "../../../../components/CustomerEngagementCard";
-import {
-  DollarSign,
-  ShoppingCart,
-  Clock,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
 import SalesBarChart from "../../../../components/SalesBarChart";
+import Image from "next/image";
 
 export default function SellerDashboard() {
   const [stats, setStats] = useState(null);
@@ -57,23 +51,50 @@ export default function SellerDashboard() {
       <div className={styles.dashboard}>
         <h1 className={styles.title}>Seller Dashboard</h1>
 
-        {/* ======= 🔗 Navigation Section (Top Buttons) ======= */}
-        <div className={styles.grid}>
-          <Link href="/seller/products">
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>View My Products</h2>
-              <p className={styles.cardText}>Manage, add, or update products</p>
-            </div>
-          </Link>
+        
+        {/* ======= 🔗 Dashboard Intro Section ======= */}
+{/* ======= 🔗 Dashboard Intro Section ======= */}
+<div className={styles.topSection}>
+  {/* ===== Left Side: Image + Text ===== */}
+  <div className={styles.leftContent}>
+    <Image
+      src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "")}/images/logo.png`}
+      alt="ShopSphere Logo"
+      width={120}
+      height={120}
+      className={styles.dashboardImage}
+      priority
+    />
+    <div className={styles.logoTextContainer}>
+      <h1 className={styles.logoText}>ShopSphere</h1>
+      <h3 className={styles.tagline}>
+        Turning ideas into income,<br /> one sale at a time.
+      </h3>
+    </div>
+  </div>
 
-          <Link href="/seller/orders">
-            <div className={styles.card}>
-              <h2 className={styles.cardTitle}>Order History</h2>
-              <p className={styles.cardText}>Track all placed orders easily</p>
-            </div>
-          </Link>
-        </div>
+  {/* ===== Right Side: Buttons ===== */}
+  <div className={styles.rightPanel}>
+    <Link href="/seller/products">
+      <div className={styles.card}>
+        <h2 className={styles.cardTitle}>🛍️ View My Products</h2>
+        <p className={styles.cardText}>Manage, add, or update products</p>
+      </div>
+    </Link>
 
+    <Link href="/seller/orders">
+      <div className={styles.card}>
+        <h2 className={styles.cardTitle}>📦 Order History</h2>
+        <p className={styles.cardText}>Track all placed orders easily</p>
+      </div>
+    </Link>
+  </div>
+</div>
+
+
+
+
+<div className={styles.innerContent}>
         {/* ======= 📊 Business Overview ======= */}
         <div className={styles.analytics}>
           <h2 className={styles.sectionTitle}>Business Overview</h2>
@@ -84,7 +105,7 @@ export default function SellerDashboard() {
             <div className={styles.statsGrid}>
               <div className={styles.statCard}>
                 <div className={styles.statHeader}>
-                  <DollarSign className={styles.icon} />
+                  <span className={styles.iconEmoji}>💰</span>
                   <div>
                     <h3>Total Revenue</h3>
                     <p className={styles.subText}>Your all-time earnings</p>
@@ -95,7 +116,7 @@ export default function SellerDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statHeader}>
-                  <ShoppingCart className={styles.icon} />
+                  <span className={styles.iconEmoji}>🛒</span>
                   <div>
                     <h3>Total Orders</h3>
                     <p className={styles.subText}>All customer purchases</p>
@@ -106,7 +127,7 @@ export default function SellerDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statHeader}>
-                  <Clock className={styles.icon} />
+                  <span className={styles.iconEmoji}>⏳</span>
                   <div>
                     <h3>Pending Orders</h3>
                     <p className={styles.subText}>Awaiting dispatch</p>
@@ -117,7 +138,7 @@ export default function SellerDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statHeader}>
-                  <CheckCircle className={styles.icon} />
+                  <span className={styles.iconEmoji}>✅</span>
                   <div>
                     <h3>Delivered Orders</h3>
                     <p className={styles.subText}>Successfully completed</p>
@@ -128,7 +149,7 @@ export default function SellerDashboard() {
 
               <div className={styles.statCard}>
                 <div className={styles.statHeader}>
-                  <XCircle className={styles.icon} />
+                  <span className={styles.iconEmoji}>🔁</span>
                   <div>
                     <h3>Returned Orders</h3>
                     <p className={styles.subText}>Refunded or returned</p>
@@ -178,6 +199,7 @@ export default function SellerDashboard() {
             <CustomerEngagementCard />
           </div>
         </div>
+      </div>
       </div>
     </ProtectedRoute>
   );

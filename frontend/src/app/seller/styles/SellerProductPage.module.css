@@ -1,23 +1,56 @@
 /* store.module.css */
 
-/* Container for entire store page */
+/* ---------- Container ---------- */
 .container {
   max-width: 100%;
-
   padding: 2rem;
   font-family: 'Inter', sans-serif;
-  color: #333;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden; /* prevent horizontal scroll */
 }
 
-/* Hero Banner */
+/* ---------- Hero Banner ---------- */
 .heroBanner {
-  background: linear-gradient(135deg, #0070f3, #da8845);
-  color: white;
+  position: relative;
+  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
+  color: var(--white);
   padding: 4rem 2rem;
   border-radius: 12px;
   text-align: center;
   margin-bottom: 3rem;
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+  transition: none; /* disable hover animation */
 }
+
+/* Remove the pseudo-element hover effect */
+.heroBanner::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 140%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(110,130,184,0.10)
+  );
+  transform: rotate(8deg) translateX(-10%);
+  opacity: 1; /* make it always visible if needed, or remove */
+  pointer-events: none;
+  transition: none; /* disable hover animation */
+}
+
+/* Remove hover styles completely */
+.heroBanner:hover {
+  transform: none;
+  box-shadow: var(--card-shadow);
+  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
+}
+
 
 .heroContent {
   max-width: 800px;
@@ -33,49 +66,120 @@
 .storeSubtitle {
   font-size: 1.2rem;
   opacity: 0.9;
+  color: var(--white);
 }
 
-/* Main content wrapper: sidebar + products */
+/* ---------- Main Content: Filter + Products ---------- */
 .storeContent {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap;
+  flex-wrap: wrap; /* wrap on smaller screens */
 }
 
-/* Products Section */
+.searchFilterBar {
+  flex: 0 0 250px; /* fixed width for desktop */
+}
+
 .productsSection {
-  flex: 1;
+  flex: 1; /* take remaining space */
+  background: var(--section-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
 }
 
+/* ---------- Products Section ---------- */
 .productsHeading {
   font-size: 1.8rem;
   margin-bottom: 1.5rem;
   font-weight: 600;
+  color: var(--text);
 }
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* responsive grid */
   gap: 1.5rem;
 }
 
 .emptyState {
   font-size: 1.2rem;
-  color: #666;
+  color: var(--muted);
   text-align: center;
   margin-top: 2rem;
 }
 
-/* Responsive adjustments */
+/* ---------- Add Product Button ---------- */
+.addProductBtn {
+  position: relative;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--navy);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 320ms cubic-bezier(.2,.9,.2,1), 
+              box-shadow 320ms, 
+              background 320ms, 
+              border 320ms;
+  box-shadow: var(--card-shadow);
+}
+
+.addProductBtn::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 140%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(234,240,251,0.10)
+  );
+  transform: rotate(8deg) translateX(-10%);
+  transition: transform 700ms ease, opacity 500ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.addProductBtn:hover::before {
+  transform: rotate(8deg) translateX(0);
+  opacity: 1;
+}
+
+.addProductBtn:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
+  background: linear-gradient(180deg, var(--bg) 96%, var(--blue-soft) 95%);
+  border: 1px solid var(--blue-light);
+}
+
+.addProductBtn h3,
+.addProductBtn p {
+  color: var(--blue);
+}
+
+/* ---------- Responsive Adjustments ---------- */
 @media (max-width: 1024px) {
   .storeContent {
     flex-direction: column;
+  }
+
+  .searchFilterBar,
+  .productsSection {
+    flex: 1 1 100%; /* full width on tablet */
   }
 }
 
 @media (max-width: 640px) {
   .heroBanner {
-    padding: 3rem 1rem;
+    padding: 2.5rem 1rem;
   }
   .storeTitle {
     font-size: 2rem;
@@ -83,29 +187,8 @@
   .storeSubtitle {
     font-size: 1rem;
   }
-}
-/* Add Product Button in Hero Banner */
-.addProductBtn {
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  font-weight: 600;
-  color: #fff;
-  background: linear-gradient(135deg, #4f46e5, #6366f1); /* Indigo gradient */
-  border: none;
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
-}
 
-.addProductBtn:hover {
-  background: linear-gradient(135deg, #4338ca, #4f46e5);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(79, 70, 229, 0.4);
-}
-
-.addProductBtn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(79, 70, 229, 0.2);
+  .productsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* smaller cards on mobile */
+  }
 }
