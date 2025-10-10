@@ -1,24 +1,28 @@
-/* SellerDashboard.module.css */
+/* ---------- Dashboard Container ---------- */
 .dashboard {
-  padding: 2rem 2.5rem;
   color: var(--text);
   background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  gap: 3rem;
+  gap: 1.5rem; /* reduced from 2rem */
   animation: fadeIn 0.6s ease;
-  max-width: 100vw;      /* Fill the screen width */
-  width: 100%;           /* Ensure full width */
+  max-width: 100vw;
+  width: 100%;
   margin: 0 auto;
   box-sizing: border-box;
-  overflow-x: hidden;    /* Prevent horizontal overflow */
+  overflow-x: hidden;
 }
 
-/* Responsive: reduce padding and max-width on smaller screens */
+/* ✅ Inner content wrapper for padding */
+.innerContent {
+  padding: 1.5rem 1.5rem; /* reduced from 2rem */
+  box-sizing: border-box;
+}
+
 @media (max-width: 1280px) {
-  .dashboard {
-    padding: 1.5rem 1rem;
+  .innerContent {
+    padding: 1rem 0.8rem; /* slightly reduced */
   }
 }
 
@@ -29,7 +33,7 @@
   text-align: center;
   color: var(--blue);
   letter-spacing: -0.5px;
-  margin-bottom: 0.75rem;
+  padding: 1.5rem 0 0.5rem 0; /* reduced top padding */
 }
 
 .title::after {
@@ -38,107 +42,223 @@
   margin: 0 auto;
   height: 6px;
   width: 160px;
-  margin-top: 10px;
+  margin-top: 8px; /* reduced from 10px */
   border-radius: 8px;
   background: var(--accent-gradient);
   opacity: 0.18;
 }
 
-/* ---------- Top navigation cards ---------- */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1.8rem;
-  margin-bottom: 44px;
-  padding: 0 20px;
+/* ---------- Top Section ---------- */
+.topSection {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem; /* reduced from 3rem */
+  flex-wrap: wrap;
+  background: var(--blue);
+  padding: 4rem 4rem; /* reduced from 4rem */
+  box-shadow: 0 10px 25px rgba(39, 70, 144, 0.25);
+  color: var(--white);
 }
 
-.card {
-  background: var(--blue-light);
-  color: var(--white);
+/* ---------- Left Side: Image + Text ---------- */
+.leftContent {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex: 1;
+  gap: 0.8rem; /* reduced from 1rem */
+  min-width: 320px;
+}
+
+.dashboardImage {
+  width: 180px; /* slightly smaller */
+  height: auto;
   border-radius: 12px;
-  text-align: center;
-  padding: 2.2rem 1rem;
-  box-shadow: 0 6px 16px rgba(39, 70, 144, 0.2);
-  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
-  cursor: pointer;
-  position: relative;
-  overflow: hidden;
-  min-height: 110px;
+  object-fit: contain;
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+  transition: transform 0.3s ease;
+}
+
+.dashboardImage:hover {
+  transform: scale(1.05);
+}
+
+/* ---------- Logo Text ---------- */
+.logoTextContainer {
   display: flex;
   flex-direction: column;
   justify-content: center;
+  gap: 0.4rem; /* reduced from 0.5rem */
 }
 
-.card::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -60%;
-  width: 220%;
-  height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.15) 40%,
-    transparent 70%
-  );
-  transform: translateX(-100%);
-  transition: transform 0.6s ease;
+.logoText {
+  font-size: 2.5rem; /* slightly smaller */
+  font-weight: 700;
+  color: var(--white);
+  margin: 0;
+  line-height: 1.1;
 }
 
-.card:hover::after {
-  transform: translateX(0%);
+.tagline {
+  font-size: 1.1rem; /* slightly smaller */
+  font-weight: 400;
+  color: var(--blue-soft);
+  letter-spacing: 0.3px;
+  line-height: 1.3;
+}
+
+/* ---------- Right Side: Buttons (Diagonal + Floating Animation) ---------- */
+.rightPanel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem; /* reduced from 1rem */
+  align-items: flex-end;
+  justify-content: center;
+  position: relative;
+  overflow: visible;
+}
+
+/* Base card styles */
+.card {
+  background: rgba(255, 255, 255, 0.15);
+  color: var(--white);
+  border-radius: 10px;
+  text-align: center;
+  padding: 1.5rem 1rem; /* reduced */
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  min-height: 90px; /* reduced */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 300px; /* reduced from 330px */
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  transition: transform 0.35s ease, box-shadow 0.35s ease, background 0.35s ease;
+  opacity: 0;
+  animation: floatIn 1s forwards, floatSway 3s ease-in-out infinite;
+}
+
+.rightPanel .card:first-child {
+  transform: translateX(-15px) rotate(-2deg); /* reduced */
+  animation-delay: 0.2s, 1s;
+}
+
+.rightPanel .card:last-child {
+  transform: translateX(15px) rotate(2deg); /* reduced */
+  animation-delay: 0.5s, 1.5s;
 }
 
 .card:hover {
-  transform: translateY(-6px);
-  background: linear-gradient(145deg, var(--blue), var(--blue));
-  box-shadow: 0 12px 28px rgba(39, 70, 144, 0.25);
+  transform: translateY(-10px) scale(1.05) rotate(0deg); /* reduced */
+  box-shadow: 0 15px 30px rgba(255, 255, 255, 0.25);
+  z-index: 5;
 }
 
 .cardTitle {
-  font-size: 1.25rem;
+  font-size: 1.1rem; /* slightly smaller */
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: 0.3rem;
   color: var(--white);
 }
 
 .cardText {
-  font-size: 0.9rem;
-  opacity: 0.85;
-  color: var(--blue-soft);
-  line-height: 1.4;
+  font-size: 0.85rem; /* slightly smaller */
+  opacity: 0.9;
+  color: var(--white);
+  line-height: 1.3;
 }
 
-/* ---------- Analytics section ---------- */
+/* Entrance animation */
+@keyframes floatIn {
+  0% {
+    opacity: 0;
+    transform: translateY(-50px) rotate(0deg);
+  }
+  50% {
+    opacity: 1;
+    transform: translateY(8px) rotate(-1deg);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Subtle continuous floating */
+@keyframes floatSway {
+  0% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-4px) rotate(-1deg); } /* reduced */
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* ---------- Responsive Top Section ---------- */
+@media (max-width: 900px) {
+  .topSection {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 1.5rem 1.5rem; /* reduced */
+  }
+
+  .leftContent {
+    justify-content: center;
+    margin-bottom: 1rem;
+  }
+
+  .rightPanel {
+    align-items: center;
+  }
+
+  .card {
+    width: 100%;
+    transform: none !important;
+    animation: none;
+  }
+
+  .dashboardImage {
+    width: 110px;
+  }
+}
+
+/* ---------- Analytics Section ---------- */
 .analytics {
   display: flex;
   flex-direction: column;
-  gap: 28px;
-  margin-bottom: 42px;
+  gap: 20px; /* reduced from 28px */
+  margin-bottom: 28px; /* reduced */
 }
 
 .sectionTitle {
-  font-size: 1.4rem;
-  font-weight: 700;
+  font-size: 1.70rem; /* slightly smaller */
+  font-weight: 800;
   color: var(--navy);
-  margin-bottom: 8px;
+  margin-bottom: 6px; /* reduced */
 }
 
-/* ---------- Stats grid ---------- */
+/* ---------- Stats Grid ---------- */
 .statsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 1.8rem;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* slightly smaller min width */
+  gap: 1.5rem; /* reduced */
 }
 
-/* stat card with left accent band and subtle hover */
 .statCard {
-  background: var(--blue-soft);
+  background: var(--blue);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1.75rem 1.5rem;
+  border-radius: 12px; /* reduced from 14px */
+  padding: 1.5rem 1.2rem; /* reduced */
   box-shadow: var(--card-shadow);
   transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
@@ -149,178 +269,105 @@
 }
 
 .statCard:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 12px 28px rgba(39, 70, 144, 0.15);
+  transform: translateY(-4px); /* reduced */
+  box-shadow: 0 10px 20px rgba(39, 70, 144, 0.15);
 }
 
 .statHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  color: var(--muted);
-  font-size: 0.95rem;
+  color: var(--blue-soft);
+  font-size: 0.9rem; /* slightly smaller */
   font-weight: 500;
-  margin-bottom: 0.6rem;
+  margin-bottom: 0.5rem;
 }
 
 .statValue {
-  font-size: 2rem;
+  font-size: 1.7rem; /* slightly smaller */
   font-weight: 700;
-  color: var(--blue);
+  color: var(--blue-soft);
   margin-bottom: 0.2rem;
 }
 
-.statChange {
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-.positive {
-  color: var(--success);
-}
-
-.negative {
-  color: var(--danger);
-}
-
-.icon {
-  font-size: 2.5rem;
-  margin-bottom: 1rem;
-  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
-}
-
-.statTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--blue);
-}
-
-.statText {
-  font-size: 0.9rem;
-  color: var(--muted);
-}
-
-/* ---------- Top products strip (carousel-like) ---------- */
+/* ---------- Top Products Section ---------- */
 .topProducts {
   background: var(--section-bg);
-  border-radius: 14px;
-  padding: 20px;
+  border-radius: 12px; /* reduced */
+  padding: 16px; /* reduced */
   box-shadow: var(--card-shadow);
-  margin-bottom: 28px;
+  margin-bottom: 20px; /* reduced */
 }
 
 .topProducts h3 {
-  font-size: 1.1rem;
+  font-size: 1rem; /* slightly smaller */
   font-weight: 700;
   color: var(--blue);
-  margin-bottom: 18px;
+  margin-bottom: 14px; /* reduced */
 }
 
 .scrollContainer {
   overflow: hidden;
   position: relative;
   width: 100%;
-  padding: 11px 2px;
+  padding: 8px 2px; /* reduced */
 }
 
 .scrollContent {
   display: flex;
-  gap: 18px;
+  gap: 14px; /* reduced */
   width: max-content;
   align-items: stretch;
   animation: scrollInfinite 28s linear infinite;
 }
 
-/* pause on hover and add subtle 3D */
 .scrollContent:hover {
   animation-play-state: paused;
 }
 
 .productCardWrapper {
   flex: 0 0 auto;
-  width: 260px;
+  width: 240px; /* reduced from 260px */
   background: var(--white);
-  border-radius: 12px;
-  padding: 12px;
+  border-radius: 10px; /* reduced */
+  padding: 10px; /* reduced */
   display: flex;
   flex-direction: column;
   align-items: center;
-  box-shadow: 0 12px 30px rgba(39,70,144,0.06); /* blue shadow */
+  box-shadow: 0 10px 25px rgba(39, 70, 144, 0.06);
   transform: translateZ(0);
-  transform-origin: center top;
   transition: transform 260ms ease, box-shadow 260ms ease, background 260ms ease;
   border: 1px solid var(--border);
   position: relative;
   z-index: 1;
 }
 
-/* --- Hover State --- */
 .productCardWrapper:hover {
-  transform: translateY(-8px) scale(1.02);
+  transform: translateY(-6px) scale(1.02); /* reduced */
   background: var(--section-bg);
-  box-shadow: 0 30px 70px rgba(39,70,144,0.18); /* blue shadow */
+  box-shadow: 0 25px 60px rgba(39, 70, 144, 0.15); /* reduced */
   border: 1px solid var(--blue);
 }
 
-/* soldCount style */
 .soldCount {
-  font-size: 0.95rem;
+  font-size: 0.9rem; /* slightly smaller */
   color: var(--muted);
-  margin-top: 8px;
+  margin-top: 6px; /* reduced */
 }
 
-/* keyframes */
 @keyframes scrollInfinite {
   0% { transform: translateX(0); }
   100% { transform: translateX(-50%); }
 }
 
-@keyframes pulse {
-  0% { transform: scale(1); opacity: 1; }
-  50% { transform: scale(1.06); opacity: 0.95; }
-  100% { transform: scale(1); opacity: 1; }
-}
-
-/* loading & error */
-.loading, .error {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.98rem;
-  padding: 12px 0;
-}
-
-/* Sales section spacing */
-.salesSection {
-  margin-bottom: 36px;
-}
-
-/* ---------- Responsive ---------- */
-@media (max-width: 1024px) {
-  .dashboard { padding: 32px 20px; }
-  .title { font-size: 1.75rem; }
-}
-
-@media (max-width: 768px) {
-  .grid { gap: 16px; }
-  .productCardWrapper { width: 200px; }
-  .statValue { font-size: 1.3rem; }
-  .title::after { width: 120px; }
-}
-
-/* small tweak for print */
-@media print {
-  .dashboard { background: var(--white); box-shadow: none; }
-}
-
-/* ======= Customers Insights 60/40 layout ======= */
+/* ---------- Customers Insights Section ---------- */
 .customersSection {
   display: grid;
   grid-template-columns: 55% 45%;
-  gap: 24px;
+  gap: 18px; /* reduced from 24px */
   width: 100%;
   align-items: start;
-  padding-right: 1.5rem; /* balanced space on both sides */
+  padding-right: 1rem; /* slightly reduced */
   box-sizing: border-box;
 }
 
@@ -328,5 +375,54 @@
 .rightSection {
   display: flex;
   flex-direction: column;
-  gap: 22px;
+  gap: 16px; /* reduced from 22px */
+}
+
+/* ---------- Other Styles ---------- */
+.loading,
+.error {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.95rem; /* slightly smaller */
+  padding: 8px 0; /* reduced */
+}
+
+.salesSection {
+  margin-bottom: 28px; /* reduced from 36px */
+}
+
+.iconEmoji {
+  font-size: 1.8rem; /* slightly smaller */
+  margin-right: 0.6rem; /* reduced */
+  display: flex;
+  align-items: center;
+}
+
+/* ---------- Responsive adjustments ---------- */
+@media (max-width: 1024px) {
+  .dashboard {
+    padding: 24px 16px; /* reduced */
+  }
+  .title {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .productCardWrapper {
+    width: 180px; /* reduced */
+  }
+  .statValue {
+    font-size: 1.2rem; /* reduced */
+  }
+  .title::after {
+    width: 100px; /* reduced */
+  }
+}
+
+@media print {
+  .dashboard {
+    background: var(--white);
+    box-shadow: none;
+  }
 }

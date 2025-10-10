@@ -100,6 +100,8 @@ export default function AddProductPage() {
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Add New Product</h1>
+      <h3 className={styles.formIntro}>Add your product here with all the details, images, and descriptions so that more customers can discover,
+      explore, and purchase what you offer on SHOPSPHERE.</h3>
       {error && <p style={{ color: "red" }}>{error}</p>}
 
       <form onSubmit={handleSubmit} className={styles.form}>
@@ -169,7 +171,9 @@ export default function AddProductPage() {
         onChange={handleChange}
       />
     </label>
+  </div>
 
+  <div className={styles.rightColumn}>
     <label className={styles.formLabel}>
       Season:
       <input
@@ -200,9 +204,7 @@ export default function AddProductPage() {
         onChange={handleChange}
       />
     </label>
-  </div>
 
-  <div className={styles.rightColumn}>
     <label className={styles.formLabel}>
       Product Image:
       <input
@@ -230,12 +232,16 @@ export default function AddProductPage() {
         onChange={handleChange}
       />
     </label>
+  </div>
 
+  {/* Button centered below both columns */}
+  <div className={styles.buttonContainer}>
     <button className={styles.formButton} type="submit" disabled={loading}>
       {loading ? "Adding..." : "Add Product"}
     </button>
   </div>
 </form>
+
 
     </div>
   );
