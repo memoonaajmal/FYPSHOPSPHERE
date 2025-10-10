@@ -1,5 +1,5 @@
 "use client";
-import styles from "../../styles/login.module.css";
+import styles from "../../styles/forgot-password.module.css";
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
 import { auth } from "../../../firebase/config";
@@ -18,53 +18,62 @@ export default function ForgotPasswordPage() {
 
     try {
       await sendPasswordResetEmail(auth, email);
-      setMessage("✅ Password reset email sent! Check your inbox.");
+      setMessage("Password reset email sent! Check your inbox.");
     } catch (err) {
-      setError("❌ " + err.message);
+      setError(err.message);
     }
   };
 
   return (
     <div className={styles.container}>
-      {/* LEFT — Form (same position as login) */}
-      <div className={styles.formWrapper}>
+      <div className={styles.formBox}>
+        <div className={styles.decorativeShape}></div>
+        <div className={styles.decorativeShape2}></div>
+
+        <h2 className={styles.title}>Reset Password</h2>
+        <p className={styles.subtitle}>
+          Enter your email address and we'll send you a link to reset your password.
+        </p>
+
         <form onSubmit={handleReset} className={styles.form}>
-          <h2 className={styles.title}>Reset Your Password 🔒</h2>
+          <div className={styles.inputBox}>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+            <label>Email Address</label>
+          </div>
 
-          <input
-            type="email"
-            placeholder="Enter your Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            className={styles.input}
-          />
+          {message && (
+            <div className={`${styles.message} ${styles.success}`}>
+              ✓ {message}
+            </div>
+          )}
 
-          <button type="submit" className={styles.button}>
+          {error && (
+            <div className={`${styles.message} ${styles.error}`}>
+              ✕ {error}
+            </div>
+          )}
+
+          <button type="submit" className={styles.btn}>
             Send Reset Link
           </button>
 
-          {message && <p className={styles.success}>{message}</p>}
-          {error && <p className={styles.error}>{error}</p>}
-
-          <p className={styles.signupText}>
-            Remember your password?{" "}
-            <span
-              className={styles.signupLink}
-              onClick={() => router.push("/login")}
-            >
-              Back to Login
-            </span>
-          </p>
+          <div className={styles.backLink}>
+            <p>
+              Remember your password?{" "}
+              <span
+                onClick={() => router.push("/auth")}
+                className={styles.link}
+              >
+                Back to Login
+              </span>
+            </p>
+          </div>
         </form>
-      </div>
-
-      {/* RIGHT — Image (same style as login) */}
-      <div className={styles.imageWrapper}>
-        <img
-          src="https://i.pinimg.com/1200x/12/42/02/12420249b6831eea714bad15a40a5425.jpg"
-          alt="Forgot Password Illustration"
-        />
       </div>
     </div>
   );

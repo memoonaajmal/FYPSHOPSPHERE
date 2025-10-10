@@ -4,10 +4,11 @@
   position: relative;
   width: 750px;
   height: 550px;
-  border: 2px solid #809671;
-  box-shadow: 0 0 25px rgba(128, 150, 113, 0.3);
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 25px rgba(39, 70, 144, 0.3);
   overflow: hidden;
-  background: #725C3A;
+  background: var(--navy);
+  border-radius: 10px;
 }
 
 .container .form-box {
@@ -83,7 +84,8 @@
 .form-box h2 {
   font-size: 32px;
   text-align: center;
-  color: #E5D2B8;
+  color: #ffffff;
+  font-weight: 600;
 }
 
 .form-box .inputBox {
@@ -100,16 +102,16 @@
   border: none;
   outline: none;
   font-size: 16px;
-  color: #E5D2B8;
+  color: #ffffff;
   font-weight: 600;
-  border-bottom: 2px solid #B3B792;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
   padding-right: 23px;
   transition: 0.5s;
 }
 
 .inputBox input:focus,
 .inputBox input:valid {
-  border-bottom: 2px solid #809671;
+  border-bottom: 2px solid #ffffff;
 }
 
 .inputBox label {
@@ -118,7 +120,7 @@
   left: 0;
   transform: translateY(-50%);
   font-size: 16px;
-  color: #E5E0D8;
+  color: rgba(255, 255, 255, 0.7);
   transition: 0.5s;
   pointer-events: none;
 }
@@ -126,7 +128,7 @@
 .inputBox input:focus ~ label,
 .inputBox input:valid ~ label {
   top: -5px;
-  color: #809671;
+  color: #ffffff;
 }
 
 .btn {
@@ -138,10 +140,10 @@
   cursor: pointer;
   font-size: 16px;
   font-weight: 600;
-  border: 2px solid #809671;
+  border: 2px solid #ffffff;
   overflow: hidden;
   z-index: 1;
-  color: #E5D2B8;
+  color: #ffffff;
 }
 
 .btn::before {
@@ -149,7 +151,7 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  background: #809671;
+  background: #ffffff;
   top: 100%;
   left: 0;
   z-index: -1;
@@ -161,7 +163,7 @@
 }
 
 .btn:hover {
-  color: #E5D2B8;
+  color: var(--navy);
 }
 
 .regiLink {
@@ -171,19 +173,32 @@
 }
 
 .regiLink p {
-  color: #E5E0D8;
+  color: #ffffff;
+}
+
+.link {
+  text-decoration: none;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--blue-soft);
 }
 
 .regiLink .link {
   text-decoration: none;
-  color: #D2AB80;
+  color: #ffffff;
   font-weight: 600;
   cursor: pointer;
 }
 
 .regiLink .link:hover {
   text-decoration: underline;
-  color: #809671;
+  color: var(--blue-soft);
 }
 
 /* INFO CONTENT SECTIONS */
@@ -258,12 +273,14 @@
   text-transform: uppercase;
   font-size: 36px;
   line-height: 1.3;
-  color: #E5D2B8;
+  color: #ffffff;
+  font-weight: 700;
 }
 
 .info-content p {
   font-size: 16px;
-  color: #E5E0D8;
+  color: #ffffff;
+  opacity: 0.9;
 }
 
 /* CURVED DIAGONAL SHAPES */
@@ -273,7 +290,7 @@
   top: -300px;
   height: 900px;
   width: 900px;
-  background: #E5D2B8;
+  background: #ffffff;
   transform: rotate(10deg) skewY(40deg);
   transform-origin: bottom right;
   transition: 1.5s ease;
@@ -293,7 +310,7 @@
   top: -5px;
   height: 600px;
   width: 850px;
-  background: #809671;
+  background: var(--blue-light);
   transform: rotate(0deg) skewY(0deg);
   transform-origin: bottom left;
   transition: 1.5s ease;
@@ -307,7 +324,7 @@
 }
 
 .error {
-  color: #D2AB80;
+  color: var(--warning);
   font-size: 14px;
   text-align: center;
   margin: 10px 0;
@@ -317,10 +334,10 @@
   width: 100%;
   height: 50px;
   background: transparent;
-  border: 2px solid #B3B792;
+  border: 2px solid rgba(255, 255, 255, 0.3);
   border-radius: 40px;
   font-size: 16px;
-  color: #E5D2B8;
+  color: #ffffff;
   padding: 0 20px;
   outline: none;
   cursor: pointer;
@@ -328,10 +345,10 @@
 }
 
 .selectBox option {
-  background: #725C3A;
-  color: #E5D2B8;
+  background: var(--navy);
+  color: #ffffff;
 }
 
 .selectBox:focus {
-  border-color: #809671;
+  border-color: #ffffff;
 }
