@@ -10,6 +10,10 @@ const UserSchema = new mongoose.Schema({
     default: [] 
   },
   firebaseUid: { type: String,required: true, unique: true },
+
+  phone: { type: String, default: "" },
+  gender: { type: String, enum: ['male', 'female', 'other', 'not_set'], default: 'not_set' },
+  birthday: { type: Date, default: null }
 }, { timestamps: true });
 
 module.exports = mongoose.model('User', UserSchema);

@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import styles from "../../styles/auth.module.css";
-import { useRouter, useSearchParams } from "next/navigation"; // ✅ added useSearchParams
+import { useRouter, useSearchParams } from "next/navigation";
 import { auth } from "../../../firebase/config";
 import {
   createUserWithEmailAndPassword,
@@ -19,16 +19,15 @@ export default function AuthPage() {
   const [role, setRole] = useState("user");
   const [error, setError] = useState("");
   const router = useRouter();
-  const searchParams = useSearchParams(); // ✅ added
-  const redirect = searchParams.get("redirect"); // ✅ read redirect param
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect");
   const { setUser } = useAuth();
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   // Toggle animation
   const toggleForm = () => {
     setIsSignup((prev) => !prev);
-    setError(""); // Clear error when toggling
-    // Reset form fields when toggling
+    setError("");
     setEmail("");
     setPassword("");
     setName("");
@@ -56,7 +55,6 @@ export default function AuthPage() {
       setUser(data.user);
       await signOut(auth);
       
-      // Switch to login form after successful signup
       setIsSignup(false);
       setError("");
       alert("Signup successful! Please login to continue.");
@@ -65,7 +63,7 @@ export default function AuthPage() {
     }
   };
 
-  // ✅ Handle Login (fixed redirect)
+  // Handle Login
   const handleLogin = async (e) => {
     e.preventDefault();
     setError("");
@@ -73,14 +71,13 @@ export default function AuthPage() {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCred.user.getIdToken(true);
       
-      // Fetch user data from backend to get their roles
       const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({}), // Let backend return roles
+        body: JSON.stringify({}),
       });
       
       const data = await response.json();
@@ -88,13 +85,11 @@ export default function AuthPage() {
       
       setUser(data.user);
       
-      // Route based on user's primary role
       const userRoles = data.user.roles || [];
 
       if (userRoles.includes("admin")) {
         router.push("/admin/dashboard");
       } else if (userRoles.includes("seller")) {
-        // Check if seller has a store
         const checkRes = await fetch(`${BASE_URL}/api/stores/check/exists`, {
           headers: { Authorization: `Bearer ${token}` },
         });
@@ -105,11 +100,10 @@ export default function AuthPage() {
             : "/seller/create-store-request"
         );
       } else {
-        // ✅ For normal user — check redirect param
         if (redirect) {
-          router.push(redirect); // Go back to intended page (e.g., /checkout)
+          router.push(redirect);
         } else {
-          router.push("/"); // Default to home
+          router.push("/");
         }
       }
     } catch (err) {
@@ -124,7 +118,7 @@ export default function AuthPage() {
         justifyContent: "center",
         alignItems: "center",
         minHeight: "100vh",
-        background: "#25252b",
+        background: "white",
         padding: "20px",
       }}
     >
@@ -156,6 +150,17 @@ export default function AuthPage() {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <label>Password</label>
+            </div>
+
+            {/* Forgot Password Link */}
+            <div className={`${styles.animation}`} style={{ '--D': 0, '--S': 20, textAlign: 'right', marginTop: '10px', marginBottom: '20px' }}>
+              <a 
+                onClick={() => router.push("/forgot-password")} 
+                className={styles.link}
+                style={{ fontSize: '14px', cursor: 'pointer' }}
+              >
+                Forgot Password?
+              </a>
             </div>
 
             {error && !isSignup && (
@@ -225,7 +230,6 @@ export default function AuthPage() {
               <label>Password</label>
             </div>
 
-            {/* Role Selection Dropdown for Signup */}
             <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
               <select
                 value={role}
