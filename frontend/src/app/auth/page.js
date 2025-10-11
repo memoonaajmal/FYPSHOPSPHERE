@@ -41,7 +41,8 @@ export default function AuthPage() {
     try {
       const userCred = await createUserWithEmailAndPassword(auth, email, password);
       await updateProfile(userCred.user, { displayName: name });
-      const idToken = await userCred.user.getIdToken(true);
+      const idToken = await userCred.user.getIdToken(true); // force refresh
+       await new Promise((resolve) => setTimeout(resolve, 500));
       const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
