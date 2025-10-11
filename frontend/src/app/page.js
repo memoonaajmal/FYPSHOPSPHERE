@@ -155,9 +155,7 @@ function HomeContent() {
     <p className={styles.heroSubtitle}>
       Discover the best stores & exclusive collections
     </p>
-    <Link href="/products" className={styles.heroButton}>
-      Explore Products
-    </Link>
+    
   </div>
 </section>
 
@@ -215,87 +213,69 @@ function HomeContent() {
         )}
       </section>
 
-      {/* Recently Viewed Section */}
-      {recentlyViewed.length > 0 && (
-        <section className={styles.recentlyViewedSection}>
-          <h2 className={styles.heading}>Recently Viewed</h2>
-          <div className={styles.productsGrid}>
-            {recentlyViewed.map((product) => (
-              <Link
-                key={product._id}
-                href={`/products/${product._id}`}
-                className={styles.productCard}
-              >
-                <div className={styles.imageWrapper}>
-                  <img
-                    src={
-                      `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}` ||
-                      "/placeholder.png"
-                    }
-                    alt={product.productDisplayName}
-                    className={styles.productImage}
-                  />
-                </div>
-                <h3 className={styles.productName}>
-                  {product.productDisplayName}
-                </h3>
-                <p className={styles.productPrice}>
-                  {product.price ? `PKR ${product.price}` : "N/A"}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-      )}
 
-      {/* Why Choose Section */}
-      <section className={styles.whySection}>
-        <h2 className={styles.heading}>Why Choose ShopSphere?</h2>
-        <div className={styles.featuresGrid}>
-          <div className={styles.featureCard}>
-            <ParticleMesh />
-          <ShoppingBag className={styles.icon} />
-            <h3 className={styles.featureTitle}>Live Commerce Experience</h3>
-            <p className={styles.featureDesc}>
-              Experience shopping like never before! Watch your favorite sellers
-              go live, explore real-time product demos, interact directly, and
-              purchase instantly — all within one seamless experience.
-            </p>
-          </div>
-          <div className={styles.featureCard}>
-                <ParticleMesh />
-           <Bot className={styles.icon} />
-            <h3 className={styles.featureTitle}>AI Order Assistance</h3>
-            <p className={styles.featureDesc}>
-              Our AI intelligently understands your preferences, recommends the
-              best products, manages your orders, and even predicts your next
-              favorite buy — making shopping faster and smarter.
-            </p>
-          </div>
-          <div className={styles.featureCard}>
-                <ParticleMesh />
-             <Globe2 className={styles.icon} />
-            <h3 className={styles.featureTitle}>Augmented Reality Try-On</h3>
-            <p className={styles.featureDesc}>
-              Bring your products to life with AR! Virtually try furniture,
-              clothing, or accessories in your space using your phone camera —
-              ensuring perfect fits and confident purchases every time.
-            </p>
-          </div>
-          <div className={styles.featureCard}>
-                <ParticleMesh />
-             <Sparkles className={styles.icon} />
-            <h3 className={styles.featureTitle}>Shop Latest Trends</h3>
-            <p className={styles.featureDesc}>
-              Stay ahead of the curve with our “Shop Latest Trends” feature —
-              explore what’s trending globally in real time. Discover curated
-              collections, influencer picks, and new arrivals tailored to your
-              taste.
-            </p>
-          </div>
-        </div>
-      </section>
 
+{/* Why Choose Section */} <section className={styles.whySection}> <h2 className={styles.heading}>Why Choose ShopSphere?</h2> <div className={styles.featuresGrid}> <div className={styles.featureCard}> <ParticleMesh /> <ShoppingBag className={styles.icon} /> <h3 className={styles.featureTitle}>Live Commerce Experience</h3> <p className={styles.featureDesc}> Experience shopping like never before! Watch your favorite sellers go live, explore real-time product demos, interact directly, and purchase instantly — all within one seamless experience. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Bot className={styles.icon} /> <h3 className={styles.featureTitle}>AI Order Assistance</h3> <p className={styles.featureDesc}> Our AI intelligently understands your preferences, recommends the best products, manages your orders, and even predicts your next favorite buy — making shopping faster and smarter. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Globe2 className={styles.icon} /> <h3 className={styles.featureTitle}>Augmented Reality Try-On</h3> <p className={styles.featureDesc}> Bring your products to life with AR! Virtually try furniture, clothing, or accessories in your space using your phone camera — ensuring perfect fits and confident purchases every time. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Sparkles className={styles.icon} /> <h3 className={styles.featureTitle}>Shop Latest Trends</h3> <p className={styles.featureDesc}> Stay ahead of the curve with our “Shop Latest Trends” feature — explore what’s trending globally in real time. Discover curated collections, influencer picks, and new arrivals tailored to your taste. </p> </div> </div> </section>
+   
+      {/* fashion Section */}
+<section className={styles.fashionSection}>
+  <div className={styles.textContainer}>
+    <h2 className={styles.fashionTitle}>Elevate Your Style With</h2>
+    <h2 className={styles.fashionHighlight}>Bold Fashion</h2>
+  </div>
+
+  <div className={styles.imageGrid}>
+    <img src="/images/img1.jpg" alt="Fashion 1" className={`${styles.gridItem} ${styles.small}`} />
+    <img src="/images/img7.jpg" alt="Fashion 2" className={`${styles.gridItem} ${styles.medium}`} />
+    <img src="/images/img3.jpg" alt="Fashion 3" className={`${styles.gridItem} ${styles.large}`} />
+    <div className={`${styles.gridItem} ${styles.tall}`} />
+    <img src="/images/img6.jpg" alt="Fashion 5" className={`${styles.gridItem} ${styles.large}`} />
+    <img src="/images/img5.jpg" alt="Fashion 6" className={`${styles.gridItem} ${styles.medium}`} />
+    <img src="/images/img4.jpg" alt="Fashion 7" className={`${styles.gridItem} ${styles.small}`} />
+  </div>
+
+  <div className={styles.centerButtonWrapper}>
+    <Link href="/products" className={styles.centerButton}>
+      Explore Products
+    </Link>
+  </div>
+</section>
+    {/* Recently Viewed Section */}
+{recentlyViewed.length > 0 && (
+  <section className={styles.recentlyViewedSection}>
+    <h2 className={styles.heading}>Recently Viewed</h2>
+    <div className={styles.productsGrid}>
+      {recentlyViewed.map((product) => (
+        <Link
+          key={product._id}
+          href={`/products/${product._id}`}
+          className={styles.productCard}
+        >
+          <div className={styles.imageWrapper}>
+            <img
+              src={
+                `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}` ||
+                "/placeholder.png"
+              }
+              alt={product.productDisplayName}
+              className={styles.productImage}
+            />
+          </div>
+
+          {/* 🟦 Text Section (separate div) */}
+          <div className={styles.textArea}>
+            <h3 className={styles.productName}>
+              {product.productDisplayName}
+            </h3>
+            <p className={styles.productPrice}>
+              {product.price ? `PKR ${product.price}` : "N/A"}
+            </p>
+          </div>
+        </Link>
+      ))}
+    </div>
+  </section>
+)}
       {/* Footer */}
       <footer className={styles.footer}>
         
