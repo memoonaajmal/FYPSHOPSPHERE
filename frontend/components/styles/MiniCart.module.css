@@ -1,0 +1,124 @@
+/* Mini Cart & Wishlist shared styles */
+.miniCartWrapper {
+  position: absolute;
+  top: 60px; /* adjust based on navbar height */
+  right: 20px; /* near cart/wishlist icon */
+  width: 300px;
+  max-height: 400px;
+background: linear-gradient(180deg, rgba(255,255,255,0.98), var(--blue-soft) 95%);  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  padding: 1rem;
+  z-index: 1000;
+  overflow-y: auto;
+  opacity: 0;
+  transform: translateY(-20px);
+  animation: slideDown 0.3s forwards;
+}
+
+/* Slide-down animation */
+@keyframes slideDown {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.miniCartHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
+.miniCartHeader h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.closeBtn {
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--muted);
+  transition: color 0.2s;
+}
+
+.closeBtn:hover {
+  color: var(--danger);
+}
+
+.miniCartItems {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.cartItem {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.itemDetails h4 {
+  font-size: 0.95rem;
+  margin: 0;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.itemDetails p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: var(--muted);
+}
+
+.removeBtn {
+  background: var(--danger);
+  border: none;
+  color: var(--white);
+  font-size: 0.75rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.removeBtn:hover {
+  background: #b92b27; /* darker red for hover */
+}
+
+.checkoutBtn {
+  margin-top: 0.75rem;
+  width: 100%;
+  background: var(--button-bg);
+  color: var(--button-text);
+  border: none;
+  padding: 0.6rem;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.checkoutBtn:hover {
+  background: var(--blue-light);
+}
+
+.emptyMessage {
+  text-align: center;
+  padding: 1rem 0;
+  color: var(--muted);
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .miniCartWrapper {
+    width: 90%;
+    right: 5%;
+    top: 50px;
+  }
+}

@@ -2,11 +2,13 @@
 
 import React from "react";
 import Image from "next/image";
-import { notFound, useRouter } from "next/navigation";
+import { notFound } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../../../../redux/CartSlice";
 import { addToWishlist } from "../../../../redux/WishlistSlice";
 import styles from "../../../styles/ProductDetails.module.css";
+import MiniCart from "../../../../components/MiniCart";
+import MiniWishlist from "../../../../components/MiniWishlist";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -24,8 +26,11 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
   const { id } = params;
 
   const dispatch = useDispatch();
-  const router = useRouter();
   const [product, setProduct] = React.useState(null);
+
+  // Mini previews state
+  const [miniCartVisible, setMiniCartVisible] = React.useState(false);
+  const [miniWishlistVisible, setMiniWishlistVisible] = React.useState(false);
 
   React.useEffect(() => {
     async function loadProduct() {
@@ -39,15 +44,11 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
     loadProduct();
   }, [id]);
 
-  // ✅ New useEffect to store product in localStorage once loaded
+  // Store recently viewed products
   React.useEffect(() => {
     if (product) {
       const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
-
-      // Remove duplicate if exists
       const filtered = viewed.filter((p) => p._id !== product._id);
-
-      // Add new product at start
       filtered.unshift({
         _id: product._id,
         productDisplayName: product.productDisplayName,
@@ -55,10 +56,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
         imageFilename: product.imageFilename,
         storeId: product.storeId,
       });
-
-      // Keep only latest 5 viewed
       const limited = filtered.slice(0, 5);
-
       localStorage.setItem("recentlyViewed", JSON.stringify(limited));
     }
   }, [product]);
@@ -67,6 +65,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
 
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
+  // Add to Cart with mini preview
   const handleAddToCart = () => {
     dispatch(
       addItemToCart({
@@ -77,9 +76,12 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
         storeId: product.storeId,
       })
     );
-    router.push("/cart");
+    setMiniCartVisible(true);
+    // Optional: auto-hide after 3s
+    setTimeout(() => setMiniCartVisible(false), 3000);
   };
 
+  // Add to Wishlist with mini preview
   const handleAddToWishlist = () => {
     dispatch(
       addToWishlist({
@@ -90,7 +92,8 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
         storeId: product.storeId,
       })
     );
-    router.push("/wishlist");
+    setMiniWishlistVisible(true);
+    setTimeout(() => setMiniWishlistVisible(false), 3000);
   };
 
   return (
@@ -127,6 +130,10 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
           </button>
         </div>
       </div>
+
+      {/* Mini previews */}
+      <MiniCart visible={miniCartVisible} onClose={() => setMiniCartVisible(false)} />
+      <MiniWishlist visible={miniWishlistVisible} onClose={() => setMiniWishlistVisible(false)} />
     </div>
   );
 }

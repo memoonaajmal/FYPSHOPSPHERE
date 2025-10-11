@@ -24,18 +24,18 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        {/* Global Navbar */}
-        <Navbar />
+        <ReduxProvider>
+          {/* ✅ AuthProvider should wrap BOTH Navbar and children */}
+          <AuthProvider>
+            {/* Global Navbar */}
+            <Navbar />
 
-        {/* Page Layout */}
-        <div className={styles.layoutContainer}>
-          <ReduxProvider>
-            {/* ✅ Wrap children with AuthProvider */}
-            <AuthProvider>
+            {/* Page Layout */}
+            <div className={styles.layoutContainer}>
               <main className={styles.main}>{children}</main>
-            </AuthProvider>
-          </ReduxProvider>
-        </div>
+            </div>
+          </AuthProvider>
+        </ReduxProvider>
       </body>
     </html>
   );
