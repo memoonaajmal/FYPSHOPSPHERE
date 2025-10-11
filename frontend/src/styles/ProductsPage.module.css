@@ -1,86 +1,184 @@
-/* Container Layout */
+/* store.module.css - User Product Page */
+
+/* ---------- Container ---------- */
 .container {
-  display: grid;
-  grid-template-columns: 1fr 3fr; /* Sidebar + Products */
+  max-width: 100%;
+  padding: 2rem;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+
+/* ---------- Main Content: Filter + Products ---------- */
+.storeContent {
+  display: flex;
   gap: 2rem;
-  padding: 4rem;
+  flex-wrap: wrap;
 }
 
-/* Sidebar (Filter bar) */
-.filterBar {
-  width: 100%;
-  max-width: 300px;
-  margin: 0;
-  padding: 1rem;
+/* Updated from filterBar to match seller style */
+.filterBar,
+.searchFilterBar {
+  flex: 0 0 250px;
+  background: var(--section-bg);
   border-radius: 12px;
-  background: rgba(255, 255, 255, 0.03); /* Optional subtle bg */
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  height: fit-content;
 }
 
-/* Product Grid */
+.productsSection {
+  flex: 1;
+  min-width: 0;
+  background: var(--section-bg);
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+}
+
+/* ---------- Products Section ---------- */
+.productsHeading {
+  font-size: 1.8rem;
+  margin-bottom: 1.5rem;
+  margin-top: 0;
+  font-weight: 600;
+  color: var(--text);
+}
+
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr); /* 4 columns on large screens */
-  gap: 2rem;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
-.noProducts {
-  grid-column: 1 / -1;
+.noProducts,
+.emptyState {
+  font-size: 1.2rem;
+  color: var(--muted);
   text-align: center;
-  color: #888;
-  font-size: 1.1rem;
+  margin-top: 2rem;
+  grid-column: 1 / -1;
+  padding: 2rem;
 }
 
-/* Pagination */
+/* ---------- Pagination ---------- */
 .paginationWrapper {
-  margin-top: 3rem;
+  margin-top: 2.5rem;
   display: flex;
   justify-content: center;
-  grid-column: 1 / -1; /* span full width under products */
+  width: 100%;
 }
 
-/* ---------------------- Responsive ---------------------- */
+/* ---------- Responsive Adjustments ---------- */
 
-/* Medium screens (tablets) */
-@media (max-width: 1100px) {
-  .container {
-    grid-template-columns: 1fr 2fr; /* Narrower ratio */
-    padding: 2rem;
-  }
-
+/* Extra large screens: 4 columns */
+@media (min-width: 1600px) {
   .productsGrid {
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
   }
 }
 
-/* Small screens (mobile landscape) */
-@media (max-width: 900px) {
-  .container {
-    grid-template-columns: 1fr; /* Stack vertically */
-    padding: 2rem 1rem;
+/* Large screens: 3 columns */
+@media (max-width: 1400px) and (min-width: 1025px) {
+  .productsGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Tablets: Stack filter, show 2-3 columns */
+@media (max-width: 1024px) {
+  .storeContent {
+    flex-direction: column;
   }
 
-  .filterBar {
-    max-width: 100%;
-    order: 1; /* show filter on top */
+  .filterBar,
+  .searchFilterBar,
+  .productsSection {
+    flex: 1 1 100%;
+  }
+
+  .filterBar,
+  .searchFilterBar {
+    margin-bottom: 1.5rem;
   }
 
   .productsGrid {
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+/* Small tablets */
+@media (max-width: 768px) {
+  .container {
+    padding: 1.5rem;
+  }
+
+  .productsSection {
+    padding: 1.5rem;
+  }
+
+  .productsHeading {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+  }
+
+  .filterBar,
+  .searchFilterBar {
+    padding: 1.25rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .heroBanner {
+    padding: 2.5rem 1rem;
+  }
+
+  .storeTitle {
+    font-size: 2rem;
+  }
+
+  .storeSubtitle {
+    font-size: 1rem;
+  }
+
+  .container {
+    padding: 1rem;
+  }
+
+  .productsSection {
+    padding: 1rem;
+  }
+
+  .filterBar,
+  .searchFilterBar {
+    padding: 1rem;
+  }
+
+  .productsHeading {
+    font-size: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 0.875rem;
   }
 
   .paginationWrapper {
-    margin-top: 2rem;
+    margin-top: 1.5rem;
   }
 }
 
-/* Extra small screens (mobile portrait) */
-@media (max-width: 600px) {
+/* Mobile portrait: 1 column */
+@media (max-width: 480px) {
   .productsGrid {
-    grid-template-columns: 1fr; /* Single column */
-    gap: 1.2rem;
-  }
-
-  .container {
-    padding: 1.5rem 1rem;
+    grid-template-columns: 1fr;
+    gap: 0.875rem;
   }
 }
