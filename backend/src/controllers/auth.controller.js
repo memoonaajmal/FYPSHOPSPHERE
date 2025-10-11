@@ -2,6 +2,8 @@
 const User = require("../models/User");
 
 exports.sync = async function (req, res, next) {
+  console.log("REQ.USER:", req.user);
+
   try {
     if (req.method === "OPTIONS") return res.status(204).end();
 
@@ -34,7 +36,7 @@ exports.sync = async function (req, res, next) {
         roles: [finalRole],
         firebaseUid: uid,
         phone: "",
-        gender: "Not Set",
+         gender: "not_set", 
         birthday: null,
       });
       await user.save();
@@ -79,9 +81,10 @@ exports.sync = async function (req, res, next) {
       },
     });
   } catch (err) {
-    console.error("Error in /sync:", err);
-    next(err);
-  }
+  console.error("Error in /sync:", err);
+  res.status(500).json({ error: err.message });
+}
+
 };
 
 // Get current logged-in user info
