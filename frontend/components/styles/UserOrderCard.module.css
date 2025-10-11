@@ -1,79 +1,165 @@
-.orderCard {
-  background: #fff;
+/* SellerOrderCard.module.css
+   Polished table styling for Seller orders
+   Unified with Admin/User Management color scheme
+*/
+
+/* -------- Wrapper -------- */
+.tableWrapper {
+  width: 100%;
+  overflow-x: auto;
+  margin-top: 2rem;
+  border-radius: 14px;
+  background: var(--white);
+  box-shadow: 0 4px 16px rgba(39, 70, 144, 0.06);
+  border: 1px solid var(--border);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.tableWrapper:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 22px rgba(39, 70, 144, 0.1);
+}
+
+/* -------- Table -------- */
+.ordersTable {
+  width: 100%;
+  border-collapse: separate; /* allows distinct horizontal lines */
+  border-spacing: 0;
+  min-width: 650px;
+  font-family: "Inter", system-ui, sans-serif;
   border-radius: 12px;
-  padding: 16px;
-  margin-bottom: 20px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  border: 1px solid var(--border-strong, rgba(39,70,144,0.15)); /* outer border only */
 }
 
-.orderHeader {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 12px;
+/* Header */
+.ordersTable thead {
+  background: var(--accent-gradient);
+  color: var(--white);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.customerName {
-  font-size: 1.1rem;
-  font-weight: bold;
+.ordersTable th {
+  padding: 14px 18px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--white);
+  border-bottom: 2px solid var(--blue-light);
+  text-align: left;
 }
 
-.customerInfo {
-  font-size: 0.9rem;
-  color: #666;
+/* Body */
+.ordersTable td {
+  padding: 14px 18px;
+  font-size: 0.95rem;
+  color: var(--text);
+  border-bottom: 1px solid rgba(39, 70, 144, 0.1); /* ✅ horizontal lines only */
+  background: var(--white);
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
-.orderMeta {
-  text-align: right;
+/* remove vertical column borders */
+.ordersTable th,
+.ordersTable td {
+  border-right: none;
 }
 
-.orderTotal span {
-  font-weight: bold;
-  color: #333;
+/* -------- Row Hover -------- */
+.ordersTable tr:hover td {
+  background: var(--blue-soft);
+  transform: scale(1.005);
 }
 
-.statusBadge {
-  padding: 4px 10px;
-  border-radius: 8px;
+/* -------- Tracking ID -------- */
+.trackingId {
+  color: var(--muted);
   font-size: 0.85rem;
-  font-weight: bold;
-  margin-left: 6px;
 }
 
-.statusPaid { background: #d4f5d0; color: #2d7a2d; }
-.statusPending { background: #fff3cd; color: #856404; }
-.statusDefault { background: #e2e3e5; color: #383d41; }
-
-.itemList {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0;
+/* -------- Status Badge -------- */
+.statusBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  font-weight: 600;
+  color: var(--white);
+  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
 }
 
-.item {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 6px;
+.statusBadge.paid {
+  background: var(--blue);
 }
 
-.item img {
-  width: 40px;
-  height: 40px;
-  margin-right: 8px;
-  border-radius: 6px;
+.statusBadge.pending {
+  background: var(--blue-verylight);
 }
 
-.totals {
-  border-top: 1px solid #eee;
-  padding-top: 10px;
-  margin-top: 10px;
+.statusBadge.returned {
+  background: var(--muted);
 }
 
-.grandTotal {
-  font-size: 1.1rem;
-  font-weight: bold;
-  color: #333;
+.statusBadge.failed {
+  background: var(--danger);
 }
-.statusReturned {
-  background: #e63946;
-  color: #fff;
+
+/* -------- View Button -------- */
+.viewBtn {
+  padding: 8px 14px;
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+}
+
+.viewBtn:hover {
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+}
+
+.viewBtn:focus-visible {
+  outline: 3px solid var(--blue-light);
+  outline-offset: 2px;
+}
+
+/* -------- Animations -------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.ordersTable tr {
+  animation: fadeIn 0.5s ease both;
+}
+
+/* -------- Responsive -------- */
+@media (max-width: 1024px) {
+  .ordersTable th,
+  .ordersTable td {
+    padding: 0.75rem 1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .ordersTable {
+    min-width: 100%;
+  }
+
+  .viewBtn {
+    padding: 0.45rem 0.85rem;
+    font-size: 0.8rem;
+  }
 }

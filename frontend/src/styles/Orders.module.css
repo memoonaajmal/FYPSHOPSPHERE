@@ -1,57 +1,230 @@
-/* src/app/styles/Orders.module.css */
+/* SellerOrdersPage.module.css
+   Professional styling for Seller Orders Page
+   Navy/blue/white color scheme, glassy cards, pretty table
+*/
 
 .container {
-  padding: 20px;
-  background: #f9f9f9;
+  width: 100%;
   min-height: 100vh;
-   color:#1f2937;
+  padding: 36px 28px;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  align-items: center; /* Center content horizontally */
+  gap: 28px;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  background-image: radial-gradient(circle at 10% 10%, rgba(39,70,144,0.03), transparent 10%),
+                    radial-gradient(circle at 90% 90%, rgba(62,91,169,0.03), transparent 10%),
+                    var(--bg);
 }
 
-.heading {
+/* ---------- Title ---------- */
+.title {
   font-size: 2rem;
-  margin-bottom: 20px;
-  color: #333;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.02em;
+  position: relative;
+  margin-bottom: 24px;
+  text-align: center; /* Center the title */
+  width: 100%;
 }
 
-.noOrders {
-  font-size: 1.1rem;
-  color: #777;
+.title::after {
+  content: "";
+  display: block;
+  margin: 0 auto; /* Center the underline */
+  height: 6px;
+  width: 140px;
+  margin-top: 8px;
+  border-radius: 8px;
+  background: linear-gradient(90deg, var(--blue), var(--blue-light));
+  opacity: 0.18;
 }
 
-.ordersGrid {
-  display: grid;
-  gap: 20px;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+/* ---------- Pretty Table ---------- */
+.ordersTableWrapper {
+  width: 100%;
+  max-width: 1100px;
+  margin: 0 auto;
+  background: linear-gradient(180deg, var(--white) 98%, var(--blue-soft) 100%);
+  border-radius: 16px;
+  box-shadow: var(--card-shadow);
+  padding: 18px 0;
+  overflow-x: auto;
 }
 
-.orderCard {
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  padding: 16px;
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+.ordersTable {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+  background: transparent;
 }
 
-.orderCard:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+.ordersTable th,
+.ordersTable td {
+  padding: 1rem 1.2rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-size: 1rem;
 }
 
-.buttonGroup {
-  margin-top: 12px;
+.ordersTable th {
+  background: linear-gradient(90deg, var(--blue-soft) 80%, var(--white) 100%);
+  font-weight: 700;
+  color: var(--navy);
+  border-bottom: 2px solid var(--blue-light);
 }
 
-.viewButton {
-  padding: 8px 16px;
-  background-color: #1e40af; /* nice blue */
+.ordersTable tr {
+  transition: background 220ms;
+}
+
+.ordersTable tr:hover {
+  background: linear-gradient(90deg, var(--blue-soft) 70%, var(--white) 100%);
+}
+
+.ordersTable td {
+  color: var(--text);
+}
+
+.statusBadge {
+  padding: 0.35rem 0.75rem;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  text-transform: capitalize;
+  color: #fff;
+  font-weight: 600;
+  background: var(--blue);
+  box-shadow: 0 2px 8px rgba(39,70,144,0.08);
+}
+
+.statusBadge.pending { background: var(--blue-light); }
+.statusBadge.failed { background: var(--danger); }
+.statusBadge.returned { background: var(--muted); }
+
+.viewBtn {
+  background: var(--blue);
   color: #fff;
   border: none;
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
   border-radius: 6px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: transform 200ms, box-shadow 200ms, background 200ms;
 }
 
-.viewButton:hover {
-  background-color: #1e3a8a;
+.viewBtn:hover {
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(39,70,144,0.12);
+}
+
+/* ---------- Messages ---------- */
+.message {
+  text-align: center;
+  font-size: 1.08rem;
+  color: var(--muted);
+  margin: 24px 0;
+  padding: 12px 0;
+}
+
+.message.error {
+  color: #dc2626;
+}
+
+/* ---------- Pagination ---------- */
+.paginationWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 28px;
+  gap: 8px;
+}
+
+.paginationBtn {
+  background: linear-gradient(135deg, var(--blue-soft), var(--white));
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 200ms, box-shadow 200ms, background 200ms;
+  color: var(--navy);
+}
+
+.paginationBtn:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 12px 28px rgba(39,70,144,0.10);
+  background: linear-gradient(135deg, var(--white), var(--blue-soft));
+}
+
+.paginationBtn.active {
+  background: var(--blue-light);
+  color: white;
+  border: none;
+  box-shadow: 0 8px 20px rgba(62,91,169,0.18);
+}
+
+/* ---------- Section Divider ---------- */
+.sectionDivider {
+  width: 100%;
+  max-width: 1100px;
+  height: 2px;
+  background: linear-gradient(90deg, var(--blue-soft), var(--white));
+  margin: 0 0 24px 0;
+  opacity: 0.5;
+  border-radius: 2px;
+}
+
+/* ---------- Empty State ---------- */
+.emptyState {
+  text-align: center;
+  color: var(--muted);
+  margin: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.emptyState svg {
+  width: 64px;
+  height: 64px;
+  margin-bottom: 12px;
+  opacity: 0.7;
+}
+
+/* ---------- Table Info ---------- */
+.tableInfo {
+  font-size: 1.08rem;
+  color: var(--blue);
+  font-weight: 500;
+  margin-bottom: 10px; /* Reduced space below text */
+  text-align: center;
+  animation: fadeInUp 1.6s cubic-bezier(.2,.9,.2,1);
+  letter-spacing: 0.01em;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.6;
+  white-space: pre-line; /* Allows explicit line breaks */
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(18px);}
+  to { opacity: 1; transform: translateY(0);}
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .title { font-size: 1.75rem; }
+  .ordersTable th, .ordersTable td { padding: 0.75rem 1rem; }
+}
+
+@media (max-width: 768px) {
+  .container { padding: 28px 8px; }
+  .ordersTableWrapper { padding: 8px 0; }
+  .ordersTable { min-width: 100%; font-size: 0.92rem; }
+  .viewBtn { padding: 0.45rem 0.85rem; font-size: 0.9rem; }
 }

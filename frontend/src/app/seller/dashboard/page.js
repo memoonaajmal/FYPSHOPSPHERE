@@ -49,52 +49,56 @@ export default function SellerDashboard() {
   return (
     <ProtectedRoute role="seller">
       <div className={styles.dashboard}>
-        <h1 className={styles.title}>Seller Dashboard</h1>
-
         
         {/* ======= 🔗 Dashboard Intro Section ======= */}
-{/* ======= 🔗 Dashboard Intro Section ======= */}
 <div className={styles.topSection}>
-  {/* ===== Left Side: Image + Text ===== */}
-  <div className={styles.leftContent}>
-    <Image
-      src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "")}/images/logo.png`}
-      alt="ShopSphere Logo"
-      width={120}
-      height={120}
-      className={styles.dashboardImage}
-      priority
-    />
-    <div className={styles.logoTextContainer}>
-      <h1 className={styles.logoText}>ShopSphere</h1>
-      <h3 className={styles.tagline}>
-        Turning ideas into income,<br /> one sale at a time.
-      </h3>
+  {/* Title centered at the top */}
+  <h1 className={styles.sectionTitleTop}>Seller Dashboard</h1>
+
+  {/* Row with logo and buttons */}
+  <div className={styles.topRow}>
+    {/* ===== Left Side: Image + Text ===== */}
+    <div className={styles.leftContent}>
+      <Image
+        src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "")}/images/logo.png`}
+        alt="ShopSphere Logo"
+        width={120}
+        height={120}
+        className={styles.dashboardImage}
+        priority
+      />
+      <div className={styles.logoTextContainer}>
+        <h1 className={styles.logoText}>ShopSphere</h1>
+        <h3 className={styles.tagline}>
+          Turning ideas into income,<br /> one sale at a time.
+        </h3>
+      </div>
     </div>
-  </div>
 
-  {/* ===== Right Side: Buttons ===== */}
-  <div className={styles.rightPanel}>
-    <Link href="/seller/products">
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>🛍️ View My Products</h2>
-        <p className={styles.cardText}>Manage, add, or update products</p>
-      </div>
-    </Link>
+    {/* ===== Right Side: Buttons ===== */}
+    <div className={styles.rightPanel}>
+      <Link href="/seller/products">
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>🛍️ View My Products</h2>
+          <p className={styles.cardText}>Manage, add, or update products</p>
+        </div>
+      </Link>
 
-    <Link href="/seller/orders">
-      <div className={styles.card}>
-        <h2 className={styles.cardTitle}>📦 Order History</h2>
-        <p className={styles.cardText}>Track all placed orders easily</p>
-      </div>
-    </Link>
+      <Link href="/seller/orders">
+        <div className={styles.card}>
+          <h2 className={styles.cardTitle}>📦 Order History</h2>
+          <p className={styles.cardText}>Track all placed orders easily</p>
+        </div>
+      </Link>
+    </div>
   </div>
 </div>
 
 
 
 
-<div className={styles.innerContent}>
+
+<div id="business-overview" className={styles.innerContent}>
         {/* ======= 📊 Business Overview ======= */}
         <div className={styles.analytics}>
           <h2 className={styles.sectionTitle}>Business Overview</h2>
@@ -191,7 +195,7 @@ export default function SellerDashboard() {
         )}
 
         {/* ======= 👥 Customers Insights Section ======= */}
-        <div className={styles.customersSection}>
+        <div id="customer-analytics" className={styles.customersSection}>
           <div className={styles.leftSection}>
             <TopCustomers />
           </div>

@@ -1,11 +1,12 @@
 "use client";
-import styles from "../../styles/Cart.module.css"; // reuse cart styles
+import styles from "../../styles/Wishlist.module.css";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromWishlist, clearWishlist } from "../../../redux/WishlistSlice";
-import { addItemToCart } from "../../../redux/CartSlice"; // ✅ import addItemToCart
+import { addItemToCart } from "../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { X } from "lucide-react"; // ⬅️ Trash2 icon
 
 export default function WishlistPage() {
   const wishlistItems = useSelector((state) => state.wishlist.items);
@@ -14,7 +15,6 @@ export default function WishlistPage() {
   const router = useRouter();
 
   useEffect(() => setHasMounted(true), []);
-
   if (!hasMounted) return null;
 
   if (wishlistItems.length === 0) {
@@ -34,54 +34,81 @@ export default function WishlistPage() {
         image: item.image,
       })
     );
-    router.push("/cart"); 
+    router.push("/cart");
   };
 
   return (
-    <div className={styles.cartContainer}>
-      <h1>Your Wishlist</h1>
+    <div className={styles.cartPageWrapper}>
+      <div className={styles.cartPage}>
+        {/* ===== Wishlist (Full Width) ===== */}
+        <div className={styles.cartLeft} style={{ flex: "1 1 100%" }}>
+          <h2 className={styles.cartTitle}>
+            Your Wishlist <span>({wishlistItems.length} items)</span>
+          </h2>
 
-      <div className={styles.cartItems}>
-        {wishlistItems.map((item) => (
-          <div key={item.id} className={styles.cartItem}>
-            <Image src={item.image} alt={item.name} width={80} height={80} />
-            <div className={styles.itemDetails}>
-              <h3>{item.name}</h3>
-              <p>PKR {item.price}</p>
+          {/* Header */}
+          <div className={styles.tableHeader}>
+            <span>Product</span>
+            <span>Price</span>
+            <span>Add to Cart</span>
+            <span>Remove</span>
+          </div>
 
-              <div className={styles.actions}>
-                <button
-                  className={styles.removeBtn}
-                  onClick={() => dispatch(removeFromWishlist(item.id))}
-                >
-                  Remove
-                </button>
-
-                <button
-                  className={styles.checkoutBtn}
-                  onClick={() => handleAddToCart(item)}
-                >
-                  Add to Cart
-                </button>
+          {/* Wishlist Items */}
+          {wishlistItems.map((item) => (
+            <div key={item.id} className={styles.cartRow}>
+              <div className={styles.productInfo}>
+                <Image
+                  src={item.image}
+                  alt={item.name}
+                  width={80}
+                  height={80}
+                  className={styles.productImage}
+                />
+                <div className={styles.productText}>
+                  <h3>{item.name}</h3>
+                  {item.category && (
+                    <p className={styles.itemCategory}>{item.category}</p>
+                  )}
+                </div>
               </div>
+
+              <div className={styles.itemPrice}>PKR {item.price}</div>
+
+              <button
+                className={styles.checkoutBtn}
+                onClick={() => handleAddToCart(item)}
+              >
+                Add to Cart
+              </button>
+
+              <button
+                className={styles.removeIcon}
+                onClick={() => dispatch(removeFromWishlist(item.id))}
+                title="Remove from Wishlist"
+              >
+                <X size={16} />
+              </button>
+            </div>
+          ))}
+
+          {/* Bottom Buttons */}
+          <div className={styles.bottomButtons}>
+            <button
+              className={styles.continueBtn}
+              onClick={() => router.push("/products")}
+            >
+              ← Continue Shopping
+            </button>
+
+            <div
+              className={styles.clearCartContainer}
+              onClick={() => dispatch(clearWishlist())}
+            >
+              <span className={styles.trashIcon}>🗑️</span> Clear Wishlist
             </div>
           </div>
-        ))}
-      </div>
-
-      <div className={styles.cartSummary}>
-        <button
-          className={styles.clearBtn}
-          onClick={() => dispatch(clearWishlist())}
-        >
-          Clear Wishlist
-        </button>
-        <button
-  className={styles.clearBtn}
-  onClick={() => router.push("/products")}
->
-  Continue Shopping
-</button>
+        </div>
       </div>
     </div>
   );

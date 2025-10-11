@@ -1,78 +1,280 @@
+/* ======== OrderDetailsPage.module.css ======== */
+/* Matches SellerDashboard’s gradient, typography, and animation style */
 
-.container {
-  max-width: 800px;
-  margin: 40px auto;
-  padding: 20px;
-  background: #fdfdfd;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.1);
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
- 
+.pageWrapper {
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  min-height: 100vh;
+  padding: 2.5rem 3rem;
+  color: var(--text);
+  font-family: "Inter", sans-serif;
+  animation: fadeIn 0.6s ease;
 }
 
-.backButton {
-  padding: 6px 14px;
-  margin-bottom: 20px;
-  background-color: #e5e7eb;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.2s;
-  color:#1f2937;
-}
-
-.backButton:hover {
-  background-color: #d1d5db;
-}
-
-.heading {
-  font-size: 2rem;
-  color: #1f2937;
-  margin-bottom: 20px;
-}
-
-.section {
-  margin-bottom: 24px;
-  padding: 16px;
-  background: #f9fafb;
-  border-radius: 10px;
-  border: 1px solid #e5e7eb;
-   color:#1f2937;
-}
-
-.section h3 {
-  margin-bottom: 12px;
-  color: #111827;
-}
-
-.itemsList {
-  list-style-type: none;
-  padding-left: 0;
-}
-
-.item {
-  padding: 8px 0;
-  border-bottom: 1px solid #e5e7eb;
+/* ---------- Header ---------- */
+.header {
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
+  margin-bottom: 2.2rem;
 }
 
-.item:last-child {
-  border-bottom: none;
+.header h1 {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--blue);
+  letter-spacing: -0.3px;
+}
+
+/* ---------- Header Meta (badge + date) ---------- */
+.headerMeta {
+  display: flex;
+  align-items: center; /* ✅ aligns bottom edges of badge + text */
+  gap: 1rem;
+  margin-top: 0.4rem;
+  font-size: 0.9rem;
+  color: var(--muted);
+  line-height: 1.2;
+}
+
+.headerMeta span:last-child {
+  position: relative;
+  top: -1px; /* ✅ subtle nudge for perfect visual balance */
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+
+/* ---------- Status Badges ---------- */
+.badge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  color: #fff;
+  font-size: 0.85rem;
+  text-transform: capitalize;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+}
+
+.badge.paid {
+  background: var(--blue);
+}
+
+.badge.pending {
+  background: var(--blue-verylight);
+  color: #fff;
+}
+
+.badge.returned {
+  background: var(--muted);
+}
+
+/* ---------- Dropdown ---------- */
+.actions {
+  position: relative;
+}
+
+.dropdownBtn {
+  padding: 8px 14px;
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+}
+
+.dropdownBtn:hover {
+  background: var(--blue-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+}
+
+.dropdownBtn:focus-visible {
+  outline: 3px solid var(--blue-light);
+  outline-offset: 2px;
+}
+
+.dropdownMenu {
+  position: absolute;
+  top: 2.8rem;
+  right: 0;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  width: 170px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  z-index: 20;
+  animation: fadeIn 0.25s ease;
+}
+
+.dropdownMenu button {
+  padding: 0.8rem 1rem;
+  text-align: left;
+  background: transparent;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--navy);
+  transition: all 0.25s ease;
+}
+
+.dropdownMenu button:hover {
+  background: var(--blue-soft);
+  color: var(--blue);
+}
+
+/* ---------- Layout ---------- */
+.content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+/* ---------- Card Styling ---------- */
+.card {
+  position: relative;
+  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,249,255,0.98));
+  border-radius: 14px;
+  box-shadow: var(--card-shadow);
+  padding: 1.8rem 1.5rem;
+  margin-bottom: 1.5rem;
+  border: 1px solid var(--border);
+  overflow: hidden;
+  transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms, background 320ms, border 320ms;
+  animation: fadeIn 0.6s ease;
+}
+
+/* ✨ Gradient sheen animation effect (same as TopCustomers) */
+.card::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 140%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(234,240,251,0.10)
+  );
+  transform: rotate(8deg) translateX(-10%);
+  transition: transform 700ms ease, opacity 500ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.card:hover::before {
+  transform: rotate(8deg) translateX(0);
+  opacity: 1;
+}
+
+.card:hover {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
+  background: linear-gradient(180deg, var(--white) 96%, var(--blue-soft) 95%);
+  border: 1px solid var(--blue-light);
+}
+
+.card h3 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--blue);
+}
+
+/* ---------- Items List ---------- */
+.itemCard {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 1rem;
+}
+
+.itemCard img {
+  width: 150px;
+  height: 150px;
+  border-radius: 10px;
+  object-fit: cover;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .itemName {
-  font-weight: 500;
-  color: #1f2937;
+  font-weight: 800;
+  color: var(--navy);
 }
 
-.itemQty {
-  color: #4b5563;
-  margin-left: 8px;
+.itemMeta {
+  font-size: 1.02 rem;
+  color: var(--muted);
 }
 
 .itemPrice {
-  color: #111827;
+  color: var(--blue);
+  font-weight: 700;
+}
+
+/* ---------- Message States ---------- */
+.message {
+  text-align: center;
+  margin-top: 3rem;
+  color: var(--muted);
+  font-size: 1rem;
+}
+
+.error {
+  color: var(--danger);
+}
+
+/* ---------- Info Sections ---------- */
+.infoSection {
+  margin-bottom: 1.2rem;
+}
+
+.infoSection h3 {
+  margin-bottom: 0.6rem;
+  font-size: 1.5rem;
   font-weight: 600;
+  color: var(--blue);
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 1rem 0;
+}
+
+/* ---------- Animation ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+  .pageWrapper {
+    padding: 1.5rem;
+  }
+  .content {
+    grid-template-columns: 1fr;
+  }
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
 }
