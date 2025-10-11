@@ -1,5 +1,5 @@
 "use client";
-import styles from "../../styles/login.module.css";
+import styles from "../../styles/signup.module.css";
 import { useState } from "react";
 import { auth } from "../../../firebase/config";
 import { signInWithEmailAndPassword, signOut } from "firebase/auth";
