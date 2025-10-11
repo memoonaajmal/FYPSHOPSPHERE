@@ -19,7 +19,7 @@
   --button-text: var(--white);
   --section-bg: var(--blue-soft);
   --text: var(--navy);
-  
+  --navbar-height: 75px; /* default navbar height */
 }
 
 
@@ -66,4 +66,31 @@ a {
 
 .RootLayout_main__GuFXi {
   padding: 0 !important;
+}
+
+/* Adjust for fixed navbar so content doesn't hide underneath */
+body {
+  padding-top: var(--navbar-height); /* adjust if navbar height changes */
+}
+
+
+/* Laptop screens (wider screens) */
+@media (max-width: 1280px) {
+  :root {
+    --navbar-height: 100px; /* slightly taller */
+  }
+}
+
+/* Tablets / small laptops */
+@media (max-width: 1024px) {
+  :root {
+    --navbar-height: 101px; /* taller */
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 900px) {
+  :root {
+    --navbar-height: 102px; /* tallest */
+  }
 }

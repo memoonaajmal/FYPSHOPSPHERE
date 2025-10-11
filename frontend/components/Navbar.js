@@ -3,15 +3,30 @@ import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
-import { ShoppingCart, Heart, User } from "lucide-react";
+import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useAuth } from "../src/context/AuthContext";
 import styles from "./styles/Navbar.module.css";
 
 export default function Navbar() {
   const { user } = useAuth();
   const [role, setRole] = useState(null);
+  const [isScrolled, setIsScrolled] = useState(false); // ✅ scroll state
+  const [menuOpen, setMenuOpen] = useState(false); // ✅ hamburger menu state
   const router = useRouter();
   const pathname = usePathname();
+
+  // ---------- SCROLL LISTENER ----------
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 20) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     if (user) {
@@ -103,12 +118,11 @@ export default function Navbar() {
       );
     }
 
-    // For regular users and guests (no login)
     return (
       <>
         <Link href="/products">Explore Products</Link>
-        <Link href="/about">About Us</Link>
         {role === "user" && <Link href="/orders">My Orders</Link>}
+        <Link href="/about">About Us</Link>
       </>
     );
   };
@@ -146,7 +160,10 @@ export default function Navbar() {
   };
 
   return (
-    <nav id="main-navbar" className={styles.navbar}>
+    <nav
+      id="main-navbar"
+      className={`${styles.navbar} ${isScrolled ? styles.scrolled : ""}`}
+    >
       <div className={styles.navBackground}></div>
       <div className={styles.navInner}>
         <div className={styles.logoWrapper}>
@@ -163,10 +180,21 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* ✅ Always render center links */}
-        <div className={styles.centerLinks}>{renderCenterLinks()}</div>
+        {/* ---------- CENTER LINKS ---------- */}
+        <div className={`${styles.centerLinks} ${menuOpen ? styles.active : ""}`}>
+          {renderCenterLinks()}
+        </div>
 
-        <div className={styles.rightIcons}>{renderRightIcons()}</div>
+        {/* ---------- RIGHT ICONS + HAMBURGER ---------- */}
+        <div className={styles.icons}>
+          {renderRightIcons()}
+          <button
+            className={styles.hamburger}
+            onClick={() => setMenuOpen(!menuOpen)}
+          >
+            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
+        </div>
       </div>
     </nav>
   );

@@ -6,11 +6,13 @@ import { removeFromWishlist, clearWishlist } from "../../../redux/WishlistSlice"
 import { addItemToCart } from "../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { X } from "lucide-react"; // ⬅️ Trash2 icon
+import { X } from "lucide-react";
+import MiniCart from "../../../components/MiniCart"; // ✅ import your mini cart
 
 export default function WishlistPage() {
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [hasMounted, setHasMounted] = useState(false);
+  const [miniCartVisible, setMiniCartVisible] = useState(false); // ✅ state to toggle mini cart
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -34,7 +36,10 @@ export default function WishlistPage() {
         image: item.image,
       })
     );
-    router.push("/cart");
+
+    // ✅ Show mini cart briefly (or toggle)
+    setMiniCartVisible(true);
+    setTimeout(() => setMiniCartVisible(false), 3000); // hide after 3s
   };
 
   return (
@@ -50,8 +55,7 @@ export default function WishlistPage() {
           <div className={styles.tableHeader}>
             <span>Product</span>
             <span>Price</span>
-            <span>Add to Cart</span>
-            <span>Remove</span>
+            <span>Actions</span>
           </div>
 
           {/* Wishlist Items */}
@@ -75,20 +79,22 @@ export default function WishlistPage() {
 
               <div className={styles.itemPrice}>PKR {item.price}</div>
 
-              <button
-                className={styles.checkoutBtn}
-                onClick={() => handleAddToCart(item)}
-              >
-                Add to Cart
-              </button>
-
-              <button
-                className={styles.removeIcon}
-                onClick={() => dispatch(removeFromWishlist(item.id))}
-                title="Remove from Wishlist"
-              >
-                <X size={16} />
-              </button>
+              {/* ✅ Add to Cart + Remove X side by side */}
+              <div className={styles.actionsContainer}>
+                <button
+                  className={styles.addBtn}
+                  onClick={() => handleAddToCart(item)}
+                >
+                  Add to Cart
+                </button>
+                <button
+                  className={styles.removeIcon}
+                  onClick={() => dispatch(removeFromWishlist(item.id))}
+                  title="Remove from Wishlist"
+                >
+                  <X size={16} />
+                </button>
+              </div>
             </div>
           ))}
 
@@ -110,6 +116,12 @@ export default function WishlistPage() {
           </div>
         </div>
       </div>
+
+      {/* ✅ MiniCart overlay */}
+      <MiniCart
+        visible={miniCartVisible}
+        onClose={() => setMiniCartVisible(false)}
+      />
     </div>
   );
 }

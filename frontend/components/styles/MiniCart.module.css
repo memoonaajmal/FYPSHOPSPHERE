@@ -1,14 +1,14 @@
 /* Mini Cart & Wishlist shared styles */
 .miniCartWrapper {
-  position: absolute;
-  top: 60px; /* adjust based on navbar height */
+  position: fixed;
+  top: var(--navbar-height);
   right: 20px; /* near cart/wishlist icon */
   width: 300px;
   max-height: 400px;
 background: linear-gradient(180deg, rgba(255,255,255,0.98), var(--blue-soft) 95%);  border-radius: 12px;
   box-shadow: var(--card-shadow);
   padding: 1rem;
-  z-index: 1000;
+  z-index: 10000;
   overflow-y: auto;
   opacity: 0;
   transform: translateY(-20px);
