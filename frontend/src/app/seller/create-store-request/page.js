@@ -151,17 +151,21 @@ export default function CreateStoreRequest() {
     );
   }
 
-  // Form
-  return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Create Store Request</h1>
-      {message && <p className={styles.message}>{message}</p>}
 
-      <form
-        className={styles.form}
-        onSubmit={handleSubmit}
-        encType="multipart/form-data"
-      >
+  // Form
+return (
+  <div className={styles.container}>
+    <h1 className={styles.title}>Create Store Request</h1>
+    {message && <p className={styles.message}>{message}</p>}
+    <h3 className={styles.formIntro}>Take the first step with ShopSphere and let us help you build your dream store, connect with buyers, and grow your brand effortlessly</h3>
+
+    <form
+      className={styles.form}
+      onSubmit={handleSubmit}
+      encType="multipart/form-data"
+    >
+      {/* ---------- Left Column ---------- */}
+      <div className={styles.leftColumn}>
         {/* Basic Store Info */}
         <h3>Basic Store Info</h3>
         <input
@@ -209,6 +213,26 @@ export default function CreateStoreRequest() {
           onChange={handleChange}
         />
 
+        {/* Verification / Identification */}
+        <h3>Verification / Identification</h3>
+        <input
+          className={styles.formInput}
+          type="text"
+          name="cnicNumber"
+          placeholder="CNIC Number"
+          onChange={handleChange}
+        />
+        <input
+          className={styles.formInput}
+          type="file"
+          name="cnicImage"
+          accept="image/*"
+          onChange={handleFileChange}
+        />
+      </div>
+
+      {/* ---------- Right Column ---------- */}
+      <div className={styles.rightColumn}>
         {/* Business Info */}
         <h3>Business Info</h3>
         <input
@@ -263,23 +287,6 @@ export default function CreateStoreRequest() {
           onChange={handleChange}
         />
 
-        {/* Verification / Identification */}
-        <h3>Verification / Identification</h3>
-        <input
-          className={styles.formInput}
-          type="text"
-          name="cnicNumber"
-          placeholder="CNIC Number"
-          onChange={handleChange}
-        />
-        <input
-          className={styles.formInput}
-          type="file"
-          name="cnicImage"
-          accept="image/*"
-          onChange={handleFileChange}
-        />
-
         {/* Branding */}
         <h3>Branding (optional)</h3>
         <input
@@ -296,13 +303,15 @@ export default function CreateStoreRequest() {
           accept="image/*"
           onChange={handleFileChange}
         />
+      </div>
 
-        <div style={{ marginTop: "20px" }}>
-          <button className={styles.button} type="submit">
-            Submit Request
-          </button>
-        </div>
-      </form>
-    </div>
-  );
+      {/* ---------- Submit Button ---------- */}
+      <div className={styles.buttonContainer}>
+        <button className={styles.button} type="submit">
+          Submit Request
+        </button>
+      </div>
+    </form>
+  </div>
+);
 }

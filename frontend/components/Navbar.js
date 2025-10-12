@@ -5,40 +5,84 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
 import { useAuth } from "../src/context/AuthContext";
+import { getAuth } from "firebase/auth";
 import styles from "./styles/Navbar.module.css";
 
 export default function Navbar() {
   const { user } = useAuth();
   const [role, setRole] = useState(null);
-  const [isScrolled, setIsScrolled] = useState(false); // ✅ scroll state
-  const [menuOpen, setMenuOpen] = useState(false); // ✅ hamburger menu state
+  const [isRoleLoaded, setIsRoleLoaded] = useState(false); // ✅ wait until role is determined
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
   // ---------- SCROLL LISTENER ----------
   useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // ---------- CHECK ROLE AND STORE ----------
   useEffect(() => {
-    if (user) {
+    const determineRole = async () => {
+      if (!user) {
+        setRole(null);
+        setIsRoleLoaded(true);
+        return;
+      }
+
       const userRoles = user.roles || [];
-      if (userRoles.includes("admin")) setRole("admin");
-      else if (userRoles.includes("seller")) setRole("seller");
-      else setRole("user");
-    } else {
-      setRole(null);
-    }
+
+      if (userRoles.includes("admin")) {
+        setRole("admin");
+        setIsRoleLoaded(true);
+      } else if (userRoles.includes("seller")) {
+        try {
+          // ✅ get Firebase token properly
+          const auth = getAuth();
+          const currentUser = auth.currentUser;
+          const token = currentUser ? await currentUser.getIdToken() : null;
+
+          if (!token) throw new Error("No Firebase token found");
+
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/stores/check/exists`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+              credentials: "include",
+            }
+          );
+
+          if (!res.ok) throw new Error("Unauthorized");
+
+          const data = await res.json();
+
+          if (data.hasStore) {
+            setRole("seller"); // seller with store
+          } else {
+            setRole("new-seller"); // seller without store
+          }
+        } catch (error) {
+          console.error("Failed to fetch seller store:", error);
+          setRole("new-seller");
+        } finally {
+          setIsRoleLoaded(true);
+        }
+      } else {
+        setRole("user");
+        setIsRoleLoaded(true);
+      }
+    };
+
+    setIsRoleLoaded(false);
+    determineRole();
   }, [user]);
 
+  // ---------- SCROLL FUNCTIONS ----------
   const scrollToElementWithOffset = (selector) => {
     const el = document.querySelector(selector);
     if (!el) return false;
@@ -55,7 +99,6 @@ export default function Navbar() {
     let tries = 0;
     const maxTries = 80;
     const interval = 100;
-
     const id = setInterval(() => {
       tries += 1;
       const el = document.querySelector(selector);
@@ -92,13 +135,21 @@ export default function Navbar() {
 
   // ---------- CENTER LINKS ----------
   const renderCenterLinks = () => {
+    if (!isRoleLoaded) return null; // don't render anything until role is loaded
+
     if (role === "seller") {
       return (
         <>
-          <button className={styles.navBtn} onClick={() => handleScrollToSection("#business-overview")}>
+          <button
+            className={styles.navBtn}
+            onClick={() => handleScrollToSection("#business-overview")}
+          >
             Business Overview
           </button>
-          <button className={styles.navBtn} onClick={() => handleScrollToSection("#customer-analytics")}>
+          <button
+            className={styles.navBtn}
+            onClick={() => handleScrollToSection("#customer-analytics")}
+          >
             Customer Analytics
           </button>
           <Link href="/seller/products">My Products</Link>
@@ -106,6 +157,10 @@ export default function Navbar() {
           <Link href="/seller/livecommerce">Go Live</Link>
         </>
       );
+    }
+
+    if (role === "new-seller") {
+      return ;
     }
 
     if (role === "admin") {
@@ -122,17 +177,21 @@ export default function Navbar() {
       <>
         <Link href="/products">Explore Products</Link>
         {role === "user" && <Link href="/orders">My Orders</Link>}
-        <Link href="/about">About Us</Link>
+        <Link href="/footer/quickLinks/about">About Us</Link>
       </>
     );
   };
 
   // ---------- RIGHT ICONS ----------
   const renderRightIcons = () => {
-    if (role === "admin" || role === "seller") {
+    if (!isRoleLoaded) return null;
+
+    if (role === "admin" || role === "seller" || role === "new-seller") {
       return (
         <div className={styles.icons}>
-          <Link href="/profile"><User size={22} /></Link>
+          <Link href="/profile">
+            <User size={22} />
+          </Link>
         </div>
       );
     }
@@ -140,17 +199,27 @@ export default function Navbar() {
     if (role === "user") {
       return (
         <div className={styles.icons}>
-          <Link href="/cart"><ShoppingCart size={22} /></Link>
-          <Link href="/wishlist"><Heart size={22} /></Link>
-          <Link href="/profile"><User size={22} /></Link>
+          <Link href="/cart">
+            <ShoppingCart size={22} />
+          </Link>
+          <Link href="/wishlist">
+            <Heart size={22} />
+          </Link>
+          <Link href="/profile">
+            <User size={22} />
+          </Link>
         </div>
       );
     }
 
     return (
       <div className={styles.icons}>
-        <Link href="/cart"><ShoppingCart size={22} /></Link>
-        <Link href="/wishlist"><Heart size={22} /></Link>
+        <Link href="/cart">
+          <ShoppingCart size={22} />
+        </Link>
+        <Link href="/wishlist">
+          <Heart size={22} />
+        </Link>
         <Link href="/auth">
           <User size={22} />
           <span>Login / Sign Up</span>
@@ -169,7 +238,10 @@ export default function Navbar() {
         <div className={styles.logoWrapper}>
           <Link href="/" className={styles.logoLink}>
             <Image
-              src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "")}/images/NavbarLogo.png`}
+              src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(
+                /\/$/,
+                ""
+              )}/images/NavbarLogo.png`}
               alt="ShopSphere Logo"
               width={40}
               height={40}

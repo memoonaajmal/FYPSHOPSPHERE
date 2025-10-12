@@ -17,7 +17,6 @@
   overflow: hidden;
 }
 
-/* animated gradient streak reveal on card hover */
 .card::before {
   content: "";
   position: absolute;
@@ -42,7 +41,6 @@
   opacity: 1;
 }
 
-/* stronger hover lift + slight scale */
 .card:hover {
   transform: translateY(-6px) scale(1.015);
   box-shadow: 0 20px 60px rgba(39,70,144,0.16);
@@ -50,9 +48,8 @@
   border: 1px solid var(--blue-light);
 }
 
-/* title */
 .title {
- font-size: 1.70rem;
+  font-size: 1.70rem;
   font-weight: 800;
   text-align: center;
   color: var(--blue);
@@ -60,7 +57,6 @@
   margin-bottom: 0.75rem;
 }
 
-/* each stat row */
 .stat {
   position: relative;
   display: flex;
@@ -74,9 +70,9 @@
   transition: background 260ms, transform 260ms, box-shadow 260ms, border 260ms;
   border: 1px solid var(--border);
   overflow: hidden;
+  flex-wrap: wrap; /* allow wrapping on small screens */
 }
 
-/* animated gradient streak on stat hover */
 .stat::before {
   content: "";
   position: absolute;
@@ -103,7 +99,6 @@
   opacity: 1;
 }
 
-/* stronger hover effect */
 .stat:hover {
   background: linear-gradient(90deg, var(--white) 95%, var(--blue-soft) 94%);
   transform: translateY(-6px) scale(1.015);
@@ -116,16 +111,15 @@
 .stat span { color: var(--blue-light); }
 .stat strong { color: var(--navy); font-weight: 700; }
 
-/* icon + label */
 .iconLabel {
   display: flex;
   align-items: center;
   gap: 10px;
   font-weight: 600;
   color: var(--navy);
+  flex: 1 1 auto; /* flexible width */
 }
 
-/* icon style */
 .icon {
   color: var(--blue);
   font-size: 1.15rem;
@@ -141,13 +135,11 @@
   z-index: 1;
 }
 
-/* animate icon on stat hover */
 .stat:hover .icon {
   transform: rotate(-8deg) scale(1.08);
   box-shadow: 0 16px 38px rgba(39,70,144,0.08);
 }
 
-/* loading/empty */
 .loading, .empty {
   color: var(--blue-light);
   font-size: 0.95rem;
@@ -155,9 +147,26 @@
   padding: 8px 0;
 }
 
-/* responsive tweaks */
-@media (max-width: 768px) {
+/* ====== Responsive tweaks ====== */
+@media (max-width: 1024px) {
   .card { padding: 14px; }
-  .title { font-size: 1rem; }
+  .title { font-size: 1.4rem; }
+  .stat { padding: 8px 10px; font-size: 0.9rem; }
   .icon { width: 30px; height: 30px; font-size: 1rem; }
+}
+
+@media (max-width: 768px) {
+  .card { padding: 12px; }
+  .title { font-size: 1.2rem; }
+  .stat { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .iconLabel { width: 100%; justify-content: flex-start; }
+  .icon { width: 28px; height: 28px; font-size: 0.95rem; }
+}
+
+@media (max-width: 480px) {
+  .card { padding: 10px; }
+  .title { font-size: 1rem; }
+  .stat { font-size: 0.85rem; padding: 6px 8px; }
+  .icon { width: 26px; height: 26px; font-size: 0.9rem; }
+  .stat span, .stat strong { font-size: 0.85rem; }
 }

@@ -1,46 +1,234 @@
+/* ---------- Page Container ---------- */
 .container {
-  max-width: 600px;
-  margin: 50px auto;
-  padding: 20px;
-  border: 1px solid #ddd;
-  border-radius: 10px;
-  background-color: #f9f9f9;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  padding: 4rem 2rem;
+  background: linear-gradient(135deg, rgba(39, 70, 144, 0.03) 0%, var(--white) 100%);
+  animation: fadeIn 0.6s ease-in-out;
+  width: 100%;
+  max-width: 100%;
 }
 
+/* ---------- Title ---------- */
 .title {
+  font-size: 2rem;
+  font-weight: 800;
   text-align: center;
-  margin-bottom: 20px;
+  color: var(--blue);
+  letter-spacing: -0.5px;
+  padding: 2rem;
+  transform: translateY(-2px);
 }
 
+.title::after {
+  content: "";
+  display: block;
+  margin: 0 auto;
+  height: 6px;
+  width: 160px;
+  margin-top: 8px;
+  border-radius: 8px;
+  background: var(--accent-gradient);
+  opacity: 0.18;
+}
+
+/* ---------- Message ---------- */
+.message {
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--blue);
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+/* ---------- Button ---------- */
+.button {
+  position: relative;
+  overflow: hidden;
+  margin-top: 1.5rem;
+  padding: 0.9rem 1.8rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--blue);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  border: 1px solid var(--border);
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 320ms cubic-bezier(.2,.9,.2,1), 
+              box-shadow 320ms, 
+              background 320ms, 
+              border 320ms;
+  box-shadow: var(--card-shadow);
+}
+
+.button::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 140%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(234,240,251,0.10)
+  );
+  transform: rotate(8deg) translateX(-10%);
+  transition: transform 700ms ease, opacity 500ms;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.button:hover::before {
+  transform: rotate(8deg) translateX(0);
+  opacity: 1;
+}
+
+.button:hover:not(:disabled) {
+  transform: translateY(-6px) scale(1.01);
+  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
+  background: linear-gradient(180deg, var(--bg) 96%, var(--blue-soft) 95%);
+  border: 1px solid var(--blue-light);
+}
+
+.button:disabled {
+  background: var(--muted);
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+/* ---------- Form ---------- */
+.form {
+  position: relative;
+  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
+  color: var(--white);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  width: 100%;
+  max-width: 1400px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2rem;
+  padding: 3rem 3.5rem;
+  overflow: hidden;
+}
+
+.form::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 140%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62,91,169,0.12),
+    rgba(39,70,144,0.10),
+    rgba(110,130,184,0.10)
+  );
+  transform: rotate(8deg) translateX(-10%);
+  opacity: 1;
+  pointer-events: none;
+  transition: none;
+}
+
+/* Stack columns on smaller screens */
+@media (max-width: 1200px) {
+  .form {
+    max-width: 95%;
+    grid-template-columns: 1fr;
+    padding: 2rem 2rem;
+  }
+}
+
+/* ---------- Inputs & Textarea ---------- */
 .formInput,
 .formSelect,
 .formTextarea {
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.5);
+  font-size: 1rem;
+  background: rgba(255,255,255,0.95);
+  color: var(--navy);
+  outline: none;
+  transition: all 0.2s ease;
   width: 100%;
-  margin: 10px 0;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
+  box-sizing: border-box;
+  min-height: 42px;
 }
 
 .formTextarea {
+  min-height: 100px;
   resize: vertical;
 }
 
-.button {
-  background-color: #0070f3;
-  color: white;
-  border: none;
-  padding: 10px 15px;
-  border-radius: 5px;
-  cursor: pointer;
+.formSelect {
+  display: flex;
+  align-items: center;
 }
 
-.button:hover {
-  background-color: #005bb5;
+.formInput:focus,
+.formSelect:focus,
+.formTextarea:focus {
+  border-color: var(--blue-light);
+  box-shadow: 0 0 0 3px rgba(39, 70, 144, 0.12);
 }
 
-.message {
-  text-align: center;
-  font-weight: bold;
-  color: green;
+/* ---------- Section Headings ---------- */
+.form h3 {
+  grid-column: 1 / -1;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-top: 1.5rem;
+}
+
+/* ---------- Animations ---------- */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* ---------- Columns ---------- */
+.leftColumn,
+.rightColumn {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem; /* space between inputs */
+}
+
+/* ---------- Button Container ---------- */
+.buttonContainer {
+  grid-column: 1 / -1; /* full width under columns */
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+}
+.formIntro {
+  font-size: 1.3rem;       /* slightly larger for readability */
+  font-weight: 600;         /* medium-bold text */
+  color: var(--blue);       /* matches your color scheme */
+  text-align: center;       /* center aligned */
+  line-height: 1.6;         /* spacing between lines */
+  max-width: 780px;         /* prevents text from stretching too wide */
+  margin: 0 auto 2rem auto; /* center horizontally and add space below */
+  letter-spacing: 0.3px;    /* subtle spacing for readability */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .formIntro {
+    font-size: 1.1rem;
+    line-height: 1.5;
+  }
 }

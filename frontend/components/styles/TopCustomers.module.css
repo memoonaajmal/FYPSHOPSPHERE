@@ -88,6 +88,7 @@
   transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms, background 300ms, border 300ms;
   border: 1px solid var(--border);
   overflow: hidden;
+  flex-wrap: wrap; /* allow wrapping on smaller screens */
 }
 
 .customerCard::before {
@@ -125,6 +126,8 @@
   font-size: 1rem;
   margin: 0;
   color: var(--navy);
+  flex: 1 1 60%; /* responsive width */
+  min-width: 120px;
 }
 
 .customerCard p {
@@ -139,6 +142,8 @@
   flex-direction: column;
   gap: 4px;
   min-width: 110px;
+  flex: 1 1 35%; /* responsive width */
+  justify-content: flex-end;
 }
 
 .stats p {
@@ -147,8 +152,31 @@
   color: var(--blue);
 }
 
+/* ====== Responsive Adjustments ====== */
+@media (max-width: 1024px) {
+  .topCustomers { padding: 1.5rem; }
+  .customerCard { padding: 10px 12px; }
+  .stats { min-width: 90px; font-size: 0.85rem; }
+}
+
 @media (max-width: 768px) {
-  .topCustomers { padding: 12px; }
-  .customerCard { padding: 10px; }
-  .stats { min-width: 86px; font-size: 0.85rem; }
+  .topCustomers { padding: 1rem; }
+  .topCustomers h3 { font-size: 1.4rem; }
+  .customerCard {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    padding: 10px;
+  }
+  .customerCard h4 { font-size: 0.95rem; }
+  .stats { width: 100%; text-align: left; min-width: auto; font-size: 0.85rem; }
+}
+
+@media (max-width: 480px) {
+  .topCustomers { padding: 0.75rem; }
+  .topCustomers h3 { font-size: 1.2rem; }
+  .customerCard h4 { font-size: 0.9rem; }
+  .customerCard p { font-size: 0.8rem; }
+  .stats p { font-size: 0.8rem; }
+  .customerCard { padding: 8px; }
 }
