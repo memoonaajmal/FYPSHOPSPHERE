@@ -265,7 +265,7 @@
 
 /* Section */
 .section {
-  max-width: 1200px;
+  max-width: 100%;
   margin: 0 auto;
   padding: 80px 40px;
   animation: slideUp 0.8s ease-out;
