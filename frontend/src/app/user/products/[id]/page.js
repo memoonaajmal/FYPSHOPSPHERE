@@ -4,11 +4,11 @@ import React, { useEffect, useState, useRef } from "react";
 import NextImage from "next/image";
 import { notFound } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { addItemToCart } from "../../../../redux/CartSlice";
-import { addToWishlist } from "../../../../redux/WishlistSlice";
-import styles from "../../../styles/ProductDetails.module.css";
-import MiniCart from "../../../../components/MiniCart";
-import MiniWishlist from "../../../../components/MiniWishlist";
+import { addItemToCart } from "../../../../../redux/CartSlice";
+import { addToWishlist } from "../../../../../redux/WishlistSlice";
+import styles from "../../../../styles/ProductDetails.module.css";
+import MiniCart from "../../../../../components/MiniCart";
+import MiniWishlist from "../../../../../components/MiniWishlist";
 import Webcam from "react-webcam";
 import { Camera } from "lucide-react";
 import {

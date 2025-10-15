@@ -1,9 +1,9 @@
 "use client";
-import styles from "../../../styles/store.module.css";
+import styles from "../../../../styles/store.module.css";
 import { use, useEffect, useState } from "react"; 
-import AdminProductCard from "../../../../components/AdminProductCard.js"; // ✅ correct import
-import SearchFilterBar from "../../../../components/FilterBar";
-import StorePagination from "../../../../components/StorePagination";
+import AdminProductCard from "../../../../../components/AdminProductCard.js"; // ✅ correct import
+import SearchFilterBar from "../../../../../components/FilterBar";
+import StorePagination from "../../../../../components/StorePagination";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 

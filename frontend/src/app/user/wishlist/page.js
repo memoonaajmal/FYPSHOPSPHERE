@@ -1,13 +1,13 @@
 "use client";
-import styles from "../../styles/Wishlist.module.css";
+import styles from "../../../styles/Wishlist.module.css";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishlist, clearWishlist } from "../../../redux/WishlistSlice";
-import { addItemToCart } from "../../../redux/CartSlice";
+import { removeFromWishlist, clearWishlist } from "../../../../redux/WishlistSlice";
+import { addItemToCart } from "../../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
-import MiniCart from "../../../components/MiniCart"; // ✅ import your mini cart
+import MiniCart from "../../../../components/MiniCart"; // ✅ import your mini cart
 
 export default function WishlistPage() {
   const wishlistItems = useSelector((state) => state.wishlist.items);

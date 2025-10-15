@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "../../styles/allStoresPage.module.css"; // Create this CSS module
+import styles from "../../../styles/allStoresPage.module.css"; // Create this CSS module
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -44,7 +44,7 @@ export default function AllStoresPage() {
           {stores.map((store) => (
             <Link
               key={store._id}
-              href={`/stores/${store._id}`}
+              href={`/user/stores/${store._id}`}
               className={styles.storeCard}
             >
               <h3 className={styles.storeName}>{store.name}</h3>

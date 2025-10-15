@@ -175,8 +175,8 @@ export default function Navbar() {
 
     return (
       <>
-        <Link href="/products">Explore Products</Link>
-        {role === "user" && <Link href="/orders">My Orders</Link>}
+        <Link href="/user/products">Explore Products</Link>
+        {role === "user" && <Link href="/user/orders">My Orders</Link>}
         <Link href="/footer/quickLinks/about">About Us</Link>
                 {role === "user" && <Link href="/LiveList">Live</Link>}
 
@@ -201,10 +201,10 @@ export default function Navbar() {
     if (role === "user") {
       return (
         <div className={styles.icons}>
-          <Link href="/cart">
+          <Link href="/user/cart">
             <ShoppingCart size={22} />
           </Link>
-          <Link href="/wishlist">
+          <Link href="/user/wishlist">
             <Heart size={22} />
           </Link>
           <Link href="/profile">
@@ -216,10 +216,10 @@ export default function Navbar() {
 
     return (
       <div className={styles.icons}>
-        <Link href="/cart">
+        <Link href="/user/cart">
           <ShoppingCart size={22} />
         </Link>
-        <Link href="/wishlist">
+        <Link href="/user/wishlist">
           <Heart size={22} />
         </Link>
         <Link href="/auth">

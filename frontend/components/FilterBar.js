@@ -103,25 +103,7 @@ export default function SearchFilterBar({ onFilterChange }) {
         )}
       </div>
 
-      {/* 🔹 Price Range */}
-      <div className={styles.priceFilter}>
-        <h3>Price</h3>
-        <div className={styles.priceInputs}>
-          <input
-            type="number"
-            placeholder="Min"
-            value={filters.priceMin}
-            onChange={(e) => handleChange("priceMin", e.target.value)}
-          />
-          <span>-</span>
-          <input
-            type="number"
-            placeholder="Max"
-            value={filters.priceMax}
-            onChange={(e) => handleChange("priceMax", e.target.value)}
-          />
-        </div>
-      </div>
+     
 
       {/* 🔹 Sidebar Filters */}
       <aside className={styles.sidebar}>

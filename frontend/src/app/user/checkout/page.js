@@ -1,11 +1,11 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { auth } from "../../../firebase/config";
+import { auth } from "../../../../firebase/config";
 import { useSelector, useDispatch } from "react-redux";
-import { clearCart } from "../../../redux/CartSlice";
+import { clearCart } from "../../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
-import styles from "../../styles/Checkout.module.css";
+import styles from "../../../styles/Checkout.module.css";
 
 export default function CheckoutPage() {
   const router = useRouter();

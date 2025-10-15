@@ -14,7 +14,7 @@ export default function ProductCard({ product }) {
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
   return (
-    <Link href={`/products/${id}`} className={styles.card}>
+    <Link href={`/user/products/${id}`} className={styles.card}>
       <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}

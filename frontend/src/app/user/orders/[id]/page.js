@@ -2,9 +2,9 @@
 
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { auth } from "../../../../firebase/config";
+import { auth } from "../../../../../firebase/config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
-import styles from "../../../styles/OrderDetails.module.css";
+import styles from "../../../../styles/OrderDetails.module.css";
 
 export default function UserOrderDetailsPage() {
   const { id } = useParams();

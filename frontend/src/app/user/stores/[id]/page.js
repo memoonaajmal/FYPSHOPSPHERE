@@ -1,9 +1,9 @@
 "use client";
-import styles from "../../../styles/store.module.css";
+import styles from "../../../../styles/store.module.css";
 import { use, useEffect, useState, useRef } from "react";
-import ProductCard from "../../../../components/ProductCard";
-import SearchFilterBar from "../../../../components/FilterBar";
-import StorePagination from "../../../../components/StorePagination";
+import ProductCard from "../../../../../components/ProductCard";
+import SearchFilterBar from "../../../../../components/FilterBar";
+import StorePagination from "../../../../../components/StorePagination";
 import { gsap } from "gsap";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;

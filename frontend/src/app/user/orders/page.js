@@ -1,13 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { auth } from "../../../firebase/config";
+import { auth } from "../../../../firebase/config";
 import { onAuthStateChanged, getIdToken } from "firebase/auth";
 import { useRouter, useSearchParams } from "next/navigation";
 
-import styles from "../../styles/Orders.module.css";
-import UserOrderCard from "../../../components/UserOrderCard";
-import OrderPagination from "../../../components/OrderPagination";
+import styles from "../../../styles/Orders.module.css";
+import UserOrderCard from "../../../../components/UserOrderCard";
+import OrderPagination from "../../../../components/OrderPagination";
 
 export default function UserOrdersPage() {
   const [orders, setOrders] = useState([]);

@@ -75,7 +75,7 @@ export default function StoresPage() {
               {stores.map((store) => (
                 <Link
                   key={store._id}
-                  href={`/Adminstores/${store._id}`}
+                  href={`/admin/Adminstores/${store._id}`}
                   className={styles.storeCard}
                 >
                   <h3 className={styles.storeName}>{store.name}</h3>

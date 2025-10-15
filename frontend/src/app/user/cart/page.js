@@ -1,5 +1,5 @@
 "use client";
-import styles from "../../styles/Cart.module.css";
+import styles from "../../../styles/Cart.module.css";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import {
@@ -7,7 +7,7 @@ import {
   clearCart,
   increaseQty,
   decreaseQty,
-} from "../../../redux/CartSlice";
+} from "../../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react"; // ⬅️ Trash2 icon
