@@ -154,7 +154,7 @@ export default function Navbar() {
           </button>
           <Link href="/seller/products">My Products</Link>
           <Link href="/seller/orders">Order History</Link>
-          <Link href="/seller/livecommerce">Go Live</Link>
+          <Link href="/seller/GoLive">Go Live</Link>
         </>
       );
     }
@@ -178,6 +178,8 @@ export default function Navbar() {
         <Link href="/products">Explore Products</Link>
         {role === "user" && <Link href="/orders">My Orders</Link>}
         <Link href="/footer/quickLinks/about">About Us</Link>
+                {role === "user" && <Link href="/LiveList">Live</Link>}
+
       </>
     );
   };

@@ -5,6 +5,8 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const dotenv = require('dotenv');
+const http = require("http");
+const { Server } = require("socket.io");
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -22,6 +24,7 @@ const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes = require('./routes/seller.routes');
 const uploadRoutes = require("./routes/uploadRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const streamRoutes = require("./routes/streamRoutes");
 
 const app = express();
 
@@ -72,6 +75,7 @@ app.use('/api/admin', adminRoutes);
 app.use('/api/seller', sellerRoutes);
 app.use("/api/upload", require("./routes/uploadRoutes"));
 app.use("/api/analytics", analyticsRoutes);
+app.use('/api/streams', streamRoutes);
 
 
 // ✅ Swagger docs (optional)
@@ -101,12 +105,26 @@ app.use(errorHandler);
 // ✅ Start server
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      logger.info(`Server listening on port ${PORT}`);
-      console.log(`Server listening on port ${PORT}`);
+    const server = http.createServer(app);
+
+    const io = new Server(server, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+      },
+    });
+
+    // ✅ Import and apply socket logic
+    require("./socket")(io);  // <-- only this line, nothing else
+
+    // ✅ Start server
+    server.listen(PORT, () => {
+      logger.info(`Server (HTTP + WebSocket) running on port ${PORT}`);
+      console.log(`Server (HTTP + WebSocket) running on port ${PORT}`);
     });
   })
   .catch(err => {
     logger.error('Startup error', err);
     process.exit(1);
   });
+
