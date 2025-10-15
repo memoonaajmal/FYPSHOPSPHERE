@@ -222,7 +222,7 @@ export default function Navbar() {
         <Link href="/user/wishlist">
           <Heart size={22} />
         </Link>
-        <Link href="/auth">
+        <Link href="/authentication/auth">
           <User size={22} />
           <span>Login / Sign Up</span>
         </Link>

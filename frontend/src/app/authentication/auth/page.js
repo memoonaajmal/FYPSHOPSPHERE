@@ -1,15 +1,15 @@
 "use client";
 import { useState } from "react";
-import styles from "../../styles/auth.module.css";
+import styles from "../../../styles/auth.module.css";
 import { useRouter, useSearchParams } from "next/navigation";
-import { auth } from "../../../firebase/config";
+import { auth } from "../../../../firebase/config";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
   signOut,
 } from "firebase/auth";
-import { useAuth } from "../../context/AuthContext";
+import { useAuth } from "../../../context/AuthContext";
 
 export default function AuthPage() {
   const [isSignup, setIsSignup] = useState(false);
@@ -156,7 +156,7 @@ export default function AuthPage() {
             {/* Forgot Password Link */}
             <div className={`${styles.animation}`} style={{ '--D': 0, '--S': 20, textAlign: 'right', marginTop: '10px', marginBottom: '20px' }}>
               <a 
-                onClick={() => router.push("/forgot-password")} 
+                onClick={() => router.push("/authentication/forgot-password")} 
                 className={styles.link}
                 style={{ fontSize: '14px', cursor: 'pointer' }}
               >

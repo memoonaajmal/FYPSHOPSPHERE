@@ -1,8 +1,8 @@
 "use client";
-import styles from "../../styles/forgot-password.module.css";
+import styles from "../../../styles/forgot-password.module.css";
 import { useState } from "react";
 import { sendPasswordResetEmail } from "firebase/auth";
-import { auth } from "../../../firebase/config";
+import { auth } from "../../../../firebase/config";
 import { useRouter } from "next/navigation";
 
 export default function ForgotPasswordPage() {
@@ -66,7 +66,7 @@ export default function ForgotPasswordPage() {
             <p>
               Remember your password?{" "}
               <span
-                onClick={() => router.push("/auth")}
+                onClick={() => router.push("/authentication/auth")}
                 className={styles.link}
               >
                 Back to Login
