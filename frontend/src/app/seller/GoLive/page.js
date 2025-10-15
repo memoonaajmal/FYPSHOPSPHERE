@@ -14,16 +14,16 @@ export default function GoLivePage() {
   const [stream, setStream] = useState(null);
   const [sellerId, setSellerId] = useState(null);
 
-  // ✅ Load saved stream (if any) immediately when component mounts
+  // ✅ Load saved stream from localStorage (if exists)
   useEffect(() => {
     const saved = localStorage.getItem("activeStream");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        console.log("🧠 Restored saved stream from localStorage:", parsed);
+        console.log("🧠 Restored saved stream:", parsed);
         setStream(parsed);
       } catch (err) {
-        console.warn("⚠️ Failed to parse saved stream:", err);
+        console.warn("⚠️ Could not parse saved stream:", err);
       }
     }
   }, []);
@@ -33,9 +33,9 @@ export default function GoLivePage() {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
         setSellerId(user.uid);
-        console.log("✅ Logged-in Seller UID:", user.uid);
+        console.log("✅ Seller logged in:", user.uid);
       } else {
-        console.log("⚠️ No user logged in");
+        console.log("⚠️ No seller logged in");
       }
     });
     return () => unsubscribe();
@@ -46,27 +46,20 @@ export default function GoLivePage() {
     if (stream?._id) {
       const handleReconnect = () => {
         socket.emit("reconnect-seller", { streamId: stream._id });
-        console.log("🔄 Seller reconnected to existing stream:", stream._id);
+        console.log("🔄 Reconnected to stream:", stream._id);
       };
 
       socket.on("connect", handleReconnect);
-      handleReconnect(); // Run immediately
+      handleReconnect();
 
       return () => socket.off("connect", handleReconnect);
     }
   }, [stream?._id]);
 
-  // ✅ Start live stream (seller side)
+  // ✅ Start new stream
   const startStream = async () => {
-    if (!title.trim()) {
-      alert("Please enter a stream title");
-      return;
-    }
-
-    if (!sellerId) {
-      alert("You must be logged in to start streaming");
-      return;
-    }
+    if (!title.trim()) return alert("Please enter a stream title");
+    if (!sellerId) return alert("You must be logged in to start streaming");
 
     try {
       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streams`, {
@@ -79,28 +72,69 @@ export default function GoLivePage() {
       if (data?._id) {
         console.log("✅ Stream created:", data);
         setStream(data);
-        localStorage.setItem("activeStream", JSON.stringify(data)); // ✅ Save locally
+        localStorage.setItem("activeStream", JSON.stringify(data));
         socket.emit("start-stream", { streamId: data._id });
       } else {
-        console.error("❌ Failed to create stream:", data);
+        console.error("❌ Stream creation failed:", data);
       }
     } catch (err) {
       console.error("🔥 Error creating stream:", err);
     }
   };
 
-  // ✅ Render live stream page once started
+  // ✅ End stream completely
+  const endStream = async () => {
+    if (!stream?._id) return;
+
+    if (!confirm("Are you sure you want to end your live stream?")) return;
+
+    try {
+      // 🟥 End stream on backend
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streams/${stream._id}/end`, {
+        method: "POST",
+      });
+
+      const data = await res.json();
+      if (data.success) {
+        console.log("🛑 Stream ended successfully:", stream._id);
+
+        // 🔔 Notify all viewers via socket
+        socket.emit("end-stream", { streamId: stream._id });
+        socket.emit("stream-ended", { streamId: stream._id });
+
+        // 🧹 Cleanup local storage + reset UI
+        localStorage.removeItem("activeStream");
+        setStream(null);
+        setTitle("");
+        alert("✅ Live stream ended successfully!");
+      } else {
+        console.error("❌ Backend failed to end stream:", data);
+      }
+    } catch (err) {
+      console.error("🔥 Error ending stream:", err);
+    }
+  };
+
+  // ✅ Render live stream view
   if (stream) {
     return (
       <div className="p-6 flex flex-col items-center">
         <h1 className="text-xl font-semibold mb-3">{stream.title}</h1>
-        <StreamPublisher streamId={stream._id} />
+<StreamPublisher streamId={stream._id} isStreamActive={!!stream} />
         <StreamChat streamId={stream._id} username="Seller" />
+
+        {/* 🔴 End Stream Button */}
+        <button
+          onClick={endStream}
+          className="mt-5 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+        >
+          End Stream
+        </button>
       </div>
     );
   }
 
-  // ✅ Render setup form before going live
+  // ✅ Render setup screen
   return (
     <div className="p-6 max-w-md mx-auto">
       <h1 className="text-2xl font-semibold mb-4">Start Live Stream</h1>
