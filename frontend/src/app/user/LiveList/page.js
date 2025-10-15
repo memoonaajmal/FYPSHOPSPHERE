@@ -20,7 +20,7 @@ export default function LiveListPage() {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {streams.map((stream) => (
           <Link
-            href={`/LiveStream/${stream.slug}`}
+            href={`/user/LiveStream/${stream.slug}`}
             key={stream._id}
             className="border rounded-lg p-4 hover:bg-gray-100 transition"
           >

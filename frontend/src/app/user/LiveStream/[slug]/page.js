@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import io from "socket.io-client";
-import StreamViewer from "../../../../components/StreamViewer";
-import StreamChat from "../../../../components/StreamChat";
+import StreamViewer from "../../../../../components/StreamViewer";
+import StreamChat from "../../../../../components/StreamChat";
 
 const socket = io(process.env.NEXT_PUBLIC_BASE_URL, { transports: ["websocket"] });
 
