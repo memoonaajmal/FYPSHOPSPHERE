@@ -178,7 +178,7 @@ export default function Navbar() {
         <Link href="/user/products">Explore Products</Link>
         {role === "user" && <Link href="/user/orders">My Orders</Link>}
         <Link href="/footer/quickLinks/about">About Us</Link>
-                {role === "user" && <Link href="/LiveList">Live</Link>}
+                {role === "user" && <Link href="/user/LiveList">Live</Link>}
 
       </>
     );
@@ -222,7 +222,7 @@ export default function Navbar() {
         <Link href="/user/wishlist">
           <Heart size={22} />
         </Link>
-        <Link href="/auth">
+        <Link href="/authentication/auth">
           <User size={22} />
           <span>Login / Sign Up</span>
         </Link>

@@ -44,7 +44,7 @@ export default function MiniWishlist({ visible, onClose }) {
           ))}
           <button
             className={styles.checkoutBtn}
-            onClick={() => router.push("/wishlist")}
+            onClick={() => router.push("/user/wishlist")}
           >
             View Wishlist
           </button>
