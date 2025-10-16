@@ -95,6 +95,3 @@ Your frontend should now be running.
 Final Year Project — COMSATS University Islamabad
 
 ```
-
----
-
