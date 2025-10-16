@@ -93,5 +93,3 @@ Your frontend should now be running.
 * **Memoona Ajmal**
 
 Final Year Project — COMSATS University Islamabad
-
-```
