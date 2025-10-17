@@ -102,7 +102,7 @@ export default function WishlistPage() {
           <div className={styles.bottomButtons}>
             <button
               className={styles.continueBtn}
-              onClick={() => router.push("/products")}
+              onClick={() => router.push("/user/products")}
             >
               ← Continue Shopping
             </button>

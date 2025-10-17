@@ -66,7 +66,7 @@ export default function AdminOrderDetailPage() {
 
  return (
    <div className={styles.container}>
-  <h2 className={styles.sectionTitle}>User Orders</h2>
+  <h2 className={styles.sectionTitle}>Orders for Store</h2>
 
   {loadingOrders ? (
     <p>Loading...</p>

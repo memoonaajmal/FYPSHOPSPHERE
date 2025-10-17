@@ -25,62 +25,52 @@ export default function Navbar() {
   }, []);
 
   // ---------- CHECK ROLE AND STORE ----------
-  useEffect(() => {
-    const determineRole = async () => {
-      if (!user) {
-        setRole(null);
-        setIsRoleLoaded(true);
-        return;
-      }
+useEffect(() => {
+  setIsRoleLoaded(false);
+  const auth = getAuth();
 
-      const userRoles = user.roles || [];
+  const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+    if (!user || !currentUser) {
+      setRole(null);
+      setIsRoleLoaded(true);
+      return;
+    }
 
-      if (userRoles.includes("admin")) {
-        setRole("admin");
-        setIsRoleLoaded(true);
-      } else if (userRoles.includes("seller")) {
-        try {
-          // ✅ get Firebase token properly
-          const auth = getAuth();
-          const currentUser = auth.currentUser;
-          const token = currentUser ? await currentUser.getIdToken() : null;
+    const userRoles = user.roles || [];
 
-          if (!token) throw new Error("No Firebase token found");
-
-          const res = await fetch(
-            `${process.env.NEXT_PUBLIC_BASE_URL}/api/stores/check/exists`,
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-              },
-              credentials: "include",
-            }
-          );
-
-          if (!res.ok) throw new Error("Unauthorized");
-
-          const data = await res.json();
-
-          if (data.hasStore) {
-            setRole("seller"); // seller with store
-          } else {
-            setRole("new-seller"); // seller without store
+    if (userRoles.includes("admin")) {
+      setRole("admin");
+      setIsRoleLoaded(true);
+    } else if (userRoles.includes("seller")) {
+      try {
+        const token = await currentUser.getIdToken();
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/stores/check/exists`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            credentials: "include",
           }
-        } catch (error) {
-          console.error("Failed to fetch seller store:", error);
-          setRole("new-seller");
-        } finally {
-          setIsRoleLoaded(true);
-        }
-      } else {
-        setRole("user");
+        );
+
+        if (!res.ok) throw new Error("Unauthorized");
+
+        const data = await res.json();
+        setRole(data.hasStore ? "seller" : "new-seller");
+      } catch (error) {
+        console.error("Failed to fetch seller store:", error);
+        setRole("new-seller");
+      } finally {
         setIsRoleLoaded(true);
       }
-    };
+    } else {
+      setRole("user");
+      setIsRoleLoaded(true);
+    }
+  });
 
-    setIsRoleLoaded(false);
-    determineRole();
-  }, [user]);
+  return () => unsubscribe();
+}, [user]);
+
 
   // ---------- SCROLL FUNCTIONS ----------
   const scrollToElementWithOffset = (selector) => {

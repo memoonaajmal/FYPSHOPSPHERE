@@ -93,7 +93,7 @@ export default function CartPage() {
         <div className={styles.bottomButtons}>
           <button
             className={styles.continueBtn}
-            onClick={() => router.push("/products")}
+            onClick={() => router.push("/user/products")}
           >
             ← Continue Shopping
           </button>
@@ -126,7 +126,7 @@ export default function CartPage() {
 
           <button
             className={styles.checkoutBtn}
-            onClick={() => router.push("/checkout")}
+            onClick={() => router.push("/user/checkout")}
           >
             Checkout
           </button>

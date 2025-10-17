@@ -9,8 +9,10 @@
     "buildStores": "node scripts/buildStores.js",
     "seedPrices": "node scripts/seedPrices.js",
     "seed:createAdmin": "node scripts/createAdmin.js",
-    "seed:drop": "node scripts/seed.js --drop",
-    "seed:dry": "node scripts/seed.js --dry-run"
+    "seed:createFirebaseSellers": "node scripts/createFirebaseSellers.js",
+    "seed:createSellersForExistingStores": "node scripts/createSellersForExistingStores.js",
+    "seed:backfillFirebaseUid": "node scripts/backfillFirebaseUid.js",
+    "setup": "npm-run-all seed buildStores seedPrices seed:createAdmin seed:createFirebaseSellers seed:createSellersForExistingStores seed:backfillFirebaseUid"
   },
   "engines": {
     "node": ">=18"

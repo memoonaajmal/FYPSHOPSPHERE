@@ -91,6 +91,7 @@ export default function CheckoutPage() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        
         body: JSON.stringify({
           userId: user.uid,
           email: user.email,

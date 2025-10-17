@@ -1,4 +1,5 @@
 const express = require('express');
+let io;
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
@@ -27,6 +28,13 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 
 const app = express();
+
+// ✅ Make io accessible globally before routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 
 // Security & middleware
 app.set('trust proxy', 1);
@@ -108,7 +116,7 @@ connectDB()
   .then(() => {
     const server = http.createServer(app);
 
-    const io = new Server(server, {
+io = new Server(server, {
       cors: {
         origin: "*",
         methods: ["GET", "POST"],
@@ -116,8 +124,9 @@ connectDB()
     });
 
     // ✅ Import and apply socket logic
-    require("./socket")(io);  // <-- only this line, nothing else
-
+const { setupSocket } = require("./socket");
+setupSocket(io);
+  
     // ✅ Start server
     server.listen(PORT, () => {
       logger.info(`Server (HTTP + WebSocket) running on port ${PORT}`);

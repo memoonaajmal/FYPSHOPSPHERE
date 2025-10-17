@@ -60,7 +60,12 @@ export default function UserDetailsPage() {
     try {
       const res = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/users/${userId}`,
-        { method: "DELETE" }
+        { method: "DELETE",
+           headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+        }
       );
       if (!res.ok) throw new Error(`Failed to delete user: ${res.status}`);
       alert("✅ User deleted successfully!");
@@ -84,7 +89,7 @@ export default function UserDetailsPage() {
         onClick={handleDelete}
         className={`${styles.button} ${styles.btnDanger}`}
       >
-        Delete User
+        Delete 
       </button>
 
       <div style={{ marginTop: "30px" }}>
