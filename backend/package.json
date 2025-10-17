@@ -2,21 +2,18 @@
   "name": "fashion-backend",
   "version": "1.0.0",
   "main": "src/server.js",
- "scripts": {
-  "dev": "nodemon --ignore data/ src/server.js",
-  "start": "node src/server.js",
-
-  "seed": "node scripts/seed.js",
-  "buildStores": "node scripts/buildStores.js",
-  "seedPrices": "node scripts/seedPrices.js",
-  "seed:createAdmin": "node scripts/createAdmin.js",
-  "seed:createFirebaseSellers": "node scripts/createFirebaseSellers.js",
-  "seed:createSellersForExistingStores": "node scripts/createSellersForExistingStores.js",
-  "seed:backfillFirebaseUid": "node scripts/backfillFirebaseUid.js",
-
-  "setup": "npm-run-all seed buildStores seedPrices seed:createAdmin seed:createFirebaseSellers seed:createSellersForExistingStores seed:backfillFirebaseUid"
-}
-,
+  "scripts": {
+    "dev": "nodemon --ignore data/ src/server.js",
+    "start": "node src/server.js",
+    "seed": "node scripts/seed.js",
+    "buildStores": "node scripts/buildStores.js",
+    "seedPrices": "node scripts/seedPrices.js",
+    "seed:createAdmin": "node scripts/createAdmin.js",
+    "seed:createFirebaseSellers": "node scripts/createFirebaseSellers.js",
+    "seed:createSellersForExistingStores": "node scripts/createSellersForExistingStores.js",
+    "seed:backfillFirebaseUid": "node scripts/backfillFirebaseUid.js",
+    "setup": "npm-run-all seed buildStores seedPrices seed:createAdmin seed:createFirebaseSellers seed:createSellersForExistingStores seed:backfillFirebaseUid"
+  },
   "engines": {
     "node": ">=18"
   },

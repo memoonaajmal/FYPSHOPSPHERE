@@ -39,6 +39,10 @@ export default function StorePage({ params }) {
     try {
       const res = await fetch(`${BASE_URL}/api/products/${productId}`, {
         method: "DELETE",
+         headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       });
 
       if (!res.ok) throw new Error("Failed to delete product");
