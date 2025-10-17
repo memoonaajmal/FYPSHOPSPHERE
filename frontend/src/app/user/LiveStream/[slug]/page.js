@@ -1,59 +1,67 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useParams } from "next/navigation";
-import io from "socket.io-client";
+import { getSocket } from "../../../../../lib/socket";
 import StreamViewer from "../../../../../components/StreamViewer";
 import StreamChat from "../../../../../components/StreamChat";
-
-const socket = io(process.env.NEXT_PUBLIC_BASE_URL, { transports: ["websocket"] });
 
 export default function LiveStreamPage() {
   const { slug } = useParams();
   const [stream, setStream] = useState(null);
   const [isLive, setIsLive] = useState(false);
+  const socketRef = useRef(null); // single socket for the viewer
 
-  // ✅ Fetch stream info initially
+  // ✅ Fetch stream info
   useEffect(() => {
     fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streams/${slug}`)
-      .then(res => res.json())
-      .then(data => {
+      .then((res) => res.json())
+      .then((data) => {
         setStream(data);
         setIsLive(data?.status === "live");
       })
       .catch(console.error);
   }, [slug]);
 
-  // ✅ Listen for real-time updates
+  // ✅ Setup socket for viewer
   useEffect(() => {
     if (!stream?._id) return;
 
-    // Listen for seller starting stream again
-    socket.on("stream-started", (data) => {
-      if (data._id === stream._id) {
-        console.log("🎥 Seller went live again!");
-        setIsLive(true);
-        // Re-fetch latest stream info
-        fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streams/${slug}`)
-          .then(res => res.json())
-          .then(setStream)
-          .catch(console.error);
-      }
-    });
+    // Create new socket if not already
+    if (!socketRef.current) {
+      socketRef.current = getSocket("viewer", stream._id);
+    }
 
-    // Listen for seller ending stream
-    socket.on("stream-ended", (data) => {
-      if (data._id === stream._id) {
-        console.log("📴 Seller ended the stream.");
-        setIsLive(false);
-      }
-    });
+    const socket = socketRef.current;
+
+    // Join stream
+    socket.emit("join-stream", { streamId: stream._id });
+    console.log("👀 Viewer joined stream:", stream._id);
+
+    // Stream events
+    const handleStreamEnd = () => {
+      setIsLive(false);
+      console.log("📴 Stream ended by seller");
+    };
+
+    const handleStreamStart = () => {
+      setIsLive(true);
+      console.log("🎥 Stream started again by seller");
+      // Rejoin if previously left
+      socket.emit("join-stream", { streamId: stream._id });
+    };
+
+    socket.on("stream-ended", handleStreamEnd);
+    socket.on("live-started", handleStreamStart);
 
     return () => {
-      socket.off("stream-started");
-      socket.off("stream-ended");
+      // Leave room and remove listeners (keep socket alive)
+      socket.emit("leave-stream", { streamId: stream._id });
+      socket.off("stream-ended", handleStreamEnd);
+      socket.off("live-started", handleStreamStart);
+      console.log("👋 Viewer left room, socket still alive");
     };
-  }, [stream?._id, slug]);
+  }, [stream?._id]);
 
   if (!stream) return <p className="p-6">Loading stream...</p>;
 
@@ -63,11 +71,13 @@ export default function LiveStreamPage() {
 
       {isLive ? (
         <>
-          <StreamViewer streamId={stream._id} />
-          <StreamChat streamId={stream._id} username="Viewer" />
+          <StreamViewer streamId={stream._id} socket={socketRef.current} />
+          <StreamChat streamId={stream._id} username="Viewer" socket={socketRef.current} />
         </>
       ) : (
-        <p className="text-gray-500">Stream has ended. Waiting for seller to go live again...</p>
+        <p className="text-gray-500">
+          Stream has ended. Waiting for seller to go live again...
+        </p>
       )}
     </div>
   );

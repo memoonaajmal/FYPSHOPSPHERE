@@ -1,82 +1,99 @@
 "use client";
+
 import { useEffect, useRef } from "react";
-import io from "socket.io-client";
 
-const socket = io(process.env.NEXT_PUBLIC_BASE_URL, { transports: ["websocket"] });
-
-export default function StreamViewer({ streamId }) {
+export default function StreamViewer({ streamId, socket }) {
   const videoRef = useRef();
   const peerRef = useRef(null);
 
   useEffect(() => {
-    const peer = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
-    });
-    peerRef.current = peer;
+    if (!socket || !streamId) return;
 
-    // Display seller stream
-    peer.ontrack = (e) => {
-      videoRef.current.srcObject = e.streams[0];
+    // Function to create a fresh peer
+    const createPeer = () => {
+      const peer = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
+
+      peer.ontrack = (e) => {
+        if (videoRef.current) videoRef.current.srcObject = e.streams[0];
+      };
+
+      peer.onicecandidate = (e) => {
+        if (e.candidate && peer.sellerId) {
+          socket.emit("ice-candidate", { target: peer.sellerId, candidate: e.candidate });
+        }
+      };
+
+      return peer;
     };
 
-    // Send ICE candidates to seller
-    peer.onicecandidate = (e) => {
-      if (e.candidate && peer.sellerId) {
-        socket.emit("ice-candidate", { target: peer.sellerId, candidate: e.candidate });
+    // Handle incoming offer from seller
+    const handleOffer = async ({ sellerId, sdp }) => {
+      // Close old peer if exists
+      if (peerRef.current) {
+        try { peerRef.current.close(); } catch (e) {}
+        peerRef.current = null;
       }
-    };
 
-    // Join the stream
-    socket.emit("join-stream", { streamId });
-    console.log("👋 Viewer joined stream:", streamId);
-
-    // Receive offer from seller
-    socket.on("offer", async ({ sellerId, sdp }) => {
-      console.log("📡 Received offer from seller:", sellerId);
+      const peer = createPeer();
       peer.sellerId = sellerId;
+      peerRef.current = peer;
 
       try {
         await peer.setRemoteDescription(new RTCSessionDescription(sdp));
         const answer = await peer.createAnswer();
         await peer.setLocalDescription(answer);
         socket.emit("answer", { sellerId, sdp: answer });
-        console.log("✅ Answer sent to seller");
       } catch (err) {
         console.error("❌ Error handling offer:", err);
       }
-    });
+    };
 
-    // Receive ICE candidate from seller
-    socket.on("ice-candidate", async ({ candidate }) => {
-      if (candidate) {
+    const handleICE = async ({ candidate }) => {
+      if (candidate && peerRef.current) {
         try {
-          await peer.addIceCandidate(new RTCIceCandidate(candidate));
+          await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
         } catch (err) {
           console.warn("⚠️ Error adding ICE candidate:", err);
         }
       }
-    });
+    };
 
-    // Seller ends stream
-    socket.on("stream-ended", () => {
-      alert("Stream ended by seller");
-      peer.close();
+    const handleEnd = () => {
+      if (peerRef.current) peerRef.current.close();
+      peerRef.current = null;
+      if (videoRef.current) videoRef.current.srcObject = null;
       console.log("🛑 Stream ended by seller");
-    });
+    };
+
+    socket.on("offer", handleOffer);
+    socket.on("ice-candidate", handleICE);
+    socket.on("stream-ended", handleEnd);
+
+    socket.emit("join-stream", { streamId });
+    console.log("👀 Viewer ready for stream:", streamId);
 
     return () => {
       socket.emit("leave-stream", { streamId });
-      socket.off("offer");
-      socket.off("ice-candidate");
-      socket.off("stream-ended");
-      peer.close();
-      console.log("👋 Viewer cleanup complete");
+      socket.off("offer", handleOffer);
+      socket.off("ice-candidate", handleICE);
+      socket.off("stream-ended", handleEnd);
+
+      if (peerRef.current) peerRef.current.close();
+      peerRef.current = null;
+      if (videoRef.current) videoRef.current.srcObject = null;
+
+      console.log("👋 Viewer cleanup done");
     };
-  }, [streamId]);
+  }, [socket, streamId]);
 
   return (
-    <div className="flex flex-col items-center">
-      <video ref={videoRef} autoPlay playsInline className="rounded-lg border w-full max-w-md" />
-    </div>
+    <video
+      ref={videoRef}
+      autoPlay
+      playsInline
+      className="rounded-lg border w-full max-w-md"
+    />
   );
 }
