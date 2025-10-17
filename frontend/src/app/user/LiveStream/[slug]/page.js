@@ -65,20 +65,29 @@ export default function LiveStreamPage() {
 
   if (!stream) return <p className="p-6">Loading stream...</p>;
 
-  return (
-    <div className="p-6 flex flex-col items-center">
-      <h1 className="text-2xl font-semibold mb-4">{stream.title}</h1>
+return (
+  <div className="p-6 flex flex-col items-center">
+    <h1 className="text-2xl font-semibold mb-2">{stream.title}</h1>
 
-      {isLive ? (
-        <>
-          <StreamViewer streamId={stream._id} socket={socketRef.current} />
-          <StreamChat streamId={stream._id} username="Viewer" socket={socketRef.current} />
-        </>
-      ) : (
-        <p className="text-gray-500">
-          Stream has ended. Waiting for seller to go live again...
-        </p>
-      )}
-    </div>
-  );
+    {/* Seller info */}
+    <p className="text-gray-600 mb-4">
+      By {stream.sellerName} ({stream.sellerEmail})
+    </p>
+
+    {isLive ? (
+      <>
+        <StreamViewer streamId={stream._id} socket={socketRef.current} />
+        <StreamChat
+          streamId={stream._id}
+          username={stream.sellerName} // use seller name in chat
+          socket={socketRef.current}
+        />
+      </>
+    ) : (
+      <p className="text-gray-500">
+        Stream has ended. Waiting for seller to go live again...
+      </p>
+    )}
+  </div>
+);
 }

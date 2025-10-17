@@ -25,7 +25,9 @@ export default function LiveListPage() {
             className="border rounded-lg p-4 hover:bg-gray-100 transition"
           >
             <h2 className="font-bold">{stream.title}</h2>
-            <p className="text-sm text-gray-600">By {stream.seller?.name || "Unknown"}</p>
+<p className="text-sm text-gray-600">
+  By {stream.sellerName}
+</p>
           </Link>
         ))}
       </div>
