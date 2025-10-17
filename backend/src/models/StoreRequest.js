@@ -25,7 +25,7 @@ const storeRequestSchema = new mongoose.Schema({
 
   // Verification / Identification
   cnicNumber: { type: String },
-  cnicImageUrl: { type: String },
+  cnicImageUrl: { type: String},
 
   // Branding (optional)
   logoUrl: { type: String },

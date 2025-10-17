@@ -33,10 +33,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 app.use(compression());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
-
-
 
 // ✅ CORS setup
 const cors = require('cors');
@@ -52,28 +49,32 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Add this middleware BEFORE static image serving
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+// ✅ Serve images before routes
+app.use("/images", express.static(path.join(__dirname, "../data/images")));
+
+app.use("/uploads", express.static("uploads"));
+
+// ✅ Add this logger before store routes
+app.use("/api/stores", (req, res, next) => {
+  console.log("🧾 Incoming request to /api/stores:", req.method, req.path);
   next();
 });
 
+// ✅ Mount store routes (multer handles multipart form data here)
+app.use("/api/stores", storeRoutes);
 
-// ✅ Serve images from backend/data/images
-app.use("/images", express.static(path.join(__dirname, "../data/images")));
+// ✅ Now enable JSON parsing for other routes
+app.use(express.json({ limit: '2mb' }));
 
-
-
-// ✅ Routes
+// ✅ Mount the rest
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
-app.use("/api/stores", storeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jazzcash', jazzcashRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/seller', sellerRoutes);
-app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/api/upload", uploadRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use('/api/streams', streamRoutes);
 
