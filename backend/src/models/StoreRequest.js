@@ -28,7 +28,8 @@ const storeRequestSchema = new mongoose.Schema({
   cnicImageUrl: { type: String },
 
   // Branding (optional)
-  logoUrl: { type: String },
+  logoUrl: { type: String },git merge main
+
   bannerUrl: { type: String },
 
   status: { type: String, enum: ["pending", "approved", "rejected"], default: "pending" },
