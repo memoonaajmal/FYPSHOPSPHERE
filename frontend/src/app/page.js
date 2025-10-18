@@ -245,10 +245,13 @@ function HomeContent() {
   <section className={styles.recentlyViewedSection}>
     <h2 className={styles.heading}>Recently Viewed</h2>
     <div className={styles.productsGrid}>
-     {recentlyViewed.map((product) => (
- <ProductCard key={product.productId || product.id} product={product} />
-
+ {recentlyViewed.map((product, index) => (
+  <ProductCard
+    key={product.productId || product._id || product.id || index} // ✅ Fallbacks added
+    product={product}
+  />
 ))}
+
 
     </div>
   </section>
