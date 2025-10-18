@@ -79,6 +79,7 @@ export default function ProductDetailsPage({ params: paramsPromise }) {
     const viewed = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
     const filtered = viewed.filter((p) => p._id !== product._id);
     filtered.unshift({
+        id, // ✅ Added this line
       _id: product._id,
       productDisplayName: product.productDisplayName,
       price: product.price,

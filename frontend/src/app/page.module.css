@@ -227,6 +227,8 @@
   gap: 2rem;
   width: 100%;
   max-width: 100%;
+   position: relative;
+  z-index: 10; 
 }
 
 .productsGrid::-webkit-scrollbar {
