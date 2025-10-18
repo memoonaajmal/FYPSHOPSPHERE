@@ -11,6 +11,7 @@ import {
   CartesianGrid,
 } from "recharts";
 import styles from "../styles/AllStoresAdmin.module.css";
+import { getAuth } from "firebase/auth";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -22,31 +23,49 @@ export default function StoresPage() {
   const [totalPages, setTotalPages] = useState(1);
   const limit = 6; // Number of stores per page
 
-  useEffect(() => {
-    async function fetchStores() {
-      try {
-        setLoading(true);
-        const res = await fetch(`${BASE_URL}/api/admin/stores?page=${currentPage}&limit=${limit}`);
-        const data = await res.json();
 
-        if (data?.stores) {
-          setStores(data.stores);
-          setTotalPages(data.totalPages || 1);
-        } else if (Array.isArray(data)) {
-          setStores(data);
-        } else {
-          setStores([]);
+useEffect(() => {
+  async function fetchStores() {
+    try {
+      setLoading(true);
+
+      const auth = getAuth();
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error("User not logged in");
+
+      const token = await currentUser.getIdToken(); // ✅ Get Firebase ID token
+
+      const res = await fetch(
+        `${BASE_URL}/api/admin/stores?page=${currentPage}&limit=${limit}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`, // ✅ send Firebase token
+            "Content-Type": "application/json",
+          },
         }
-      } catch (err) {
-        console.error(err);
-        setError("Failed to load stores.");
-      } finally {
-        setLoading(false);
-      }
-    }
+      );
 
-    fetchStores();
-  }, [currentPage]);
+      if (!res.ok) throw new Error("Unauthorized or failed request");
+
+      const data = await res.json();
+
+      if (data?.stores) {
+        setStores(data.stores);
+        setTotalPages(data.totalPages || 1);
+      } else {
+        setStores([]);
+      }
+    } catch (err) {
+      console.error("Error fetching stores:", err);
+      setError("Failed to load stores.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  fetchStores();
+}, [currentPage]);
+
 
   const handlePrev = () => {
     if (currentPage > 1) setCurrentPage((p) => p - 1);
@@ -75,7 +94,7 @@ export default function StoresPage() {
               {stores.map((store) => (
                 <Link
                   key={store._id}
-                  href={`/Adminstores/${store._id}`}
+                  href={`/admin/Adminstores/${store._id}`}
                   className={styles.storeCard}
                 >
                   <h3 className={styles.storeName}>{store.name}</h3>

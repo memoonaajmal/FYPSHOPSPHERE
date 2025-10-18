@@ -55,28 +55,10 @@ export default function SellerDashboard() {
   {/* Title centered at the top */}
   <h1 className={styles.sectionTitleTop}>Seller Dashboard</h1>
 
-  {/* Row with logo and buttons */}
+  {/* Main Row */}
   <div className={styles.topRow}>
-    {/* ===== Left Side: Image + Text ===== */}
-    <div className={styles.leftContent}>
-      <Image
-        src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "")}/images/logo.png`}
-        alt="ShopSphere Logo"
-        width={120}
-        height={120}
-        className={styles.dashboardImage}
-        priority
-      />
-      <div className={styles.logoTextContainer}>
-        <h1 className={styles.logoText}>ShopSphere</h1>
-        <h3 className={styles.tagline}>
-          Turning ideas into income,<br /> one sale at a time.
-        </h3>
-      </div>
-    </div>
-
-    {/* ===== Right Side: Buttons ===== */}
-    <div className={styles.rightPanel}>
+    {/* ===== Left Side: Buttons ===== */}
+    <div className={styles.leftButtons}>
       <Link href="/seller/products">
         <div className={styles.card}>
           <h2 className={styles.cardTitle}>🛍️ View My Products</h2>
@@ -91,8 +73,21 @@ export default function SellerDashboard() {
         </div>
       </Link>
     </div>
+
+    {/* ===== Right Side: Live Commerce Feature ===== */}
+    <div className={styles.rightFeature}>
+      <div className={styles.sliderBackground}>
+        {/* You can replace with an actual slider later */}
+        <div className={styles.overlay}></div>
+<Link href="/seller/GoLive" className={styles.liveButtonLink}>
+  <button className={styles.liveButton}>🎥 Live Commerce Feature</button>
+</Link>
+
+      </div>
+    </div>
   </div>
 </div>
+
 
 
 

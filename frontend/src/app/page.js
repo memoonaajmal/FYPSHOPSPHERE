@@ -183,7 +183,7 @@ function HomeContent() {
                   return (
                     <Link
                       key={store._id}
-                      href={`/stores/${store._id}`}
+                      href={`/user/stores/${store._id}`}
                       className={styles.storeCard}
                       style={{ backgroundImage: `url(${bgImages[index]})` }}
                     >
@@ -205,7 +205,7 @@ function HomeContent() {
               </div>
             </div>
             <div className={styles.exploreAllWrapper}>
-              <Link href="/allStores" className={styles.exploreAllButton}>
+              <Link href="/user/allStores" className={styles.exploreAllButton}>
                 Explore All Stores
               </Link>
             </div>
@@ -235,7 +235,7 @@ function HomeContent() {
   </div>
 
   <div className={styles.centerButtonWrapper}>
-    <Link href="/products" className={styles.centerButton}>
+    <Link href="/user/products" className={styles.centerButton}>
       Explore Products
     </Link>
   </div>
@@ -248,7 +248,7 @@ function HomeContent() {
       {recentlyViewed.map((product) => (
         <Link
           key={product._id}
-          href={`/products/${product._id}`}
+          href={`/user/products/${product._id}`}
           className={styles.productCard}
         >
           <div className={styles.imageWrapper}>

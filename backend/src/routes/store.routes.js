@@ -12,8 +12,16 @@ router.get("/", storeController.getStores);
 router.get("/check/exists", requireAuth, requireRole("seller"), storeController.checkSellerStore);
 
 
-// Submit store creation request
-router.post("/create-request",upload.fields([{ name: "cnicImage", maxCount: 1 },{ name: "logo", maxCount: 1 },{ name: "banner", maxCount: 1 },]),storeController.createStoreRequest);
+// Submit store creation request with error handling
+router.post(
+  "/create-request",
+  upload.fields([
+    { name: "cnicImage", maxCount: 1 },
+    { name: "logo", maxCount: 1 },
+    { name: "banner", maxCount: 1 },
+  ]),
+  storeController.createStoreRequest
+);
 
 router.get("/my-request", storeController.getMyStoreRequest);
 

@@ -9,7 +9,7 @@ export default function Pagination({ page, totalPages }) {
   function go(to) {
     const q = new URLSearchParams(params.toString());
     q.set('page', String(to));
-    router.push(`/products?${q.toString()}`);
+    router.push(`/user/products?${q.toString()}`);
   }
 
   return (

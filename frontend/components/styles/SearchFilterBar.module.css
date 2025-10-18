@@ -1,8 +1,38 @@
+/* 📦 Wrapper */
 .filterWrapper {
   display: flex;
-  flex-direction: column; /* stack vertically */
+  flex-direction: column;
   gap: 1.5rem;
-  width: 20rem; /* keeps it compact like a sidebar */
+  width: 20rem;
+  color: var(--text);
+}
+
+/* ✨ Shared Card Style (Sheen Background) */
+.cardSheen {
+  position: relative;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
+  overflow: hidden;
+}
+
+.cardSheen::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 160%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62, 91, 169, 0.09),
+    rgba(39, 70, 144, 0.07),
+    rgba(234, 240, 251, 0.08)
+  );
+  transform: rotate(8deg) translateX(-5%);
+  opacity: 0.5;
+  pointer-events: none;
 }
 
 /* 🔎 Search Box */
@@ -10,27 +40,50 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
-  background: #fff;
   padding: 0.5rem 0.75rem;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  box-shadow: var(--card-shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.searchBox::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -40%;
+  width: 220%;
+  height: 160%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62, 91, 169, 0.10),
+    rgba(39, 70, 144, 0.08),
+    rgba(234, 240, 251, 0.08)
+  );
+  transform: rotate(8deg);
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .searchBox input {
   flex: 1;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.5rem 0.75rem;
   font-size: 14px;
+  color: var(--text);
+  background: var(--white);
 }
 
 .searchBox input:focus {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--blue);
 }
 
 .searchBox button {
-  background: #2563eb;
-  color: #fff;
+  background: var(--button-bg);
+  color: var(--button-text);
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 8px;
@@ -40,13 +93,13 @@
 }
 
 .searchBox button:hover {
-  background: #1d4ed8;
+  background: var(--blue-light);
 }
 
 .clearBtn {
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--danger);
   font-size: 20px;
   cursor: pointer;
   line-height: 1;
@@ -55,57 +108,102 @@
 }
 
 .clearBtn:hover {
-  color: #dc2626;
+  color: #b91c1c;
 }
 
 /* 💲 Price Filter */
 .priceFilter {
-  background: #fff;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--border);
+  box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
   gap: 0.75rem;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.priceFilter::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 160%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62, 91, 169, 0.09),
+    rgba(39, 70, 144, 0.07),
+    rgba(234, 240, 251, 0.08)
+  );
+  transform: rotate(8deg);
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .priceFilter h3 {
   font-weight: 600;
   font-size: 15px;
+  color: var(--blue);
 }
 
 .priceInputs {
   display: flex;
-  flex-direction: column; /* 👈 stack vertically */
+  flex-direction: column;
   gap: 0.5rem;
 }
 
 .priceInputs input {
   width: 100%;
-  border: 1px solid #ccc;
+  border: 1px solid var(--border);
   border-radius: 8px;
   padding: 0.5rem;
   font-size: 14px;
+  color: var(--text);
+  background: var(--white);
 }
 
-
-/* 🖥 Sidebar always vertical */
+/* 🧭 Sidebar */
 .sidebar {
   width: 100%;
-  background-color: #ffffff;
   padding: 1rem;
   border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--card-shadow);
+  border: 1px solid var(--border);
   font-size: 14px;
-  color: #111;
+  color: var(--text);
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  position: relative;
+  overflow: hidden;
+}
+
+.sidebar::before {
+  content: "";
+  position: absolute;
+  left: -40%;
+  top: -30%;
+  width: 220%;
+  height: 160%;
+  background: conic-gradient(
+    from 120deg,
+    rgba(62, 91, 169, 0.08),
+    rgba(39, 70, 144, 0.07),
+    rgba(234, 240, 251, 0.07)
+  );
+  transform: rotate(8deg);
+  opacity: 0.45;
+  pointer-events: none;
 }
 
 .sidebar h3 {
   font-weight: 600;
   margin-bottom: 0.5rem;
+  color: var(--blue);
 }
 
 .sidebar label {
@@ -114,23 +212,23 @@
   gap: 0.5rem;
   cursor: pointer;
   padding: 0.25rem 0;
+  border-radius: 6px;
   transition: background 0.2s;
 }
 
 .sidebar label:hover {
-  background-color: #f2f2f2;
-  border-radius: 6px;
+  background-color: var(--blue-soft);
 }
 
 .sidebar input[type="radio"] {
-  accent-color: #2563eb;
+  accent-color: var(--blue);
 }
 
 /* 🎯 Radio + Deselect */
 .radioWrapper {
   display: flex;
   align-items: center;
-  justify-content: space-between; /* label on left, × on right */
+  justify-content: space-between;
   margin-bottom: 0.5rem;
 }
 
@@ -147,14 +245,66 @@
 
 .deselectBtn {
   cursor: pointer;
-  color: red;
+  color: var(--danger);
   font-weight: bold;
   padding: 0 4px;
   border-radius: 50%;
-  background: #f0f0f0;
-  transition: background 0.2s ease;
+  background: var(--blue-soft);
+  transition: all 0.2s ease;
 }
 
 .deselectBtn:hover {
-  background: #e0e0e0;
+  background: var(--blue-verylight);
+  color: var(--white);
+}
+
+/* 📱 RESPONSIVENESS */
+
+/* Medium screens (tablets) */
+@media (max-width: 992px) {
+  .filterWrapper {
+    width: 100%;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+  }
+
+  .sidebar,
+  .priceFilter {
+    width: 45%;
+  }
+
+  .searchBox {
+    width: 100%;
+  }
+}
+
+/* Small screens (mobile) */
+@media (max-width: 600px) {
+  .filterWrapper {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .sidebar,
+  .priceFilter {
+    width: 100%;
+  }
+
+  .searchBox input {
+    font-size: 13px;
+    padding: 0.45rem 0.6rem;
+  }
+
+  .searchBox button {
+    font-size: 13px;
+    padding: 0.45rem 0.75rem;
+  }
+
+  .priceFilter h3,
+  .sidebar h3 {
+    font-size: 14px;
+  }
 }

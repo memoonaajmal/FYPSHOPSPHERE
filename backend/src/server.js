@@ -1,10 +1,13 @@
 const express = require('express');
+let io;
 const helmet = require('helmet');
 const compression = require('compression');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const path = require('path');
 const dotenv = require('dotenv');
+const http = require("http");
+const { Server } = require("socket.io");
 dotenv.config();
 
 const PORT = process.env.PORT || 4000;
@@ -22,18 +25,23 @@ const adminRoutes = require('./routes/admin.routes');
 const sellerRoutes = require('./routes/seller.routes');
 const uploadRoutes = require("./routes/uploadRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
+const streamRoutes = require("./routes/streamRoutes");
 
 const app = express();
+
+// ✅ Make io accessible globally before routes
+app.use((req, res, next) => {
+  req.io = io;
+  next();
+});
+
 
 // Security & middleware
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(compression());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
-app.use(express.json({ limit: '2mb' }));
 app.use(cookieParser());
-
-
 
 // ✅ CORS setup
 const cors = require('cors');
@@ -49,29 +57,34 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Add this middleware BEFORE static image serving
-app.use((req, res, next) => {
-  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+// ✅ Serve images before routes
+app.use("/images", express.static(path.join(__dirname, "../data/images")));
+
+app.use("/uploads", express.static("uploads"));
+
+// ✅ Add this logger before store routes
+app.use("/api/stores", (req, res, next) => {
+  console.log("🧾 Incoming request to /api/stores:", req.method, req.path);
   next();
 });
 
+// ✅ Mount store routes (multer handles multipart form data here)
+app.use("/api/stores", storeRoutes);
 
-// ✅ Serve images from backend/data/images
-app.use("/images", express.static(path.join(__dirname, "../data/images")));
+// ✅ Now enable JSON parsing for other routes
+app.use(express.json({ limit: '2mb' }));
 
-
-
-// ✅ Routes
+// ✅ Mount the rest
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
-app.use("/api/stores", storeRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jazzcash', jazzcashRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/seller', sellerRoutes);
-app.use("/api/upload", require("./routes/uploadRoutes"));
+app.use("/api/upload", uploadRoutes);
 app.use("/api/analytics", analyticsRoutes);
+app.use('/api/streams', streamRoutes);
 
 
 // ✅ Swagger docs (optional)
@@ -101,12 +114,27 @@ app.use(errorHandler);
 // ✅ Start server
 connectDB()
   .then(() => {
-    app.listen(PORT, () => {
-      logger.info(`Server listening on port ${PORT}`);
-      console.log(`Server listening on port ${PORT}`);
+    const server = http.createServer(app);
+
+io = new Server(server, {
+      cors: {
+        origin: "*",
+        methods: ["GET", "POST"],
+      },
+    });
+
+    // ✅ Import and apply socket logic
+const { setupSocket } = require("./socket");
+setupSocket(io);
+  
+    // ✅ Start server
+    server.listen(PORT, () => {
+      logger.info(`Server (HTTP + WebSocket) running on port ${PORT}`);
+      console.log(`Server (HTTP + WebSocket) running on port ${PORT}`);
     });
   })
   .catch(err => {
     logger.error('Startup error', err);
     process.exit(1);
   });
+

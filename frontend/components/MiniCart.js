@@ -39,7 +39,7 @@ export default function MiniCart({ visible, onClose }) {
           </div>
           <button
             className={styles.checkoutBtn}
-            onClick={() => router.push("/cart")}
+            onClick={() => router.push("/user/cart")}
           >
             View Cart
           </button>

@@ -60,15 +60,54 @@ exports.checkSellerStore = async (req, res) => {
 // Submit store creation request using MongoDB sellerId
 exports.createStoreRequest = async (req, res) => {
   try {
-    const { sellerId } = req.body; // MongoDB user _id
+    // 🪵 Enhanced debug logs
+    console.log("📩 req.body:", req.body);
+    console.log("📎 req.files:", req.files);
+    console.log("🔍 sellerId received:", req.body.sellerId);
+    console.log("🔍 typeof sellerId:", typeof req.body.sellerId);
+
+    const { sellerId } = req.body;
+
+    // ✅ Better validation
     if (!sellerId) {
-      return res.status(400).json({ message: "sellerId is required" });
+      console.error("❌ sellerId is missing from request");
+      return res.status(400).json({ 
+        message: "sellerId is required",
+        received: req.body 
+      });
     }
 
-    const objectId = new mongoose.Types.ObjectId(sellerId); // ✅ cast here
+    // ✅ Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(sellerId)) {
+      return res.status(400).json({ 
+        message: "Invalid sellerId format" 
+      });
+    }
+
+    const objectId = new mongoose.Types.ObjectId(sellerId);
+
+    // ✅ Check if user exists
+    const User = require("../models/User"); // Adjust path as needed
+    const userExists = await User.findById(objectId);
+    if (!userExists) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // ✅ Check if seller already has a pending/approved request
+    const existingRequest = await StoreRequest.findOne({ 
+      sellerId: objectId,
+      status: { $in: ["pending", "approved"] }
+    });
+
+    if (existingRequest) {
+      return res.status(400).json({ 
+        message: "You already have a store request",
+        request: existingRequest 
+      });
+    }
 
     const request = await StoreRequest.create({
-      sellerId: objectId, // ✅ always ObjectId
+      sellerId: objectId,
       storeName: req.body.storeName,
       description: req.body.description,
       category: req.body.category,
@@ -86,12 +125,17 @@ exports.createStoreRequest = async (req, res) => {
       bannerUrl: req.files?.banner?.[0]?.path || "",
     });
 
+    console.log("✅ Store request created:", request._id);
     res.json({ message: "Store request submitted successfully!", request });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ message: "Error submitting store request", error: err.message });
+    console.error("💥 Error in createStoreRequest:", err);
+    res.status(500).json({ 
+      message: "Error submitting store request", 
+      error: err.message 
+    });
   }
 };
+
 
 
 exports.getMyStoreRequest = async (req, res) => {

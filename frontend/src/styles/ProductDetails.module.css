@@ -108,3 +108,82 @@
     font-size: 1.6rem;
   }
 }
+.cameraIcon {
+  position: absolute;
+  bottom: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.cameraIcon:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* AR modal */
+.arModal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 5000;
+}
+
+.arBackdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.arContentLarge {
+  position: relative;
+  width: 960px;
+  height: 720px;
+  background: #000;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.overlayCanvasLarge {
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+}
+
+.closeARLarge {
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: rgba(0, 0, 0, 0.6);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  font-size: 22px;
+  cursor: pointer;
+  z-index: 9999;
+}
+
+.closeARLarge:hover {
+  background: rgba(255, 0, 0, 0.7);
+}
+
+.faceGuideLarge {
+  position: absolute;
+  bottom: 10px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  color: white;
+  font-size: 18px;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px;
+  border-radius: 5px;
+}

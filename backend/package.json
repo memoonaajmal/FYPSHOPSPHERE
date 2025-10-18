@@ -9,8 +9,10 @@
     "buildStores": "node scripts/buildStores.js",
     "seedPrices": "node scripts/seedPrices.js",
     "seed:createAdmin": "node scripts/createAdmin.js",
-    "seed:drop": "node scripts/seed.js --drop",
-    "seed:dry": "node scripts/seed.js --dry-run"
+    "seed:createFirebaseSellers": "node scripts/createFirebaseSellers.js",
+    "seed:createSellersForExistingStores": "node scripts/createSellersForExistingStores.js",
+    "seed:backfillFirebaseUid": "node scripts/backfillFirebaseUid.js",
+    "setup": "npm-run-all seed buildStores seedPrices seed:createAdmin seed:createFirebaseSellers seed:createSellersForExistingStores seed:backfillFirebaseUid"
   },
   "engines": {
     "node": ">=18"
@@ -33,7 +35,7 @@
     "mongoose": "^7.8.7",
     "morgan": "^1.10.0",
     "multer": "^2.0.2",
-    "nanoid": "^5.1.5",
+    "nanoid": "^3.3.11",
     "pino": "^9.0.0",
     "pino-pretty": "^11.2.2",
     "qs": "^6.13.0",

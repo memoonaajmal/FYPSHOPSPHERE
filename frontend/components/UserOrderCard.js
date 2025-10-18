@@ -49,7 +49,7 @@ export default function UserOrderCard({ orders, page = 1 }) {
               <td>
                 <button
                   className={styles.viewBtn}
-                  onClick={() => router.push(`orders/${order._id}`)}
+                  onClick={() => router.push(`/user/orders/${order._id}`)}
                 >
                   View Details
                 </button>

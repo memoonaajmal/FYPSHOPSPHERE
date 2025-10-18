@@ -9,11 +9,10 @@
 }
 
 /* ✅ Hero Section */
-/* Hero Section */
 .hero {
   position: relative;
   width: 100%;
-  height: 100vh; /* adjust height as needed */
+  height: 100vh;
   overflow: hidden;
 }
 
@@ -60,7 +59,7 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.3); /* optional overlay for contrast */
+  background: rgba(0,0,0,0.3);
   z-index: 1;
 }
 
@@ -72,12 +71,13 @@
   text-align: center;
   top: 50%;
   transform: translateY(-50%);
+  padding: 0 1rem;
 }
 
 .heroTitle {
   font-size: 3rem;
   margin-bottom: 1rem;
-    font-family: 'Orbitron', sans-serif;
+  font-family: 'Orbitron', sans-serif;
 }
 
 .heroSubtitle {
@@ -100,36 +100,35 @@
   background-color: #00a0cc;
 }
 
-.heroContent {
-  z-index: 2;
-  position: relative;
-}
-
 /* ✅ Stores Section */
 .storesSection {
+  width: 100%;
+  max-width: 1400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 4rem 0;
+  padding: 0 1rem;
 }
 
 .scrollContainer {
   width: 100%;
-  overflow-x: auto;
+  overflow: visible;
   padding-bottom: 1rem;
 }
 
 .horizontalScroll {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
   padding: 1rem;
+  width: 100%;
 }
 
 .storeCard {
   position: relative;
-  min-width: 400px;
+  width: 100%;
   height: 250px;
-  flex-shrink: 0;
   border-radius: 16px;
   color: white;
   font-weight: 700;
@@ -201,13 +200,11 @@
   background: linear-gradient(135deg, #00b4d8, #0070f3);
 }
 
-
-
 /* ✅ Recently Viewed Section */
 .recentlyViewedSection {
   width: 95%;
   background: var(--white);
-  padding: 2rem 4rem; /* adjust padding for full-width look */
+  padding: 2rem 4rem;
   margin: 3px;
   display: flex;
   border-radius: 10px;
@@ -219,19 +216,18 @@
 .recentlyViewedSection .heading {
   font-size: 2.6rem;
   font-weight: 700;
-  color: var(--blue );
+  color: var(--blue);
   margin-bottom: 2rem;
   text-align: center;
 }
 
 .productsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 2rem;
   width: 100%;
+  max-width: 100%;
 }
-
-
 
 .productsGrid::-webkit-scrollbar {
   height: 8px;
@@ -243,31 +239,28 @@
 }
 
 /* ✅ Product Card */
-/* ✅ Product Card */
 .productCard {
-  min-width: 300px;
+  width: 100%;
   max-width: 300px;
   border-radius: 1rem;
   text-decoration: none;
   overflow: hidden;
-  flex-shrink: 0;
   display: flex;
   flex-direction: column;
-
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   background: #fff;
+  justify-self: center;
 }
 
 .productCard:hover {
   transform: translateY(-6px);
-
 }
 
 /* Image Section */
 .imageWrapper {
   width: 100%;
-  height: 260px; /* bigger image */
+  height: 260px;
   overflow: hidden;
   background: #fff;
 }
@@ -285,14 +278,13 @@
 
 /* Text Section */
 .textArea {
-  background-color: #0a1931; /* navy */
+  background-color: #0a1931;
   color: #fff;
   padding: 1rem 1rem 1.2rem;
   text-align: center;
   border-radius: 10px;
-  margin-top: 7px; /* 🟩 adds 2px space between image and text */
+  margin-top: 7px;
 }
-
 
 /* Product Name */
 .productName {
@@ -304,7 +296,7 @@
 
 /* Product Price */
 .productPrice {
-  color: var(--blue-verylight); /* bright green */
+  color: var(--blue-verylight);
   font-weight: 700;
   font-size: 1rem;
 }
@@ -317,7 +309,7 @@
 .footer {
   background: linear-gradient(135deg, #0b1838, #122957);
   color: #fff;
-    width: 100%;
+  width: 100%;
   padding: 4rem 2rem 2rem;
   font-family: 'Inter', sans-serif;
 }
@@ -328,6 +320,7 @@
   flex-wrap: wrap;
   gap: 3rem;
   width: 100%;
+  max-width: 1400px;
   margin: 0 auto;
 }
 
@@ -412,67 +405,64 @@
 /* Why Choose Section */
 .whySection {
   width: 100%;
-
+  max-width: 1400px;
   margin: 1rem auto;
   padding: 3rem 2rem;
   background: var(--white);
   border-radius: 1.5rem;
   color: #fff;
   text-align: center;
- 
 }
+
 .heading {
   font-size: 2.5rem;
   font-weight: 700;
   margin-bottom: 1rem;
   color: var(--blue);
-
 }
-.icons{
+
+.icons {
   font-size: 2.5rem;
   margin-bottom: 1rem;
 }
+
 .featuresGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 2rem;
-
   margin-top: 1rem;
+  width: 100%;
 }
+
 /* Particle canvas */
 .particleCanvas {
-  position: absolute; /* Position it inside the card */
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 0; /* Canvas behind the text */
-  pointer-events: none; /* So it doesn’t block clicks */
+  z-index: 0;
+  pointer-events: none;
 }
 
 /* Feature card container */
 .featureCard {
-    background: linear-gradient(135deg, #0b1838, #122957);
-  position: relative; /* Needed for absolute canvas */
+  background: linear-gradient(135deg, #0b1838, #122957);
+  position: relative;
   overflow: hidden;
   padding: 2rem;
- 
   border-radius: 16px;
- 
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.06);
 }
 
 /* Text content above canvas */
 .featureCard h3,
 .featureCard p {
-  position: relative; /* ensures above canvas */
+  position: relative;
   z-index: 1;
-  color: var(--white); /* or any text color that contrasts with canvas */
+  color: var(--white);
   font-weight: 800;
- 
 }
-
-
 
 .featureCard h3.featureTitle {
   font-size: 1.67rem;
@@ -499,8 +489,6 @@
   transition: transform 0.3s ease, color 0.3s ease;
 }
 
-
-
 /* Texts */
 .featureTitle {
   font-size: 1.3rem;
@@ -521,10 +509,12 @@
 .fashionSection {
   position: relative;
   width: 100%;
+  max-width: 1400px;
   background: #fff;
   padding: 6rem 2rem;
   text-align: center;
   overflow: hidden;
+  margin: 0 auto;
 }
 
 .textContainer {
@@ -541,7 +531,7 @@
 .fashionHighlight {
   font-size: 3.2rem;
   font-weight: 800;
-  color:var(--blue-light);
+  color: var(--blue-light);
 }
 
 /* 🖼️ Image Grid */
@@ -553,6 +543,7 @@
   justify-content: center;
   margin-top: 2rem;
   position: relative;
+  width: 100%;
 }
 
 .gridItem {
@@ -561,12 +552,10 @@
   height: auto;
   object-fit: cover;
   transition: transform 0.4s ease, box-shadow 0.3s ease;
-
 }
 
 .gridItem:hover {
   transform: scale(1.05);
-
 }
 
 /* Vary image heights for staggered layout */
@@ -602,11 +591,11 @@
 .centerButton {
   background: var(--blue);
   color: #fff;
-  padding: 1rem 2.5rem;
+  padding: 0.8rem 2rem;
   border-radius: 3rem;
   font-weight: 600;
   text-decoration: none;
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   transition: all 0.3s ease;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
 }
@@ -617,24 +606,489 @@
   box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
 }
 
-/* 🌐 Responsive Grid */
+/* 🌐 RESPONSIVE BREAKPOINTS */
+
+/* Large tablets */
 @media (max-width: 1024px) {
+  .hero {
+    height: 85vh;
+  }
+
+  .heroTitle {
+    font-size: 2.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1.1rem;
+  }
+
+  .storesSection {
+    margin: 3rem 0;
+    padding: 0 1rem;
+  }
+
+  .horizontalScroll {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .storeCard {
+    height: 230px;
+  }
+
+  .storeName {
+    font-size: 1.5rem;
+  }
+
   .imageGrid {
     grid-template-columns: repeat(4, 1fr);
+    gap: 0.8rem;
+  }
+
+  .small {
+    height: 150px;
+  }
+
+  .medium {
+    height: 200px;
+  }
+
+  .large {
+    height: 240px;
+  }
+
+  .tall {
+    height: 300px;
+  }
+
+  .whySection {
+    padding: 2.5rem 1.5rem;
+  }
+
+  .featuresGrid {
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .heading {
+    font-size: 2.2rem;
+  }
+
+  .recentlyViewedSection {
+    padding: 2rem 1.5rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .footerContainer {
+    gap: 2.5rem;
   }
 }
 
+/* Tablets */
 @media (max-width: 768px) {
+  .hero {
+    height: 70vh;
+  }
+
+  .heroTitle {
+    font-size: 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .heroButton {
+    padding: 0.6rem 1.5rem;
+  }
+
+  .storesSection {
+    margin: 2.5rem 0;
+  }
+
+  .horizontalScroll {
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1.2rem;
+    padding: 0.5rem;
+  }
+
+  .storeCard {
+    height: 210px;
+    padding: 1.2rem;
+  }
+
+  .storeName {
+    font-size: 1.3rem;
+  }
+
+  .categoryBadge {
+    font-size: 0.8rem;
+    padding: 0.25rem 0.6rem;
+  }
+
   .imageGrid {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.6rem;
+  }
+
+  .small {
+    height: 130px;
+  }
+
+  .medium {
+    height: 170px;
+  }
+
+  .large {
+    height: 200px;
+  }
+
+  .tall {
+    height: 250px;
   }
 
   .centerButtonWrapper {
-    top: 70%;
+    top: 55%;
   }
 
-  .fashionTitle,
+  .centerButton {
+    padding: 0.7rem 1.6rem;
+    font-size: 0.85rem;
+  }
+
+  .fashionTitle {
+    font-size: 2rem;
+  }
+
+  .fashionHighlight {
+    font-size: 2.5rem;
+  }
+
+  .whySection {
+    padding: 2rem 1rem;
+  }
+
+  .heading {
+    font-size: 2rem;
+  }
+
+  .featuresGrid {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+  }
+
+  .featureCard {
+    padding: 1.8rem 1.5rem;
+  }
+
+  .featureCard h3.featureTitle {
+    font-size: 1.4rem;
+  }
+
+  .featureCard p.featureDesc {
+    font-size: 1rem;
+  }
+
+  .recentlyViewedSection {
+    padding: 2rem 1.5rem;
+  }
+
+  .recentlyViewedSection .heading {
+    font-size: 2.2rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.2rem;
+  }
+
+  .imageWrapper {
+    height: 220px;
+  }
+
+  .footerContainer {
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .footerBrand,
+  .footerLinks,
+  .footerSocials {
+    min-width: 100%;
+    text-align: center;
+  }
+
+  .socialIcons {
+    justify-content: center;
+  }
+
+  .tagline {
+    margin: 0 auto;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 640px) {
+  .hero {
+    height: 60vh;
+  }
+
+  .heroTitle {
+    font-size: 1.8rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.95rem;
+  }
+
+  .heroButton {
+    padding: 0.6rem 1.3rem;
+    font-size: 0.9rem;
+  }
+
+  .storesSection {
+    margin: 2rem 0;
+  }
+
+  .heading {
+    font-size: 1.8rem;
+  }
+
+  .horizontalScroll {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .storeCard {
+    height: 200px;
+    padding: 1rem;
+  }
+
+  .storeName {
+    font-size: 1.2rem;
+  }
+
+  .exploreAllButton {
+    padding: 0.7rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .imageGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+  }
+
+  .small {
+    height: 110px;
+  }
+
+  .medium {
+    height: 150px;
+  }
+
+  .large {
+    height: 180px;
+  }
+
+  .tall {
+    height: 220px;
+  }
+
+  .centerButtonWrapper {
+    top: 52%;
+  }
+
+  .centerButton {
+    padding: 0.65rem 1.4rem;
+    font-size: 0.8rem;
+  }
+
+  .fashionTitle {
+    font-size: 1.7rem;
+  }
+
+  .fashionHighlight {
+    font-size: 2.2rem;
+  }
+
+  .fashionSection {
+    padding: 4rem 1rem;
+  }
+
+  .whySection {
+    padding: 2rem 1rem;
+  }
+
+  .featureCard {
+    padding: 1.5rem 1rem;
+  }
+
+  .featureCard h3.featureTitle {
+    font-size: 1.2rem;
+  }
+
+  .featureCard p.featureDesc {
+    font-size: 0.9rem;
+  }
+
+  .icon {
+    width: 40px;
+    height: 40px;
+  }
+
+  .recentlyViewedSection {
+    padding: 1.5rem 1.5rem;
+  }
+
+  .recentlyViewedSection .heading {
+    font-size: 1.9rem;
+  }
+
+  .productsGrid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .imageWrapper {
+    height: 240px;
+  }
+
+  .textArea {
+    padding: 0.9rem;
+  }
+
+  .productName {
+    font-size: 1rem;
+  }
+
+  .productPrice {
+    font-size: 0.95rem;
+  }
+
+  .footer {
+    padding: 3rem 1rem 1.5rem;
+  }
+
+  .logo {
+    font-size: 1.6rem;
+  }
+
+  .footerLinks h3,
+  .footerSocials h3 {
+    font-size: 1rem;
+  }
+
+  .footerLink {
+    font-size: 0.9rem;
+  }
+}
+
+/* Small mobile devices */
+@media (max-width: 480px) {
+  .hero {
+    height: 55vh;
+  }
+
+  .heroTitle {
+    font-size: 1.5rem;
+  }
+
+  .heroSubtitle {
+    font-size: 0.85rem;
+  }
+
+  .storesSection {
+    margin: 1.5rem 0;
+  }
+
+  .heading {
+    font-size: 1.6rem;
+  }
+
+  .storeCard {
+    height: 180px;
+  }
+
+  .storeName {
+    font-size: 1.1rem;
+  }
+
+  .imageGrid {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .small,
+  .medium,
+  .large,
+  .tall {
+    height: 200px;
+  }
+
+  .centerButtonWrapper {
+    position: static;
+    transform: none;
+    margin-top: 1.5rem;
+  }
+
+  .centerButton {
+    transform: none !important;
+  }
+
+  .fashionTitle {
+    font-size: 1.5rem;
+  }
+
   .fashionHighlight {
     font-size: 2rem;
+  }
+
+  .fashionSection {
+    padding: 3rem 1rem;
+  }
+
+  .whySection {
+    padding: 1.5rem 0.8rem;
+  }
+
+  .heading {
+    font-size: 1.5rem;
+  }
+
+  .featureCard {
+    padding: 1.3rem 0.8rem;
+  }
+
+  .featureCard h3.featureTitle {
+    font-size: 1.1rem;
+  }
+
+  .featureCard p.featureDesc {
+    font-size: 0.85rem;
+  }
+
+  .icon {
+    width: 36px;
+    height: 36px;
+  }
+
+  .recentlyViewedSection {
+    padding: 1.3rem 1rem;
+  }
+
+  .recentlyViewedSection .heading {
+    font-size: 1.7rem;
+  }
+
+  .imageWrapper {
+    height: 220px;
+  }
+
+  .footer {
+    padding: 2.5rem 1rem 1.2rem;
   }
 }

@@ -29,8 +29,8 @@
 /* ---------- Top Section ---------- */
 .topSection {
   width: 100%;
-  background: linear-gradient(135deg, var(--blue-light), var(--blue-verylight));
-  padding: 5rem 6rem 6rem;
+  background: var(--white);
+  padding: 0rem 0rem 2rem;
   box-shadow: 0 10px 25px rgba(39, 70, 144, 0.25);
   color: var(--white);
   text-align: center;
@@ -52,9 +52,10 @@
   position: relative;
   font-size: 2rem;
   font-weight: 800;
-  color: var(--white);
+  color: var(--blue);
   text-align: center;
-  margin: 0 auto 2rem auto; /* spacing below title */
+  padding-top: 30px;
+  margin: 0 auto 0.5rem auto; /* spacing below title */
 }
 
 .sectionTitleTop::after {
@@ -91,6 +92,7 @@
 .dashboardImage:hover {
   transform: scale(1.05);
 }
+
 
 /* Logo Text */
 .logoTextContainer {
@@ -130,7 +132,7 @@
 
 /* Card Styles */
 .card {
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.836);
   color: var(--white);
   border-radius: 10px;
   text-align: center;
@@ -257,4 +259,175 @@
 /* ---------- Print Styles ---------- */
 @media print {
   .dashboard { background: var(--white); box-shadow:none; }
+}
+.topSection {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.sectionTitleTop {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 1.5rem;
+}
+
+.topRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  width: 90%;
+  gap: 2rem;
+}
+
+/* ===== Left Buttons ===== */
+.leftButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  flex: 1;
+}
+
+.card {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 14px rgba(0,0,0,0.15);
+}
+
+.cardTitle {
+  font-size: 1.2rem;
+  margin-bottom: 0.5rem;
+}
+
+.cardText {
+  font-size: 0.95rem;
+  color: #555;
+}
+
+/* ===== Right Feature Section ===== */
+.rightFeature {
+  flex: 1;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sliderBackground {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+  background-image: url("/images/slider1.jpg");
+  background-size: cover;
+  background-position: center;
+  animation: sliderFade 10s infinite alternate;
+}
+
+@keyframes sliderFade {
+  0% { background-image: url("/images/slider1.jpg"); }
+  50% { background-image: url("/images/slider2.jpg"); }
+  100% { background-image: url("/images/slider3.jpg"); }
+}
+
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.liveButton {
+  position: absolute;
+  background-color:var(--blue-light);
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 2;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.liveButton:hover {
+  background-color: #5365ef;
+  transform: scale(1.05);
+}
+.rightFeature {
+  flex: 2;
+  height: 400px;
+  position: relative;
+  display: flex;
+
+}
+
+.sliderBackground {
+  width: 100%;
+  height: 100%;
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+
+  /* Initial background */
+  background-image: url("/uploads/first.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+
+  /* Animate between images */
+  animation: sliderFade 12s infinite;
+}
+
+@keyframes sliderFade {
+  0% {
+    background-image: url("/images/first.png");
+  }
+  33% {
+    background-image: url("/images/second.png");
+  }
+  66% {
+    background-image: url("/images/third.png");
+  }
+  100% {
+    background-image: url("/images/first.png");
+  }
+}
+
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.45);
+  z-index: 1;
+}
+
+.liveButton {
+  position: absolute;
+  z-index: 2;
+  background-color: #ff4b2b;
+  color: #fff;
+  font-weight: bold;
+  font-size: 1.2rem;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.liveButton:hover {
+  background-color: #e63900;
+  transform: scale(1.05);
 }
