@@ -24,8 +24,8 @@ const storeRequestSchema = new mongoose.Schema({
   postalCode: { type: String, required: true },
 
   // Verification / Identification
-  cnicNumber: { type: String },
-  cnicImageUrl: { type: String},
+  cnicNumber: { type: String,required: true },
+  cnicImageUrl: { type: String,  required: true},
 
   // Branding (optional)
   logoUrl: { type: String },
