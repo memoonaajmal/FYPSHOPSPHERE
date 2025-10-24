@@ -6,8 +6,8 @@ import styles from "./page.module.css";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ShoppingBag, Bot, Globe2, Sparkles} from "lucide-react";
-import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
-import dynamic from 'next/dynamic';
+import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";import dynamic from 'next/dynamic';
+import ProductCard from "../../components/ProductCard";
 
 
 
@@ -241,42 +241,32 @@ function HomeContent() {
     </Link>
   </div>
 </section>
-    {/* Recently Viewed Section */}
-{recentlyViewed.length > 0 && (
+    {recentlyViewed.length > 0 && (
   <section className={styles.recentlyViewedSection}>
     <h2 className={styles.heading}>Recently Viewed</h2>
     <div className={styles.productsGrid}>
-      {recentlyViewed.map((product) => (
-        <Link
-          key={product._id}
-          href={`/user/products/${product._id}`}
-          className={styles.productCard}
-        >
-          <div className={styles.imageWrapper}>
-            <img
-              src={
-                `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}` ||
-                "/placeholder.png"
-              }
-              alt={product.productDisplayName}
-              className={styles.productImage}
-            />
-          </div>
+{recentlyViewed.map((product, index) => {
+  const canonicalId = product.id ?? product.productId ?? product._id ?? String(index);
 
-          {/* 🟦 Text Section (separate div) */}
-          <div className={styles.textArea}>
-            <h3 className={styles.productName}>
-              {product.productDisplayName}
-            </h3>
-            <p className={styles.productPrice}>
-              {product.price ? `PKR ${product.price}` : "N/A"}
-            </p>
-          </div>
-        </Link>
-      ))}
+  const normalizedProduct = {
+    ...product,
+    id: canonicalId,
+    _id: canonicalId, // override _id so ProductCard link uses the numeric id
+  };
+
+  return (
+    <ProductCard
+      key={canonicalId}
+      product={normalizedProduct}
+    />
+  );
+})}
+
+
     </div>
   </section>
 )}
+
       {/* Footer */}
       <footer className={styles.footer}>
         

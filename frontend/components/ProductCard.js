@@ -1,20 +1,26 @@
 "use client";
 import Image from "next/image";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import styles from "./styles/ProductCard.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // http://localhost:4000
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function ProductCard({ product }) {
+  const router = useRouter();
+
   if (!product) return null;
 
   const id = product.productId || product._id;
+  if (!id) return null;
 
-  // Always build absolute URL
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
   return (
-    <Link href={`/user/products/${id}`} className={styles.card}>
+    <div
+      onClick={() => router.push(`/user/products/${id}`)}
+      className={styles.card}
+      style={{ cursor: "pointer" }}
+    >
       <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}
@@ -30,6 +36,6 @@ export default function ProductCard({ product }) {
         <p className={styles.color}>{product.baseColour}</p>
         <p className={styles.type}>{product.articleType}</p>
       </div>
-    </Link>
+    </div>
   );
 }
