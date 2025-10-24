@@ -245,12 +245,22 @@ function HomeContent() {
   <section className={styles.recentlyViewedSection}>
     <h2 className={styles.heading}>Recently Viewed</h2>
     <div className={styles.productsGrid}>
- {recentlyViewed.map((product, index) => (
-  <ProductCard
-    key={product.productId || product._id || product.id || index} // ✅ Fallbacks added
-    product={product}
-  />
-))}
+{recentlyViewed.map((product, index) => {
+  const canonicalId = product.id ?? product.productId ?? product._id ?? String(index);
+
+  const normalizedProduct = {
+    ...product,
+    id: canonicalId,
+    _id: canonicalId, // override _id so ProductCard link uses the numeric id
+  };
+
+  return (
+    <ProductCard
+      key={canonicalId}
+      product={normalizedProduct}
+    />
+  );
+})}
 
 
     </div>
