@@ -26,6 +26,8 @@ const sellerRoutes = require('./routes/seller.routes');
 const uploadRoutes = require("./routes/uploadRoutes");
 const analyticsRoutes = require("./routes/analyticsRoutes");
 const streamRoutes = require("./routes/streamRoutes");
+const chatbotRoutes = require("./routes/chatbot.routes");
+
 
 const app = express();
 
@@ -85,6 +87,7 @@ app.use('/api/seller', sellerRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/analytics", analyticsRoutes);
 app.use('/api/streams', streamRoutes);
+app.use("/api/chatbot", chatbotRoutes);
 
 
 // ✅ Swagger docs (optional)

@@ -28,7 +28,7 @@ const storeRequestSchema = new mongoose.Schema({
   cnicImageUrl: { type: String,  required: true},
 
   // Branding (optional)
-  logoUrl: { type: String },git merge main
+  logoUrl: { type: String },
 
   bannerUrl: { type: String },
 

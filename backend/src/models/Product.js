@@ -11,7 +11,11 @@ const ProductSchema = new mongoose.Schema({
   year: { type: Number, index: true },
   usage: { type: String, index: true },
   productDisplayName: { type: String },
-  imageFilename: { type: String }
+  imageFilename: { type: String },
+  
+  // NEW: store embedding vector (array of numbers)
+  embedding: { type: [Number], default: undefined, index: false }
+
 }, { timestamps: true });
 
 ProductSchema.virtual('imageUrl').get(function() {
