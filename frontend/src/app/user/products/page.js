@@ -14,6 +14,7 @@ async function fetchProducts(searchParams) {
     )
   ).toString();
 
+  
   const res = await fetch(`${BASE_URL}/api/products?${q}`);
   if (!res.ok) throw new Error('Failed to fetch products');
   return res.json();

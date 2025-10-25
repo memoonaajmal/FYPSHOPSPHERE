@@ -1,94 +1,203 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { addItemToCart } from "../redux/CartSlice";
 import { MessageCircle, X, Send } from "lucide-react";
 import Link from "next/link";
-import Image from "next/image"; // ✅ Import Next.js Image
+import Image from "next/image";
 import styles from "./styles/Chatbot.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4000";
 
 export default function Chatbot() {
-  const [isOpen, setIsOpen] = useState(false);
-  const [history, setHistory] = useState([]);
+  const dispatch = useDispatch();
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("chatbotOpen") === "true";
+    }
+    return false;
+  });
+
+  const [history, setHistory] = useState(() => {
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("chatbotHistory");
+      return saved ? JSON.parse(saved) : [];
+    }
+    return [];
+  });
+
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [imageErrors, setImageErrors] = useState(new Set());
+  const [topProducts, setTopProducts] = useState([]);
+  const [awaitingCartChoice, setAwaitingCartChoice] = useState(false);
+  const [awaitingProductNumber, setAwaitingProductNumber] = useState(false);
+  const [awaitingCheckoutChoice, setAwaitingCheckoutChoice] = useState(false);
   const messagesEndRef = useRef(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  };
+  // Save chat state
+  useEffect(() => {
+    localStorage.setItem("chatbotOpen", isOpen);
+  }, [isOpen]);
 
   useEffect(() => {
-    scrollToBottom();
+    localStorage.setItem("chatbotHistory", JSON.stringify(history));
   }, [history]);
 
-  // ✅ Clean filename (remove quotes)
-  const cleanFilename = (filename) => {
-    if (!filename) return '';
-    return filename.replace(/["']/g, '').trim();
-  };
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [history]);
+
+  const cleanFilename = (filename) =>
+    filename?.replace(/["']/g, "").trim() || "";
 
   const handleImageError = (filename) => {
-    setImageErrors(prev => new Set(prev).add(filename));
-    console.error("❌ Image failed to load:", filename);
+    setImageErrors((prev) => new Set(prev).add(filename));
   };
 
-  async function send() {
+    async function send() {
     if (!input.trim() || loading) return;
-
     const userMsg = { sender: "user", text: input };
-    const userInput = input;
-
+    const userInput = input.toLowerCase();
     setHistory((h) => [...h, userMsg]);
     setInput("");
     setLoading(true);
 
     try {
+      // 🛒 Step 1 — Handle checkout confirmation FIRST
+      if (awaitingCheckoutChoice) {
+        if (userInput.includes("yes")) {
+          setHistory((h) => [
+            ...h,
+            { sender: "bot", text: "Taking you to the checkout page... 💳" },
+          ]);
+          setAwaitingCheckoutChoice(false);
+          setLoading(false);
+          setTimeout(() => (window.location.href = "/user/checkout"), 1000);
+          return;
+        }
+
+        if (userInput.includes("no")) {
+          setHistory((h) => [
+            ...h,
+            { sender: "bot", text: "No problem! 😊 You can keep exploring products." },
+          ]);
+          setAwaitingCheckoutChoice(false);
+          setLoading(false);
+          return;
+        }
+
+        setHistory((h) => [
+          ...h,
+          { sender: "bot", text: "Please reply with 'yes' or 'no'." },
+        ]);
+        setLoading(false);
+        return;
+      }
+
+      // 🛍️ Step 2 — Handle add-to-cart yes/no
+      if (awaitingCartChoice) {
+        if (userInput.includes("no")) {
+          setHistory((h) => [
+            ...h,
+            { sender: "bot", text: "Alright 😊 Let me know if you want to explore something else!" },
+          ]);
+          setAwaitingCartChoice(false);
+          setLoading(false);
+          return;
+        }
+
+        if (userInput.includes("yes")) {
+          const productList = topProducts
+            .map((p, i) => `${i + 1}. ${p.productDisplayName}`)
+            .join("\n");
+          setHistory((h) => [
+            ...h,
+            { sender: "bot", text: `Great! Which product would you like to add?\n${productList}` },
+          ]);
+          setAwaitingCartChoice(false);
+          setAwaitingProductNumber(true);
+          setLoading(false);
+          return;
+        }
+
+        setHistory((h) => [...h, { sender: "bot", text: "Please reply with 'yes' or 'no'." }]);
+        setLoading(false);
+        return;
+      }
+
+      // 🧮 Step 3 — Handle product selection
+      if (awaitingProductNumber) {
+        const index = parseInt(userInput) - 1;
+        if (isNaN(index) || index < 0 || index >= topProducts.length) {
+          setHistory((h) => [
+            ...h,
+            { sender: "bot", text: "Please enter a valid product number (e.g., 1, 2, 3)." },
+          ]);
+          setLoading(false);
+          return;
+        }
+
+        const selected = topProducts[index];
+        dispatch(
+          addItemToCart({
+            id: selected._id,
+            name: selected.productDisplayName,
+            price: selected.price || 0,
+            image: `${BASE_URL}/images/${selected.imageFilename}`,
+            storeId: selected.storeId,
+            qty: 1,
+          })
+        );
+
+        setHistory((h) => [
+          ...h,
+          { sender: "bot", text: `✅ ${selected.productDisplayName} added to your cart! 🛒` },
+          { sender: "bot", text: "Would you like to go to the checkout page? (Yes/No)" },
+        ]);
+
+        setAwaitingProductNumber(false);
+        setAwaitingCheckoutChoice(true);
+        setTopProducts([]);
+        setLoading(false);
+        return;
+      }
+
+      // 🤖 Step 4 — Regular chatbot backend call
       const res = await fetch(`${BASE_URL}/api/chatbot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ message: userInput }),
       });
 
-      if (!res.ok) {
-        const errorText = await res.text();
-        throw new Error(errorText || "Failed to get response");
-      }
-
       const data = await res.json();
+      setTopProducts(data.topProducts || []);
 
       setHistory((h) => [
         ...h,
-        {
-          sender: "bot",
-          text: data.answer || "No answer received",
-          products: data.topProducts || [],
-        },
+        { sender: "bot", text: data.answer || "No answer received", products: data.topProducts || [] },
       ]);
+
+      if (data.topProducts?.length > 0) {
+        setHistory((h) => [
+          ...h,
+          { sender: "bot", text: "Would you like to add one of these to your cart? (Yes/No)" },
+        ]);
+        setAwaitingCartChoice(true);
+      }
     } catch (err) {
       console.error("Chatbot error:", err);
-      setHistory((h) => [
-        ...h,
-        {
-          sender: "bot",
-          text: "Sorry, I encountered an error. Please try again.",
-        },
-      ]);
+      setHistory((h) => [...h, { sender: "bot", text: "Sorry, I encountered an error. Please try again." }]);
     } finally {
       setLoading(false);
     }
   }
 
-  const handleKeyPress = (e) => {
-    if (e.key === "Enter" && !loading) {
-      send();
-    }
-  };
+  const handleKeyPress = (e) => e.key === "Enter" && !loading && send();
 
   return (
     <>
-      {/* Chat Button */}
+      {/* Floating Chat Button */}
       <button
         className={styles.chatButton}
         onClick={() => setIsOpen(!isOpen)}
@@ -100,7 +209,6 @@ export default function Chatbot() {
       {/* Chat Window */}
       {isOpen && (
         <div className={styles.chatWindow}>
-          {/* Header */}
           <div className={styles.chatHeader}>
             <div className={styles.headerContent}>
               <MessageCircle size={20} />
@@ -115,12 +223,12 @@ export default function Chatbot() {
             </button>
           </div>
 
-          {/* Messages */}
+          {/* Chat Messages */}
           <div className={styles.messages}>
             {history.length === 0 && (
               <div className={styles.welcomeMessage}>
                 <p>👋 Hi! I'm your shopping assistant.</p>
-                <p>Ask me about products, colors, styles, or anything else!</p>
+                <p>Ask me about products, colors, or categories!</p>
                 <div className={styles.suggestions}>
                   <button
                     onClick={() => setInput("Show me black watches for men")}
@@ -160,32 +268,31 @@ export default function Chatbot() {
                       </strong>
                       <div className={styles.productCards}>
                         {m.products.slice(0, 5).map((p, idx) => {
-                          const cleanedFilename = cleanFilename(p.imageFilename);
-                          // ✅ Build URL same way as ProductCard
-                          const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${cleanedFilename}`;
-                          const hasError = imageErrors.has(cleanedFilename);
-                          
+                          const cleaned = cleanFilename(p.imageFilename);
+                          const imageSrc = `${BASE_URL.replace(
+                            /\/$/,
+                            ""
+                          )}/images/${cleaned}`;
+                          const hasError = imageErrors.has(cleaned);
+
                           return (
                             <Link
                               key={idx}
                               href={`/user/products/${p._id}`}
                               className={styles.productCard}
-                              onClick={() => setIsOpen(false)}
                             >
                               <div className={styles.productImage}>
-                                {cleanedFilename && !hasError ? (
-                                  // ✅ Use Next.js Image component
+                                {cleaned && !hasError ? (
                                   <Image
                                     src={imageSrc}
                                     alt={p.productDisplayName || "Product"}
                                     width={120}
                                     height={120}
-                                    className={styles.image}
-                                    onError={() => handleImageError(cleanedFilename)}
+                                    onError={() => handleImageError(cleaned)}
                                   />
                                 ) : (
                                   <div className={styles.noImage}>
-                                    {p.productDisplayName?.charAt(0) || '?'}
+                                    {p.productDisplayName?.charAt(0) || "?"}
                                   </div>
                                 )}
                               </div>
@@ -234,7 +341,7 @@ export default function Chatbot() {
             <button
               onClick={send}
               disabled={loading || !input.trim()}
-              aria-label="Send message"
+              aria-label="Send"
             >
               <Send size={20} />
             </button>
