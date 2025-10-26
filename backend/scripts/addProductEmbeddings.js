@@ -17,8 +17,8 @@ if (!HF_KEY) {
 }
 
 async function getEmbedding(text) {
-  const url = `https://api-inference.huggingface.co/models/${EMBEDDING_MODEL}`;
-  
+  const url = `https://router.huggingface.co/hf-inference/models/${EMBEDDING_MODEL}`;
+
   const res = await fetch(url, {
     method: 'POST',
     headers: {
