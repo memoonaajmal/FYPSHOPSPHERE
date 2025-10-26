@@ -29,43 +29,71 @@ function setupSocket(io) {
     });
 
     // ✅ Viewer joins
-    socket.on("join-stream", ({ streamId }) => {
-      const room = rooms[streamId];
-      if (!room) {
-        console.warn(`❌ Stream ${streamId} not found`);
-        return;
-      }
-      room.viewers.add(socket.id);
-      socket.join(streamId);
-      if (room.sellerSocketId) io.to(room.sellerSocketId).emit("viewer-joined", { viewerId: socket.id });
-      console.log(`👀 Viewer ${socket.id} joined stream ${streamId}`);
-    });
+socket.on("join-stream", ({ streamId }) => {
+  const room = rooms[streamId];
+  if (!room) {
+    console.warn(`❌ Stream ${streamId} not found`);
+    return;
+  }
 
-    // ✅ Viewer leaves
-    socket.on("leave-stream", ({ streamId }) => {
-      const room = rooms[streamId];
-      if (room && room.viewers.has(socket.id)) {
-        room.viewers.delete(socket.id);
-        if (room.sellerSocketId) io.to(room.sellerSocketId).emit("viewer-left", { viewerId: socket.id });
-        console.log(`👋 Viewer ${socket.id} left stream ${streamId}`);
-      }
-      socket.leave(streamId);
-    });
+  // 🧠 Prevent duplicate joins
+  if (room.viewers.has(socket.id)) {
+    console.log(`⚠️ Viewer ${socket.id} already joined stream ${streamId}`);
+    return;
+  }
+
+  // ✅ Add viewer to set + room
+  room.viewers.add(socket.id);
+  socket.join(streamId);
+
+  console.log(`👀 Viewer ${socket.id} joined stream ${streamId}`);
+
+  // 🔔 Notify seller
+  if (room.sellerSocketId) {
+    io.to(room.sellerSocketId).emit("viewer-joined", { viewerId: socket.id });
+  }
+});
+
+// ✅ Viewer leaves
+socket.on("leave-stream", ({ streamId }) => {
+  const room = rooms[streamId];
+  if (!room) return;
+
+  // 🧹 Remove viewer
+  if (room.viewers.has(socket.id)) {
+    room.viewers.delete(socket.id);
+    socket.leave(streamId);
+    console.log(`🚪 Viewer ${socket.id} left stream ${streamId}`);
+  }
+});
+
 
     // ✅ WebRTC signaling
     socket.on("offer", ({ viewerId, sdp }) => io.to(viewerId).emit("offer", { sellerId: socket.id, sdp }));
     socket.on("answer", ({ sellerId, sdp }) => io.to(sellerId).emit("answer", { viewerId: socket.id, sdp }));
     socket.on("ice-candidate", ({ target, candidate }) => io.to(target).emit("ice-candidate", { from: socket.id, candidate }));
 
-    // ✅ Chat messages
-    socket.on("chat-message", async ({ streamId, user, text }) => {
-      try {
-        const message = await Message.create({ stream: streamId, user, text });
-        io.to(streamId).emit("chat-message", message);
-      } catch (err) {
-        console.error("Failed to save message:", err);
-      }
+
+    // ✅ Chat messages (with userType for pinning seller messages)
+socket.on("chat-message", async ({ streamId, user, text, userType }) => {
+  try {
+    // Save message in DB (optional — you can store userType too)
+    const message = await Message.create({ stream: streamId, user, text, userType });
+
+    // Broadcast full message to everyone in the stream room
+    io.to(streamId).emit("chat-message", {
+      user,
+      text,
+      userType,
+      streamId,
+      _id: message._id,
+      createdAt: message.createdAt,
     });
+  } catch (err) {
+    console.error("❌ Failed to save message:", err);
+  }
+});
+
 
     // ✅ Disconnect handler
     socket.on("disconnect", () => {
