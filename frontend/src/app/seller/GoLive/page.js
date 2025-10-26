@@ -10,10 +10,22 @@ export default function GoLivePage() {
   const [title, setTitle] = useState("");
   const [stream, setStream] = useState(null);
   const [sellerId, setSellerId] = useState(null);
+  const [sellerName, setSellerName] = useState("Seller");
 
   const publisherRef = useRef(null);
   const socketRef = useRef(null);
-  const hasConnectedRef = useRef(false); // track if socket already connected
+  const hasConnectedRef = useRef(false);
+
+  // ✅ Get seller Firebase info
+  useEffect(() => {
+    const unsubscribe = auth.onAuthStateChanged((user) => {
+      if (user) {
+        setSellerId(user.uid);
+        setSellerName(user.displayName || user.email?.split("@")[0] || "Seller");
+      }
+    });
+    return () => unsubscribe();
+  }, []);
 
   // ✅ Restore saved stream
   useEffect(() => {
@@ -22,7 +34,6 @@ export default function GoLivePage() {
       try {
         const parsed = JSON.parse(saved);
         setStream(parsed);
-
         if (!socketRef.current) {
           socketRef.current = getSocket("seller", parsed._id);
         }
@@ -32,21 +43,12 @@ export default function GoLivePage() {
     }
   }, []);
 
-  // ✅ Firebase auth
-  useEffect(() => {
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) setSellerId(user.uid);
-    });
-    return () => unsubscribe();
-  }, []);
-
-  // ✅ Reconnect seller socket only once
+  // ✅ Reconnect socket
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket || !stream?._id || hasConnectedRef.current) return;
 
     const handleReconnect = () => {
-      console.log("♻️ Seller reconnected to stream", stream._id);
       socket.emit("reconnect-seller", { streamId: stream._id });
       hasConnectedRef.current = true;
     };
@@ -57,7 +59,6 @@ export default function GoLivePage() {
     return () => socket.off("connect", handleReconnect);
   }, [stream?._id]);
 
-  // ✅ Start stream
   const startStream = async () => {
     if (!title.trim()) return alert("Please enter a stream title");
     if (!sellerId) return alert("You must be logged in");
@@ -67,7 +68,6 @@ export default function GoLivePage() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title, sellerId }),
     });
-
     const data = await res.json();
     if (!data?._id) return console.error("❌ Stream creation failed:", data);
 
@@ -78,24 +78,22 @@ export default function GoLivePage() {
       socketRef.current = getSocket("seller", data._id);
     }
 
-    // ✅ Only emit start once
     if (!hasConnectedRef.current) {
       socketRef.current.emit("start-stream", { streamId: data._id });
       hasConnectedRef.current = true;
     }
   };
 
-  // ✅ End stream
   const endStream = async () => {
     if (!stream?._id) return;
     if (!confirm("Are you sure you want to end your live stream?")) return;
 
     const socket = socketRef.current;
-
     const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/streams/${stream._id}/end`, {
       method: "POST",
     });
     const data = await res.json();
+
     if (data.success) {
       socket?.emit("end-stream", { streamId: stream._id });
       if (publisherRef.current?.cleanupStream) await publisherRef.current.cleanupStream();
@@ -110,7 +108,6 @@ export default function GoLivePage() {
     }
   };
 
-  // ✅ UI
   if (stream) {
     return (
       <div className="p-6 flex flex-col items-center">
@@ -119,13 +116,15 @@ export default function GoLivePage() {
           ref={publisherRef}
           streamId={stream._id}
           isStreamActive={!!stream}
-          socket={socketRef.current} // pass socket
+          socket={socketRef.current}
         />
         <StreamChat
-          streamId={stream._id}
-          username="Seller"
-          socket={socketRef.current} // pass socket
-        />
+  streamId={stream._id}
+  username={sellerName}
+  userType="seller"
+  socket={socketRef.current}
+/>
+
         <button
           onClick={endStream}
           className="mt-5 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
