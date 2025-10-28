@@ -18,8 +18,10 @@
     "node": ">=18"
   },
   "dependencies": {
+    "@ai-sdk/google": "^2.0.23",
     "@ai-sdk/huggingface": "^0.0.4",
-    "ai": "^5.0.76",
+    "@google/generative-ai": "^0.24.1",
+    "ai": "^5.0.80",
     "bcryptjs": "^2.4.3",
     "body-parser": "^2.2.0",
     "compression": "^1.7.4",

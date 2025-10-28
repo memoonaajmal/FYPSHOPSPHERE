@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@ai-sdk/google": "^2.0.23",
     "@ai-sdk/huggingface": "^0.0.4",
     "@emailjs/browser": "^4.4.1",
     "@mediapipe/camera_utils": "^0.3.1675466862",
