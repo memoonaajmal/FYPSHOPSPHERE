@@ -191,7 +191,7 @@ else if (t.includes("watch") && handR?.landmarks?.[0]) {
 
   // Move the watch slightly up the wrist (along the forearm)
   // Try between -0.15 and -0.3 for subtle offset
-  const offsetFactor = -0.2;
+  const offsetFactor = 0.4;
 
   // Compute adjusted position (a bit above the wrist)
   const adjustedWrist = {
