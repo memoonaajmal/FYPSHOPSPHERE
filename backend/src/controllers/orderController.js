@@ -8,6 +8,9 @@ const generateTrackingId = require("../utils/trackingId");
 // =============================
 // Create new order
 // =============================
+// =============================
+// Create new order
+// =============================
 exports.createOrder = async (req, res) => {
   try {
     const firebaseUid = req.user.uid; // from requireAuth
@@ -22,60 +25,64 @@ exports.createOrder = async (req, res) => {
       paymentMethod,
     } = req.body;
 
-    // ✅ Validate required fields
-    if (
-      !firstName ||
-      !lastName ||
-      !phone ||
-      !email ||
-      !houseAddress ||
-      !items?.length
-    ) {
+    // ----------------------------
+    // Validate required fields
+    // ----------------------------
+    if (!firstName || !lastName || !phone || !email || !houseAddress || !items?.length) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // ✅ Find the MongoDB user based on email
+    // ----------------------------
+    // Find the MongoDB user
+    // ----------------------------
     const user = await User.findOne({ email });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
+    if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Rebuild items with correct productId and storeId
+    // ----------------------------
+    // Build items with correct data
+    // ----------------------------
     const rebuiltItems = await Promise.all(
       items.map(async (item) => {
-        // Find the product by MongoDB _id (from frontend cart)
+        // item.productId from frontend = MongoDB _id
         const product = await Product.findById(item.productId).select(
           "productId productDisplayName"
         );
-        if (!product) throw new Error(`Product not found: ${item.productId}`);
 
-        // ✅ Find the store that sells this product (match via productId in its productIds array)
+        if (!product)
+          throw new Error(`Product not found: ${item.productId}`);
+
+        // find store by dataset productId (string like "59263")
         const store = await Store.findOne({ productIds: product.productId });
-        if (!store) {
-          throw new Error(`Store not found for product ID: ${product.productId}`);
-        }
+
+        if (!store)
+          throw new Error(`Store not found for product: ${product.productId}`);
 
         return {
-          productId: product.productId, // ✅ your dataset product ID
-          name: product.productDisplayName || item.name,
+          productId: product.productId, // dataset ID like "59263"
+          name: product.productDisplayName,
           price: item.price,
-          image: item.image,
           quantity: item.quantity,
-          storeId: store._id, // ✅ string ID like "store_watch"
+          image: item.image,
+          storeId: store._id,
           itemPaymentStatus: "pending",
         };
       })
     );
 
-    // ✅ Calculate totals
+    // ----------------------------
+    // Calculate totals
+    // ----------------------------
     const itemsTotal = rebuiltItems.reduce(
       (sum, it) => sum + it.price * it.quantity,
       0
     );
+
     const grandTotal = itemsTotal + Number(shippingFee);
     const trackingId = generateTrackingId();
 
-    // ✅ Create order document
+    // ----------------------------
+    // Create order document
+    // ----------------------------
     const order = new Order({
       user: user._id,
       firstName,
@@ -87,33 +94,39 @@ exports.createOrder = async (req, res) => {
       itemsTotal,
       shippingFee,
       grandTotal,
-      paymentMethod,
+      paymentMethod: paymentMethod || "COD",
       paymentStatus: "pending",
       trackingId,
     });
 
     await order.save();
 
-    // ✅ Payment flow handling
+    // ----------------------------
+    // Payment method handling
+    // ----------------------------
     if (paymentMethod === "JazzCash") {
       const paymentUrl = `${process.env.CORS_ORIGINS}/checkout?orderId=${order._id}`;
-      return res.status(201).json({
+      return res.json({
         orderId: order._id,
         trackingId: order.trackingId,
         paymentUrl,
       });
     }
 
-    // ✅ COD success
+    // ----------------------------
+    // COD success
+    // ----------------------------
     return res.status(201).json({
       orderId: order._id,
       trackingId: order.trackingId,
     });
+
   } catch (err) {
-    console.error("createOrder error:", err);
-    res.status(500).json({ message: "Server error" });
+    console.error("createOrder error:", err.message);
+    return res.status(500).json({ message: err.message || "Server error" });
   }
 };
+
 
 // =============================
 // Get a single order by ID

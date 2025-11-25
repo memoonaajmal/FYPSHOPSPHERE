@@ -59,8 +59,22 @@ app.use(cors({
   credentials: true
 }));
 
-// ✅ Serve images before routes
-app.use("/images", express.static(path.join(__dirname, "../data/images")));
+// ----------------------------
+// Serve images with proper cross-origin headers
+// ----------------------------
+const imagesPath = path.join(__dirname, "../data/images");
+
+app.use("/images", (req, res, next) => {
+  // Allow all origins to access images
+  res.setHeader("Access-Control-Allow-Origin", "*");
+
+  // Prevent browser from cancelling image load
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+
+  next();
+});
+
+app.use("/images", express.static(imagesPath));
 
 app.use("/uploads", express.static("uploads"));
 
