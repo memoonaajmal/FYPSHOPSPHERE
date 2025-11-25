@@ -33,7 +33,7 @@ export default function CheckoutPage() {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
-        router.push("/auth?redirect=/checkout");
+        router.push("/authentication/auth?redirect=/user/checkout");
       } else {
         setUser(u);
       }
