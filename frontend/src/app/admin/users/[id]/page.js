@@ -21,9 +21,12 @@ export default function UserDetailsPage() {
     return () => unsubscribe();
   }, []);
 
+  // ✅ Fetch wrapper with Firebase token
   const fetchWithAuth = async (url, options = {}) => {
     if (!firebaseUser) throw new Error("User not logged in");
+
     const token = await firebaseUser.getIdToken();
+
     return fetch(url, {
       ...options,
       headers: {
@@ -55,19 +58,18 @@ export default function UserDetailsPage() {
     fetchUser();
   }, [userId, firebaseUser]);
 
+  // ✅ Delete user (fixed)
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this user?")) return;
+
     try {
       const res = await fetchWithAuth(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/users/${userId}`,
-        { method: "DELETE",
-           headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-        }
+        { method: "DELETE" }
       );
+
       if (!res.ok) throw new Error(`Failed to delete user: ${res.status}`);
+
       alert("✅ User deleted successfully!");
       router.push("/admin/users");
     } catch (err) {
@@ -89,7 +91,7 @@ export default function UserDetailsPage() {
         onClick={handleDelete}
         className={`${styles.button} ${styles.btnDanger}`}
       >
-        Delete 
+        Delete
       </button>
 
       <div style={{ marginTop: "30px" }}>

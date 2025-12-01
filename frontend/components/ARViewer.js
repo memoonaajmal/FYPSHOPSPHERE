@@ -170,7 +170,7 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
 
   // Use the middle of the palm (landmark 9) for approximate scaling
   const middlePalm = hand[9];
-  const ringSize = Math.max(18, distPx(baseJoint, middlePalm, c.width) * 1.1);
+  const ringSize = Math.max(18, distPx(baseJoint, middlePalm, c.width) * 2.1);
 
   // Draw ring slightly up the finger
   ctx.drawImage(
@@ -186,7 +186,7 @@ else if (t.includes("watch") && handR?.landmarks?.[0]) {
 
   // Wrist and base of index finger define the hand-arm direction
   const wrist = hand[0];
-  const indexBase = hand[5];
+  const indexBase = hand[9];
   const middlePalm = hand[9];
 
   // Move the watch slightly up the wrist (along the forearm)
