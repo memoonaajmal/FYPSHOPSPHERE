@@ -146,7 +146,13 @@ export default function StoreRequestDetail() {
 
         <div className={styles.buttonGroup}>
           <button
-            onClick={() => updateStatus("approved")}
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to approve this request?")
+              ) {
+                updateStatus("approved");
+              }
+            }}
             disabled={updating || request.status === "approved"}
             className={`${styles.button} ${styles.approveButton}`}
           >
@@ -154,8 +160,15 @@ export default function StoreRequestDetail() {
               ? "Updating..."
               : "Approve"}
           </button>
+
           <button
-            onClick={() => updateStatus("rejected")}
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to reject this request?")
+              ) {
+                updateStatus("rejected");
+              }
+            }}
             disabled={updating || request.status === "rejected"}
             className={`${styles.button} ${styles.rejectButton}`}
           >
