@@ -4,8 +4,6 @@ const StoreRequest = require("../models/StoreRequest");
 const admin = require("firebase-admin"); // make sure Firebase Admin is initialized
 const mongoose = require("mongoose");
 
-
-
 // ✅ Get all stores
 exports.getStores = async (req, res) => {
   try {
@@ -35,7 +33,9 @@ exports.getStoreWithProducts = async (req, res) => {
 
     const productsWithImage = products.map((p) => ({
       ...p.toObject(),
-      imageUrl: `${req.protocol}://${req.get("host")}/images/${p.imageFilename}`,
+      imageUrl: `${req.protocol}://${req.get("host")}/images/${
+        p.imageFilename
+      }`,
     }));
 
     res.json({ store, products: productsWithImage });
@@ -45,7 +45,6 @@ exports.getStoreWithProducts = async (req, res) => {
   }
 };
 
-
 // Check if logged-in seller has a store
 exports.checkSellerStore = async (req, res) => {
   try {
@@ -53,7 +52,9 @@ exports.checkSellerStore = async (req, res) => {
     res.json({ hasStore: !!store });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ message: "Error checking store", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error checking store", error: err.message });
   }
 };
 
@@ -71,16 +72,16 @@ exports.createStoreRequest = async (req, res) => {
     // ✅ Better validation
     if (!sellerId) {
       console.error("❌ sellerId is missing from request");
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "sellerId is required",
-        received: req.body 
+        received: req.body,
       });
     }
 
     // ✅ Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
-      return res.status(400).json({ 
-        message: "Invalid sellerId format" 
+      return res.status(400).json({
+        message: "Invalid sellerId format",
       });
     }
 
@@ -94,15 +95,15 @@ exports.createStoreRequest = async (req, res) => {
     }
 
     // ✅ Check if seller already has a pending/approved request
-    const existingRequest = await StoreRequest.findOne({ 
+    const existingRequest = await StoreRequest.findOne({
       sellerId: objectId,
-      status: { $in: ["pending", "approved"] }
+      status: { $in: ["pending", "approved"] },
     });
 
     if (existingRequest) {
-      return res.status(400).json({ 
+      return res.status(400).json({
         message: "You already have a store request",
-        request: existingRequest 
+        request: existingRequest,
       });
     }
 
@@ -120,23 +121,21 @@ exports.createStoreRequest = async (req, res) => {
       state: req.body.state,
       postalCode: req.body.postalCode,
       cnicNumber: req.body.cnicNumber,
-      cnicImageUrl: req.files?.cnicImage?.[0]?.path || "",
-      logoUrl: req.files?.logo?.[0]?.path || "",
-      bannerUrl: req.files?.banner?.[0]?.path || "",
+      cnicImageUrl: req.files?.cnicImage?.[0]?.path.replace(/\\/g, "/") || "",
+      logoUrl: req.files?.logo?.[0]?.path.replace(/\\/g, "/") || "",
+      bannerUrl: req.files?.banner?.[0]?.path.replace(/\\/g, "/") || "",
     });
 
     console.log("✅ Store request created:", request._id);
     res.json({ message: "Store request submitted successfully!", request });
   } catch (err) {
     console.error("💥 Error in createStoreRequest:", err);
-    res.status(500).json({ 
-      message: "Error submitting store request", 
-      error: err.message 
+    res.status(500).json({
+      message: "Error submitting store request",
+      error: err.message,
     });
   }
 };
-
-
 
 exports.getMyStoreRequest = async (req, res) => {
   try {
@@ -154,6 +153,8 @@ exports.getMyStoreRequest = async (req, res) => {
 
     res.json(request);
   } catch (err) {
-    res.status(500).json({ message: "Error fetching store request", error: err.message });
+    res
+      .status(500)
+      .json({ message: "Error fetching store request", error: err.message });
   }
 };

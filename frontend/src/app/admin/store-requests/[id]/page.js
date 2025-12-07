@@ -59,7 +59,8 @@ export default function StoreRequestDetail() {
     }
   };
 
-  if (loading) return <p className={styles.loading}>Loading store request...</p>;
+  if (loading)
+    return <p className={styles.loading}>Loading store request...</p>;
   if (!request) return <p className={styles.error}>Store request not found.</p>;
 
   return (
@@ -71,11 +72,24 @@ export default function StoreRequestDetail() {
 
       <div className={styles.card}>
         <h2>{request.storeName}</h2>
-        <p><strong>Seller:</strong> {request.ownerFullName || request.sellerId?.ownerFullName}</p>
-        <p><strong>Business:</strong> {request.businessName || request.sellerId?.businessName}</p>
-        <p><strong>Email:</strong> {request.email || request.sellerId?.email}</p>
-        <p><strong>Phone:</strong> {request.phoneNumber || request.sellerId?.phoneNumber}</p>
-        <p><strong>Category:</strong> {request.category}</p>
+        <p>
+          <strong>Seller:</strong>{" "}
+          {request.ownerFullName || request.sellerId?.ownerFullName}
+        </p>
+        <p>
+          <strong>Business:</strong>{" "}
+          {request.businessName || request.sellerId?.businessName}
+        </p>
+        <p>
+          <strong>Email:</strong> {request.email || request.sellerId?.email}
+        </p>
+        <p>
+          <strong>Phone:</strong>{" "}
+          {request.phoneNumber || request.sellerId?.phoneNumber}
+        </p>
+        <p>
+          <strong>Category:</strong> {request.category}
+        </p>
         <p>
           <strong>Status:</strong> {request.status}
           {storeCreated && (
@@ -84,18 +98,44 @@ export default function StoreRequestDetail() {
             </span>
           )}
         </p>
-        <p><strong>Submitted:</strong> {new Date(request.createdAt).toLocaleString()}</p>
+        <p>
+          <strong>Submitted:</strong>{" "}
+          {new Date(request.createdAt).toLocaleString()}
+        </p>
 
         <h3>Address</h3>
-        <p>{request.streetAddress}, {request.city}, {request.state}, {request.postalCode}</p>
+        <p>
+          {request.streetAddress}, {request.city}, {request.state},{" "}
+          {request.postalCode}
+        </p>
 
         <h3>Verification / Identification</h3>
-        <p><strong>CNIC Number:</strong> {request.cnicNumber || "N/A"}</p>
-        {request.cnicImageUrl && <img src={request.cnicImageUrl} alt="CNIC" className={styles.image} />}
+        <p>
+          <strong>CNIC Number:</strong> {request.cnicNumber || "N/A"}
+        </p>
+        {request.cnicImageUrl && (
+          <img
+            src={`${BASE_URL}/${request.cnicImageUrl}`}
+            alt="CNIC"
+            className={styles.image}
+          />
+        )}
 
         <h3>Branding</h3>
-        {request.logoUrl && <img src={request.logoUrl} alt="Logo" className={styles.imageSmall} />}
-        {request.bannerUrl && <img src={request.bannerUrl} alt="Banner" className={styles.image} />}
+        {request.logoUrl && (
+          <img
+            src={`${BASE_URL}/${request.logoUrl}`}
+            alt="Logo"
+            className={styles.imageSmall}
+          />
+        )}
+        {request.bannerUrl && (
+          <img
+            src={`${BASE_URL}/${request.bannerUrl}`}
+            alt="Banner"
+            className={styles.image}
+          />
+        )}
 
         {request.description && (
           <>
@@ -110,14 +150,18 @@ export default function StoreRequestDetail() {
             disabled={updating || request.status === "approved"}
             className={`${styles.button} ${styles.approveButton}`}
           >
-            {updating && request.status !== "approved" ? "Updating..." : "Approve"}
+            {updating && request.status !== "approved"
+              ? "Updating..."
+              : "Approve"}
           </button>
           <button
             onClick={() => updateStatus("rejected")}
             disabled={updating || request.status === "rejected"}
             className={`${styles.button} ${styles.rejectButton}`}
           >
-            {updating && request.status !== "rejected" ? "Updating..." : "Reject"}
+            {updating && request.status !== "rejected"
+              ? "Updating..."
+              : "Reject"}
           </button>
         </div>
       </div>

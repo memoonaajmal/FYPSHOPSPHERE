@@ -76,7 +76,14 @@ app.use("/images", (req, res, next) => {
 
 app.use("/images", express.static(imagesPath));
 
-app.use("/uploads", express.static("uploads"));
+const uploadsPath = path.join(__dirname, "../uploads");
+app.use("/uploads", (req, res, next) => {
+  // Allow cross-origin access
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+  next();
+});
+app.use("/uploads", express.static(uploadsPath));
 
 // ✅ Add this logger before store routes
 app.use("/api/stores", (req, res, next) => {

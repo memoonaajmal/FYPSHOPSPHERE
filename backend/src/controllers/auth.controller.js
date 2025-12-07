@@ -92,7 +92,7 @@ exports.me = async function (req, res, next) {
   try {
     const { uid, email, mongoUser } = req.user;
 
-    // ✅ If not in Mongo yet, create it
+    // If not in Mongo yet, create it
     if (!mongoUser) {
       const newUser = new User({
         email,
