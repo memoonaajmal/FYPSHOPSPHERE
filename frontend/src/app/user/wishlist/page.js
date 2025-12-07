@@ -7,12 +7,12 @@ import { addItemToCart } from "../../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
-import MiniCart from "../../../../components/MiniCart"; // ✅ import your mini cart
+import MiniCart from "../../../../components/MiniCart"; // import your mini cart
 
 export default function WishlistPage() {
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [hasMounted, setHasMounted] = useState(false);
-  const [miniCartVisible, setMiniCartVisible] = useState(false); // ✅ state to toggle mini cart
+  const [miniCartVisible, setMiniCartVisible] = useState(false); // state to toggle mini cart
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -37,7 +37,7 @@ export default function WishlistPage() {
       })
     );
 
-    // ✅ Show mini cart briefly (or toggle)
+    //  Show mini cart briefly (or toggle)
     setMiniCartVisible(true);
     setTimeout(() => setMiniCartVisible(false), 3000); // hide after 3s
   };
@@ -45,7 +45,7 @@ export default function WishlistPage() {
   return (
     <div className={styles.cartPageWrapper}>
       <div className={styles.cartPage}>
-        {/* ===== Wishlist (Full Width) ===== */}
+        {/*  Wishlist (Full Width)  */}
         <div className={styles.cartLeft} style={{ flex: "1 1 100%" }}>
           <h2 className={styles.cartTitle}>
             Your Wishlist <span>({wishlistItems.length} items)</span>
@@ -79,7 +79,7 @@ export default function WishlistPage() {
 
               <div className={styles.itemPrice}>PKR {item.price}</div>
 
-              {/* ✅ Add to Cart + Remove X side by side */}
+              {/* Add to Cart + Remove X side by side */}
               <div className={styles.actionsContainer}>
                 <button
                   className={styles.addBtn}
@@ -117,7 +117,7 @@ export default function WishlistPage() {
         </div>
       </div>
 
-      {/* ✅ MiniCart overlay */}
+      {/* MiniCart overlay */}
       <MiniCart
         visible={miniCartVisible}
         onClose={() => setMiniCartVisible(false)}
