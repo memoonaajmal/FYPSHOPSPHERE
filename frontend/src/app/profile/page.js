@@ -189,8 +189,19 @@ export default function ProfilePage() {
       );
       await reauthenticateWithCredential(user, credential);
 
-      // Step 2: Use verifyBeforeUpdateEmail (more secure approach)
-      // This sends verification email to new address before changing
+      // Step 2: Check if email already exists in MongoDB
+      const emailCheckRes = await fetch(
+        `${BASE_URL}/api/auth/check-email?email=${encodeURIComponent(newEmail)}`
+      );
+      const { exists } = await emailCheckRes.json();
+      if (exists) {
+        alert(
+          "This email is already registered. Please use a different email."
+        );
+        return;
+      }
+
+      // Step 3: Use verifyBeforeUpdateEmail (more secure approach)
       await verifyBeforeUpdateEmail(user, newEmail);
 
       alert(

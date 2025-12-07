@@ -13,7 +13,7 @@ exports.sync = async function (req, res, next) {
       });
     }
 
-    const { uid, email, name, mongoUser } = req.user;
+    const { uid, email, name } = req.user;
 
     if (!uid || !email) {
       return res.status(400).json({ error: "Invalid Firebase user payload" });
@@ -25,10 +25,11 @@ exports.sync = async function (req, res, next) {
     const allowedRoles = ["user", "seller"];
     const finalRole = allowedRoles.includes(role) ? role : "user";
 
-    let user = mongoUser;
+    // ✅ Check if user already exists in MongoDB
+    let user = await User.findOne({ firebaseUid: uid });
 
-    // ✅ Always ensure user exists in MongoDB
     if (!user) {
+      // If not exists, create a new user
       user = new User({
         email,
         name: name || "",
@@ -36,43 +37,38 @@ exports.sync = async function (req, res, next) {
         roles: [finalRole],
         firebaseUid: uid,
         phone: "",
-         gender: "not_set", 
+        gender: "not_set",
         birthday: null,
       });
       await user.save();
       console.log("Created new user with role:", finalRole);
     } else {
-      // ✅ Patch firebaseUid if missing
+      // Patch missing fields
+      let modified = false;
+
       if (!user.firebaseUid) {
         user.firebaseUid = uid;
-        await user.save();
-        console.log("Patched user with Firebase UID");
+        modified = true;
       }
 
-      // ✅ Assign default role if missing
       if (!user.roles || user.roles.length === 0) {
         user.roles = [finalRole];
-        await user.save();
-        console.log("Updated existing user with role:", finalRole);
+        modified = true;
       }
+
+      if (modified) await user.save();
     }
 
-    // ✅ Ensure only one role if admin
-    if (user && user.roles.includes("admin")) {
-      user.roles = ["admin"];
-      await user.save();
-    }
-
-    // ✅ Ensure seller is not mixed with user
-    if (user && user.roles.includes("seller") && user.roles.includes("user")) {
+    // ✅ Ensure roles consistency
+    if (user.roles.includes("admin")) user.roles = ["admin"];
+    if (user.roles.includes("seller") && user.roles.includes("user"))
       user.roles = ["seller"];
-      await user.save();
-    }
 
-    // ✅ Response back with both Firebase + Mongo info
+    await user.save();
+
     res.json({
       user: {
-        _id: user._id, // MongoDB ObjectId
+        _id: user._id,
         uid, // Firebase UID
         email,
         name: user.name,
@@ -81,11 +77,11 @@ exports.sync = async function (req, res, next) {
       },
     });
   } catch (err) {
-  console.error("Error in /sync:", err);
-  res.status(500).json({ error: err.message });
-}
-
+    console.error("Error in /sync:", err);
+    res.status(500).json({ error: err.message });
+  }
 };
+
 
 // Get current logged-in user info
 exports.me = async function (req, res, next) {
@@ -172,5 +168,18 @@ exports.updateProfile = async function (req, res, next) {
     });
   } catch (err) {
     next(err);
+  }
+};
+
+exports.checkEmailExists = async (req, res) => {
+  try {
+    const { email } = req.query;
+    if (!email) return res.status(400).json({ message: "Email is required" });
+
+    const exists = await User.exists({ email: email.toLowerCase().trim() });
+    res.json({ success: true, exists: !!exists });
+  } catch (err) {
+    console.error("Error checking email:", err);
+    res.status(500).json({ success: false, message: "Server error" });
   }
 };
