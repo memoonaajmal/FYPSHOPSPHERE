@@ -29,7 +29,7 @@ export default function CheckoutPage() {
   });
   const [trackingId, setTrackingId] = useState("");
 
-  // 🔐 Check if user is logged in
+  // check if user is logged in
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
@@ -42,7 +42,7 @@ export default function CheckoutPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // 🧠 Update discounted total dynamically
+  // Update discounted total dynamically
   useEffect(() => {
     if (formData.paymentMethod === "JazzCash") {
       const discount = itemsTotal * 0.05;
@@ -72,10 +72,10 @@ export default function CheckoutPage() {
       setLoading(true);
       const token = await user.getIdToken();
 
-      // ✅ Include storeId when sending items
+      // Include storeId when sending items
       const items = cartItems.map((item) => ({
         productId: item.id,         // product._id
-        storeId: item.storeId,      // 🆕 must exist in cart slice now
+        storeId: item.storeId,      // must exist in cart slice now
         name: item.name,
         price: item.price,
         quantity: item.qty,
@@ -184,7 +184,7 @@ export default function CheckoutPage() {
             className={styles.textarea}
           />
 
-          {/* 🔐 Payment Method */}
+          {/* Payment Method */}
           <div>
             <p className={styles.label}>Payment:</p>
             <div className={styles.radioGroup}>

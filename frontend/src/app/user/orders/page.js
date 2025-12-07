@@ -20,7 +20,7 @@ export default function UserOrdersPage() {
   const page = parseInt(params.get("page") || "1", 10);
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  // ✅ Fetch user's orders
+  //Fetch user's orders
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
@@ -45,7 +45,7 @@ export default function UserOrdersPage() {
         setOrders(data.orders || []);
         setTotalPages(data.totalPages || 1);
       } catch (err) {
-        console.error("❌ Fetch user orders error:", err);
+        console.error("Fetch user orders error:", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -69,14 +69,14 @@ export default function UserOrdersPage() {
         Click “View Details” to see more about each order.
       </div>
 
-      {/* ✅ Orders Table Component */}
+      {/* Orders Table Component */}
       {orders.length === 0 ? (
         <p className={styles.message}>No previous orders found.</p>
       ) : (
         <UserOrderCard orders={orders} page={page} />
       )}
 
-      {/* ✅ Pagination */}
+      {/* Pagination */}
       {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
     </div>
   );

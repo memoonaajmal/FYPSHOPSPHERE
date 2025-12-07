@@ -9,7 +9,7 @@ import { addToWishlist } from "../../../../../redux/WishlistSlice";
 import styles from "../../../../styles/ProductDetails.module.css";
 import MiniCart from "../../../../../components/MiniCart";
 import MiniWishlist from "../../../../../components/MiniWishlist";
-import { Camera } from "lucide-react";
+
 import ARViewer from "../../../../../components/ARViewer";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -83,61 +83,82 @@ export default function ProductDetailsPage({ params }) {
 
   if (!product) return <p>Loading product details...</p>;
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
+return (
+  <div className={styles.container}>
 
-  return (
-    <div className={styles.container}>
-      <div className={styles.imageWrapper}>
-        <NextImage src={imageSrc} alt={product.productDisplayName} width={500} height={500} />
-
-        <div style={{ display: "flex", gap: 8 }}>
-          <button
-            className={styles.cameraIcon}
-            onClick={() => { setShowAR(true); setAnalyzeMode(false); }}
-            title="Open AR"
-          >
-            <Camera size={22} />
-          </button>
-          <button
-            className={styles.cameraIcon}
-            onClick={() => { setShowAR(true); setAnalyzeMode(true); }}
-            title="Analyze measurements"
-            style={{ background: "#0b74de", color: "#fff", padding: "8px 10px", borderRadius: 8 }}
-          >
-            Analyze Measurements
-          </button>
-        </div>
-      </div>
-
-      <div className={styles.details}>
-        <h1>{product.productDisplayName}</h1>
-        <p className={styles.price}>
-          {product.price ? `PKR ${product.price.toLocaleString()}` : "Price not available"}
-        </p>
-        <p><strong>Color:</strong> {product.baseColour}</p>
-        <p><strong>Type:</strong> {product.articleType}</p>
-
-        <div className={styles.actions}>
-          <button className={`${styles.btn} ${styles.btnPrimary}`} onClick={handleAddToCart}>
-            Add to Cart
-          </button>
-          <button className={`${styles.btn} ${styles.btnSecondary}`} onClick={handleAddToWishlist}>
-            Wishlist
-          </button>
-        </div>
-      </div>
-
-      <MiniCart visible={miniCartVisible} onClose={() => setMiniCartVisible(false)} />
-      <MiniWishlist visible={miniWishlistVisible} onClose={() => setMiniWishlistVisible(false)} />
-
-      {/* ✅ Clean AR component integration */}
-      {showAR && (
-        <ARViewer
-          product={product}
-          baseUrl={BASE_URL}
-          openAnalyze={analyzeMode}
-          onClose={() => { setShowAR(false); setAnalyzeMode(false); }}
-        />
-      )}
+    {/* === PRODUCT IMAGE === */}
+    <div className={styles.imageWrapper}>
+      <NextImage
+        src={imageSrc}
+        alt={product.productDisplayName}
+        width={500}
+        height={500}
+      />
     </div>
-  );
+
+    {/* === PRODUCT DETAILS === */}
+    <div className={styles.details}>
+      <h1>{product.productDisplayName}</h1>
+
+      <p className={styles.price}>
+        {product.price ? `PKR ${product.price.toLocaleString()}` : "Price not available"}
+      </p>
+
+      <p><strong>Color:</strong> {product.baseColour}</p>
+      <p><strong>Type:</strong> {product.articleType}</p>
+
+      <div className={styles.actions}>
+        <button
+          className={`${styles.btn} ${styles.btnPrimary}`}
+          onClick={handleAddToCart}
+        >
+          Add to Cart
+        </button>
+
+        <button
+          className={`${styles.btn} ${styles.btnSecondary}`}
+          onClick={handleAddToWishlist}
+        >
+          Wishlist
+        </button>
+      </div>
+
+      {/* ⭐ NEW: TRY-ON + CAMERA BUTTON SECTION BELOW DETAILS */}
+      <div className={styles.tryonContainer}>
+      
+
+        <button
+          className={styles.tryonBtn}
+          onClick={() => { setShowAR(true); setAnalyzeMode(true); }}
+          title="TRY-ON"
+        >
+          TRY-ON
+        </button>
+      </div>
+    </div>
+
+    {/* Mini Cart / Wishlist */}
+    <MiniCart
+      visible={miniCartVisible}
+      onClose={() => setMiniCartVisible(false)}
+    />
+    <MiniWishlist
+      visible={miniWishlistVisible}
+      onClose={() => setMiniWishlistVisible(false)}
+    />
+
+    {/* AR Viewer */}
+    {showAR && (
+      <ARViewer
+        product={product}
+        baseUrl={BASE_URL}
+        openAnalyze={analyzeMode}
+        onClose={() => {
+          setShowAR(false);
+          setAnalyzeMode(false);
+        }}
+      />
+    )}
+  </div>
+);
 }

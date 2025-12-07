@@ -187,3 +187,31 @@
   padding: 8px;
   border-radius: 5px;
 }
+
+.tryonContainer {
+  margin-top: 20px;
+
+}
+
+
+
+/* TRY-ON button */
+.tryonBtn {
+  padding: 10px 16px;
+  background: #0b74de;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 20px;
+}
+
+.cameraBtn:hover {
+  background: #dcdcdc;
+}
+
+.tryonBtn:hover {
+  background: #095fb3;
+}
+

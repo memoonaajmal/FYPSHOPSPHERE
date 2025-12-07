@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "../../../styles/allStoresPage.module.css"; // Create this CSS module
+import styles from "../../../styles/allStoresPage.module.css"; 
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
