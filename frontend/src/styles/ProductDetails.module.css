@@ -108,22 +108,7 @@
     font-size: 1.6rem;
   }
 }
-.cameraIcon {
-  position: absolute;
-  bottom: 15px;
-  right: 15px;
-  background: rgba(0, 0, 0, 0.6);
-  color: white;
-  border: none;
-  border-radius: 50%;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 10;
-}
 
-.cameraIcon:hover {
-  background: rgba(0, 0, 0, 0.8);
-}
 
 /* AR modal */
 .arModal {
@@ -201,7 +186,8 @@
   background: #0b74de;
   color: white;
   border: none;
-  border-radius: 10px;
+  border-radius: 2rem;
+
   cursor: pointer;
   font-weight: 600;
   font-size: 20px;
