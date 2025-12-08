@@ -3,6 +3,7 @@ const Store = require("../models/Store");
 const Order = require("../models/Order");
 const Price = require("../models/Price");
 const mongoose = require("mongoose");
+const { getEmbedding } = require("./chatbot.controller");
 
 /**
  * Helper: generate a unique productId string
@@ -19,6 +20,7 @@ async function getStoreForSeller(req) {
   const store = await Store.findOne({ sellerId: req.user.mongoUser._id });
   return store;
 }
+
 
 /**
  * Add a new product
@@ -44,6 +46,8 @@ exports.addProduct = async (req, res) => {
 
     const productId = generateProductId();
 
+    const embedding = await getEmbedding(productDisplayName);
+
     const product = new Product({
       productId,
       productDisplayName: productDisplayName || "Untitled Product",
@@ -56,6 +60,7 @@ exports.addProduct = async (req, res) => {
       year,
       usage,
       imageFilename,
+      embedding, 
     });
 
     await product.save();
@@ -74,6 +79,7 @@ exports.addProduct = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
 
 /**
  * Get all products for this seller/store
@@ -114,7 +120,16 @@ exports.updateProduct = async (req, res) => {
       return res.status(404).json({ message: "Product not found or not owned by this store" });
     }
 
-    const product = await Product.findOneAndUpdate({ productId: id }, updates, { new: true });
+    if (updates.productDisplayName) {
+      updates.embedding = await getEmbedding(updates.productDisplayName);
+    }
+
+    const product = await Product.findOneAndUpdate(
+      { productId: id },
+      updates,
+      { new: true }
+    );
+
     if (!product) return res.status(404).json({ message: "Product not found" });
 
     if (updates.price != null) {

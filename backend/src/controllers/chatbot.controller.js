@@ -43,6 +43,7 @@ async function getEmbedding(text) {
   throw new Error("Unexpected embedding response");
 }
 
+
 function cosineSim(a, b) {
   let dot = 0,
     na = 0,
@@ -186,5 +187,8 @@ const chatWithBot = async (req, res) => {
   }
 };
 
+module.exports = {
+  getEmbedding,
+  chatWithBot,
+};
 
-module.exports = { chatWithBot };
