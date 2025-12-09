@@ -5,15 +5,15 @@ const rooms = {}; // { streamId: { sellerSocketId, viewers: Set(), sellerDisconn
 
 function setupSocket(io) {
   io.on("connection", (socket) => {
-    console.log("⚡ Socket connected:", socket.id);
-    console.log("🔍 Connected socket role check:", socket.handshake.query);
+    console.log("Socket connected:", socket.id);
+    console.log("Connected socket role check:", socket.handshake.query);
 
     // Seller starts stream
     socket.on("start-stream", ({ streamId }) => {
       rooms[streamId] = { sellerSocketId: socket.id, viewers: new Set() };
       socket.join(streamId);
       io.to(streamId).emit("live-started", { streamId });
-      console.log(`🎥 Seller started stream ${streamId}`);
+      console.log(`Seller started stream ${streamId}`);
     });
 
     // Seller reconnects
