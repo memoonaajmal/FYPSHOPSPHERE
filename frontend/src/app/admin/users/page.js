@@ -29,10 +29,10 @@ export default function UsersPage() {
     Array.isArray(u.roles) ? u.roles.includes("seller") : u.roles === "seller"
   );
 
-  // ✅ GSAP Animations
+  // GSAP Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
-      // Title animations
+   
       gsap.from(`.${styles.title}`, {
         y: -30,
         opacity: 0,
@@ -49,7 +49,7 @@ export default function UsersPage() {
         delay: 0.3,
       });
 
-      // Table fade-in
+  
       gsap.from(`.${styles.tableWrapper}`, {
         y: 40,
         opacity: 0,
@@ -59,7 +59,6 @@ export default function UsersPage() {
         delay: 0.5,
       });
 
-      // ✅ Animate table rows one-by-one
       gsap.from(`.${styles.row}`, {
         opacity: 0,
         y: 20,
@@ -69,7 +68,7 @@ export default function UsersPage() {
         delay: 0.8,
       });
 
-      // ✅ Subtle column shimmer
+   
       const ths = gsap.utils.toArray(`.${styles.th}`);
       gsap.from(ths, {
         opacity: 0,
@@ -80,7 +79,7 @@ export default function UsersPage() {
         delay: 0.6,
       });
 
-      // ✅ Hover animation for rows
+
       const rows = gsap.utils.toArray(`.${styles.row}`);
       rows.forEach((row) => {
         row.addEventListener("mouseenter", () => {
@@ -91,7 +90,7 @@ export default function UsersPage() {
         });
       });
 
-      // ✅ Button hover animations
+      
       const buttons = gsap.utils.toArray(`.${styles.button}`);
       buttons.forEach((btn) => {
         btn.addEventListener("mouseenter", () => {

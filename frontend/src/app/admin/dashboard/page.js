@@ -38,7 +38,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [recentOrders, setRecentOrders] = useState([]);
 
-// ✅ Fetch analytics + most recent order when admin logs in
+
 useEffect(() => {
   const unsubscribe = onAuthStateChanged(auth, async (user) => {
     if (!user) {
@@ -63,7 +63,7 @@ useEffect(() => {
       const analyticsData = await analyticsRes.json();
       setStats(analyticsData);
 
-      // ✅ Fetch Most Recent Order
+      
       const orderRes = await fetch(`${BASE_URL}/api/admin/recent-orders`, {
         method: "GET",
         headers: {
@@ -75,11 +75,11 @@ useEffect(() => {
       if (!orderRes.ok) throw new Error(`Order error: ${orderRes.status}`);
       const orderData = await orderRes.json();
 
-      // Backend returns a single object, not an array
+
       setRecentOrders(orderData.orders ? [orderData.orders] : []);
 
     } catch (err) {
-      console.error("❌ Failed to load dashboard data:", err);
+      console.error("Failed to load dashboard data:", err);
     } finally {
       setLoading(false);
     }
@@ -89,7 +89,7 @@ useEffect(() => {
 }, []);
 
 
-  // ✅ GSAP animations
+
   useEffect(() => {
     const ctx = gsap.context(() => {
       gsap.from(`.${styles.title}`, {
@@ -123,7 +123,7 @@ useEffect(() => {
       <div ref={dashboardRef} className={styles.dashboard}>
         <h1 className={styles.title}>Admin Dashboard</h1>
 
-        {/* ✅ Admin Overview Summary */}
+        {/* Overview Summary */}
 <div className={styles.summaryGrid}>
   <div className={styles.summaryCard}>
     <div className={styles.cardHeader}>
@@ -162,9 +162,9 @@ useEffect(() => {
   </div>
 </div>
 
-        {/* ✅ Charts Section */}
+    
  <div className={styles.chartsGrid}>
-  {/* 📈 Line Chart - Sales Over Time */}
+
   <div className={styles.chartBox}>
     <div className={styles.chartHeader}>
       <h3>📈 Sales Over Time (Last 12 Months)</h3>
@@ -295,7 +295,6 @@ useEffect(() => {
 
 
 
-        {/* ✅ Management Links */}
         <div className={styles.grid}>
           <Link href="/admin/users">
             <div className={styles.card}>

@@ -9,7 +9,7 @@ import { gsap } from "gsap";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 export default function StorePage({ params }) {
-  // ✅ unwrap params synchronously (no async hook issues)
+
   const { id } = use(params);
 
   // State

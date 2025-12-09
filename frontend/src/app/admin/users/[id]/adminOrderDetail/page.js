@@ -5,7 +5,7 @@ import { useParams, useSearchParams } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import styles from "../../../styles/AdminOrderDetailPage.module.css";
 import AdminOrderCard from "../../../../../../components/AdminOrderCard";
-import OrderPagination from "../../../../../../components/OrderPagination"; // ✅ import your pagination component
+import OrderPagination from "../../../../../../components/OrderPagination"; 
 
 export default function AdminOrderDetailPage() {
   const { id: userId } = useParams();
@@ -47,7 +47,7 @@ export default function AdminOrderDetailPage() {
         setLoadingOrders(true);
 
         const res = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/orders?sellerId=${userId}&page=${currentPage}&limit=5`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/orders?sellerId=${userId}&page=${currentPage}&limit=4`
         );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();

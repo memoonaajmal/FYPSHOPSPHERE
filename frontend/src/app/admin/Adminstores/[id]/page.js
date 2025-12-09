@@ -1,7 +1,7 @@
 "use client";
 import styles from "../../../../styles/store.module.css";
 import { use, useEffect, useState } from "react"; 
-import AdminProductCard from "../../../../../components/AdminProductCard.js"; // ✅ correct import
+import AdminProductCard from "../../../../../components/AdminProductCard.js"; 
 import SearchFilterBar from "../../../../../components/FilterBar";
 import StorePagination from "../../../../../components/StorePagination";
 

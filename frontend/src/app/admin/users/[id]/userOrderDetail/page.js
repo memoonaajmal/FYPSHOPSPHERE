@@ -44,15 +44,15 @@ export default function UserOrderDetailPage() {
 
     const fetchOrders = async () => {
       try {
-        // ✅ First fetch user details to get email
+      
         const userRes = await fetchWithAuth(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/users/${userId}`
         );
         const userData = await userRes.json();
 
-        // ✅ Now fetch orders with pagination
+       
         const res = await fetchWithAuth(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/email/${userData.email}?page=${page}&limit=5`
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/email/${userData.email}?page=${page}&limit=4`
         );
 
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);

@@ -1,4 +1,4 @@
-/* 🌐 Main Container */
+
 .container {
   width: 100%;
   min-height: 100vh;
@@ -12,11 +12,11 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-family: "Inter", "Poppins", sans-serif; /* ✅ clean, modern font */
+  font-family: "Inter", "Poppins", sans-serif; 
   line-height: 1.6;
 }
 
-/* 🏷️ Section Title */
+
 .sectionTitle {
   font-size: 2.2rem;
   font-weight: 700;
@@ -28,7 +28,6 @@
   text-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
-/* 📦 Orders Grid */
 .ordersGrid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -39,7 +38,7 @@
   justify-items: stretch;
 }
 
-/* 📦 Individual Order Card */
+
 .ordersGrid > div {
   background: var(--blue);
   color: var(--white);
@@ -59,7 +58,7 @@
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
 }
 
-/* 🏷️ Order Headings (e.g., Order ID or Date) */
+
 .ordersGrid h3 {
   font-size: 1.3rem;
   font-weight: 600;
@@ -68,7 +67,7 @@
   letter-spacing: 0.3px;
 }
 
-/* 📋 Order Details */
+
 .ordersGrid p {
   margin: 0.3rem 0;
   font-size: 1rem;
@@ -77,14 +76,14 @@
   color: rgba(255, 255, 255, 0.95);
 }
 
-/* 💬 Highlight Key Values */
+
 .ordersGrid p span {
   font-weight: 600;
   color: #fff;
   margin-left: 0.3rem;
 }
 
-/* ✨ Card Footer or Status */
+
 .orderFooter {
   margin-top: 1rem;
   display: flex;
@@ -96,7 +95,6 @@
   padding-top: 1rem;
 }
 
-/* 🕓 Loading / Empty states */
 .container p {
   font-size: 1rem;
   color: var(--blue-soft);
@@ -105,7 +103,6 @@
   opacity: 0.9;
 }
 
-/* 🔢 Pagination */
 .container :global(.pagination) {
   margin-top: 3rem;
   display: flex;
@@ -114,7 +111,7 @@
   gap: 1rem;
 }
 
-/* ✅ Pagination Buttons */
+
 .container :global(.pagination button) {
   background: var(--blue);
   color: var(--white);
@@ -138,7 +135,6 @@
   cursor: not-allowed;
 }
 
-/* ✨ Fade-in Animation */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -150,7 +146,7 @@
   }
 }
 
-/* 📱 Responsive Tweaks */
+
 @media (max-width: 1024px) {
   .ordersGrid {
     gap: 1.5rem;

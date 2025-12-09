@@ -9,7 +9,6 @@
   animation: fadeIn 0.6s ease;
 }
 
-/* ===== Titles ===== */
 .title {
   font-size: 2rem;
   font-weight: 800;
@@ -26,7 +25,7 @@
   line-height: 1.5;
 }
 
-/* ===== Summary Cards ===== */
+
 .summaryGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -99,7 +98,6 @@
   color: var(--danger);
 }
 
-/* ===== Store Cards ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -167,7 +165,6 @@
   line-height: 1.4;
 }
 
-/* ===== Charts Section ===== */
 .chartsGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
@@ -207,7 +204,6 @@
   color: var(--muted);
 }
 
-/* ===== Loading ===== */
 .loading {
   text-align: center;
   color: var(--muted);
@@ -230,7 +226,6 @@
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
 }
 
-/* ✅ Top row (name + status) */
 .orderHeader {
   display: flex;
   justify-content: space-between;
@@ -244,7 +239,7 @@
   color: #222;
 }
 
-/* ✅ Status badge */
+
 .statusBadge {
   padding: 0.35rem 0.8rem;
   border-radius: 8px;
@@ -263,7 +258,6 @@
   color: #e67e22;
 }
 
-/* ✅ Vertical info section */
 .orderDetails p {
   margin: 0.4rem 0;
   font-size: 0.95rem;
@@ -276,7 +270,7 @@
 
 
 
-/* ===== Animations ===== */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -288,7 +282,6 @@
   }
 }
 
-/* ===== Responsiveness ===== */
 @media (max-width: 1024px) {
   .dashboard {
     padding: 1.5rem;

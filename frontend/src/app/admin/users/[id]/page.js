@@ -12,7 +12,7 @@ export default function UserDetailsPage() {
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [user, setUser] = useState(null);
 
-  // ✅ Watch Firebase Auth state
+ 
   useEffect(() => {
     const auth = getAuth();
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -21,7 +21,7 @@ export default function UserDetailsPage() {
     return () => unsubscribe();
   }, []);
 
-  // ✅ Fetch wrapper with Firebase token
+  
   const fetchWithAuth = async (url, options = {}) => {
     if (!firebaseUser) throw new Error("User not logged in");
 
@@ -38,7 +38,7 @@ export default function UserDetailsPage() {
     });
   };
 
-  // ✅ Fetch single user
+ 
   useEffect(() => {
     if (!userId || !firebaseUser) return;
 
@@ -58,7 +58,7 @@ export default function UserDetailsPage() {
     fetchUser();
   }, [userId, firebaseUser]);
 
-  // ✅ Delete user (fixed)
+ 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this user?")) return;
 

@@ -139,7 +139,7 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
         recommendations: rec,
       });
 
-      // ✅ Overlay placement (fixed eyewear)
+     
       const t = product.articleType?.toLowerCase() || "";
       const o = overlayReady;
       if (o) {
@@ -157,22 +157,20 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
         }else if (t.includes("ring") && handR?.landmarks?.[0]) {
   const hand = handR.landmarks[0];
 
-  // Landmark 13 (base/knuckle) and 14 (first finger joint)
+
   const baseJoint = hand[13];
   const nextJoint = hand[15];
 
-  // Simulate "landmark 13.3" — 30% of the way from 13 to 14
   const fractionalLandmark = {
     x: baseJoint.x + (nextJoint.x - baseJoint.x) * 0.3,
     y: baseJoint.y + (nextJoint.y - baseJoint.y) * 0.3,
     z: baseJoint.z + (nextJoint.z - baseJoint.z) * 0.3,
   };
 
-  // Use the middle of the palm (landmark 9) for approximate scaling
   const middlePalm = hand[9];
   const ringSize = Math.max(18, distPx(baseJoint, middlePalm, c.width) * 2.1);
 
-  // Draw ring slightly up the finger
+
   ctx.drawImage(
     o,
     fractionalLandmark.x * c.width - ringSize / 2,
@@ -184,27 +182,21 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
 else if (t.includes("watch") && handR?.landmarks?.[0]) {
   const hand = handR.landmarks[0];
 
-  // Wrist and base of index finger define the hand-arm direction
   const wrist = hand[0];
   const indexBase = hand[9];
   const middlePalm = hand[9];
 
   // Move the watch slightly up the wrist (along the forearm)
-  // Try between -0.15 and -0.3 for subtle offset
+
   const offsetFactor = 0.4;
 
-  // Compute adjusted position (a bit above the wrist)
   const adjustedWrist = {
     x: wrist.x + (wrist.x - indexBase.x) * offsetFactor,
     y: wrist.y + (wrist.y - indexBase.y) * offsetFactor,
     z: wrist.z + (wrist.z - indexBase.z) * offsetFactor,
   };
-
-  // Watch size based on wrist-to-palm distance
   const watchWidth = distPx(wrist, middlePalm, c.width) * 1.5;
   const watchHeight = watchWidth * 0.65;
-
-  // Draw the watch image centered on adjusted wrist position
   ctx.drawImage(
     o,
     adjustedWrist.x * c.width - watchWidth / 2,
@@ -256,3 +248,4 @@ else if (t.includes("watch") && handR?.landmarks?.[0]) {
     </div>
   );
 }
+

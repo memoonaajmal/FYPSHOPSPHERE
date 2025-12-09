@@ -33,13 +33,13 @@ useEffect(() => {
       const currentUser = auth.currentUser;
       if (!currentUser) throw new Error("User not logged in");
 
-      const token = await currentUser.getIdToken(); // ✅ Get Firebase ID token
+      const token = await currentUser.getIdToken(); 
 
       const res = await fetch(
         `${BASE_URL}/api/admin/stores?page=${currentPage}&limit=${limit}`,
         {
           headers: {
-            Authorization: `Bearer ${token}`, // ✅ send Firebase token
+            Authorization: `Bearer ${token}`, 
             "Content-Type": "application/json",
           },
         }
@@ -99,7 +99,7 @@ useEffect(() => {
                 >
                   <h3 className={styles.storeName}>{store.name}</h3>
 
-                  {/* ✅ Graph + Stats Side by Side */}
+          
 <div className={styles.statsContainer}>
   <div className={styles.miniGraph}>
     <ResponsiveContainer width="100%" height={120}>
@@ -116,14 +116,14 @@ useEffect(() => {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis dataKey="name" hide />
 
-        {/* ✅ Left Y-axis for Sales */}
+    
         <YAxis yAxisId="left" orientation="left" />
-        {/* ✅ Right Y-axis for Orders */}
+
         <YAxis yAxisId="right" orientation="right" />
 
         <Tooltip />
 
-        {/* ✅ Sales bar (left axis) */}
+    
         <Bar
           yAxisId="left"
           dataKey="Sales"
@@ -132,7 +132,6 @@ useEffect(() => {
           radius={[6, 6, 0, 0]}
         />
 
-        {/* ✅ Orders bar (right axis) */}
         <Bar
           yAxisId="right"
           dataKey="Orders"
@@ -151,7 +150,6 @@ useEffect(() => {
 </div>
 
 
-                  {/* ✅ Categories */}
                   {Array.isArray(store.categories) && store.categories.length > 0 && (
                     <div className={styles.categories}>
                       {store.categories.slice(0, 3).map((cat, i) => (
@@ -168,7 +166,7 @@ useEffect(() => {
               ))}
             </div>
 
-            {/* ✅ Pagination */}
+     
             <div className={styles.pagination}>
               <button
                 onClick={handlePrev}
