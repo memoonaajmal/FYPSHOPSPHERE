@@ -144,39 +144,38 @@ export default function StoreRequestDetail() {
           </>
         )}
 
-        <div className={styles.buttonGroup}>
-          <button
-            onClick={() => {
-              if (
-                window.confirm("Are you sure you want to approve this request?")
-              ) {
-                updateStatus("approved");
-              }
-            }}
-            disabled={updating || request.status === "approved"}
-            className={`${styles.button} ${styles.approveButton}`}
-          >
-            {updating && request.status !== "approved"
-              ? "Updating..."
-              : "Approve"}
-          </button>
+{request.status === "pending" && (
+  <div className={styles.buttonGroup}>
+    <button
+      onClick={() => {
+        if (
+          window.confirm("Are you sure you want to approve this request?")
+        ) {
+          updateStatus("approved");
+        }
+      }}
+      disabled={updating}
+      className={`${styles.button} ${styles.approveButton}`}
+    >
+      {updating ? "Updating..." : "Approve"}
+    </button>
 
-          <button
-            onClick={() => {
-              if (
-                window.confirm("Are you sure you want to reject this request?")
-              ) {
-                updateStatus("rejected");
-              }
-            }}
-            disabled={updating || request.status === "rejected"}
-            className={`${styles.button} ${styles.rejectButton}`}
-          >
-            {updating && request.status !== "rejected"
-              ? "Updating..."
-              : "Reject"}
-          </button>
-        </div>
+    <button
+      onClick={() => {
+        if (
+          window.confirm("Are you sure you want to reject this request?")
+        ) {
+          updateStatus("rejected");
+        }
+      }}
+      disabled={updating}
+      className={`${styles.button} ${styles.rejectButton}`}
+    >
+      {updating ? "Updating..." : "Reject"}
+    </button>
+  </div>
+)}
+
       </div>
     </div>
   );
