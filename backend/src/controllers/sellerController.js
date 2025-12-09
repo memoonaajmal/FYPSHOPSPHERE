@@ -177,7 +177,7 @@ exports.deleteProduct = async (req, res) => {
 };
 
 /**
- * ✅ Get all orders with seller-specific payment info
+ * Get all orders with seller-specific payment info
  */
 exports.getMyOrders = async (req, res) => {
   try {
