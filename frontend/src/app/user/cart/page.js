@@ -20,7 +20,7 @@ export default function CartPage() {
 
   useEffect(() => setHasMounted(true), []);
 
-  // ✅ Safe total calculation (handles missing or invalid prices)
+ 
   const total = cartItems.reduce(
     (acc, item) => acc + ((item.price || 0) * (item.qty || 1)),
     0
@@ -80,7 +80,7 @@ export default function CartPage() {
                   <button onClick={() => dispatch(increaseQty(item.id))}>+</button>
                 </div>
 
-                {/* ✅ Safely show price even if missing */}
+               
                 <p className={styles.itemPrice}>
                   PKR {(item.price || 0).toFixed(2)}
                 </p>

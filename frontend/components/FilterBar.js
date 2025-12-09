@@ -15,10 +15,10 @@ export default function SearchFilterBar({ onFilterChange }) {
     priceMax: "",
   });
 
-  const [searchInput, setSearchInput] = useState(""); // local input for search
+  const [searchInput, setSearchInput] = useState(""); 
   const router = useRouter();
 
-  // 🔹 Push filters to router + parent
+ 
   const updateFilters = useCallback(
     (updated) => {
       setFilters(updated);
@@ -35,29 +35,27 @@ export default function SearchFilterBar({ onFilterChange }) {
     [onFilterChange, router]
   );
 
-  // 🔹 General filter change
+ 
   const handleChange = (name, value) => {
     updateFilters({ ...filters, [name]: value });
   };
 
-  // 🔹 Remove filter
+
   const handleRemoveFilter = (e, name) => {
     e.stopPropagation();
     updateFilters({ ...filters, [name]: "" });
     if (name === "search") setSearchInput("");
   };
 
-  // 🔹 Trigger search manually
   const handleSearch = () => {
     updateFilters({ ...filters, search: searchInput });
   };
 
-  // 🔹 Handle Enter press in search input
   const handleSearchKey = (e) => {
     if (e.key === "Enter") handleSearch();
   };
 
-  // 🔹 Render radio options with deselect
+
   const renderRadioOption = (name, value) => (
     <div key={`${name}-${value}`} className={styles.radioWrapper}>
       <label className={styles.radioLabel}>

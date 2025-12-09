@@ -11,12 +11,11 @@ export default function AdminProductCard({ product, onDelete }) {
 
   const id = product.productId || product._id;
 
-  // Always build absolute URL
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
    return (
     <div className={styles.card}>
-      {/*  Image (not clickable anymore) */}
+
       <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}
@@ -27,7 +26,6 @@ export default function AdminProductCard({ product, onDelete }) {
         />
       </div>
 
-      {/* Info + Delete */}
       <div className={styles.info}>
         <h3 className={styles.title}>{product.productDisplayName}</h3>
         <p className={styles.color}>{product.baseColour}</p>

@@ -23,7 +23,7 @@ export default function StorePage({ params }) {
   const heroRef = useRef(null);
   const productsRef = useRef(null);
 
-  // ✅ Fetch store and products
+  //Fetch store and products
   useEffect(() => {
     if (!id) return;
 
@@ -38,7 +38,7 @@ export default function StorePage({ params }) {
       .catch((err) => console.error("Error fetching store:", err));
   }, [id]);
 
-  // ✅ Filter logic
+
   const handleFilterChange = (filters) => {
     let filtered = [...products];
 
@@ -59,7 +59,7 @@ export default function StorePage({ params }) {
     setCurrentPage(1);
   };
 
-  // ✅ GSAP animations
+
   useEffect(() => {
     if (heroRef.current) {
       gsap.fromTo(
@@ -88,7 +88,6 @@ export default function StorePage({ params }) {
     }
   }, [filteredProducts, currentPage]);
 
-  // ✅ After all hooks, conditionally render
   if (!store) return <p>Loading store...</p>;
 
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
@@ -98,7 +97,7 @@ export default function StorePage({ params }) {
 
   return (
     <div className={styles.container}>
-      {/* 🌟 Hero Banner */}
+
       <section ref={heroRef} className={styles.heroBanner}>
         <div className={styles.heroContent}>
           <h1 className={styles.storeTitle}>{store?.name || "Unnamed Store"}</h1>
@@ -110,7 +109,6 @@ export default function StorePage({ params }) {
         </div>
       </section>
 
-      {/* 🛍 Store Content */}
       <div className={styles.storeContent}>
         <SearchFilterBar onFilterChange={handleFilterChange} />
 

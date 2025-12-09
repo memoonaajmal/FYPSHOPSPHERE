@@ -123,7 +123,7 @@ return (
         </button>
       </div>
 
-      {/* ⭐ NEW: TRY-ON + CAMERA BUTTON SECTION BELOW DETAILS */}
+     
       <div className={styles.tryonContainer}>
       
 

@@ -1,4 +1,4 @@
-/* -------------------- Card Container -------------------- */
+
 .card {
   background: #fff;
   border: 1px solid #ddd;
@@ -23,7 +23,7 @@
   box-shadow: 0 6px 14px rgba(0, 0, 0, 0.12);
 }
 
-/* -------------------- Image Wrapper -------------------- */
+
 .imageWrapper {
   width: 100%;
   height: 200px;
@@ -43,7 +43,7 @@
   max-height: 100%;
 }
 
-/* -------------------- Info Section -------------------- */
+
 .info {
   text-align: center;
   width: 100%;
@@ -81,7 +81,7 @@
   color: #6b7280;
 }
 
-/* -------------------- Responsive Tweaks -------------------- */
+
 /* 3 columns layout */
 @media (max-width: 1200px) {
   .card {
