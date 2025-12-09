@@ -472,7 +472,6 @@ export default function ProfilePage() {
         </div>
 
         <div className={styles.buttonGroup}>
-          <button onClick={() => router.push("/orders")}>My Orders</button>
           <button
             onClick={() =>
               signOut(auth).then(() => {
