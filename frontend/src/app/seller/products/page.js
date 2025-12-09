@@ -58,7 +58,7 @@ export default function SellerProductsPage() {
 
         setError("");
       } catch (err) {
-        console.error("❌ Fetch products error:", err);
+        console.error(" Fetch products error:", err);
         setError(err.message);
         setProducts([]);
         setFilteredProducts([]);
@@ -94,7 +94,7 @@ export default function SellerProductsPage() {
         prev.filter((p) => (p.productId || p._id) !== productId)
       );
     } catch (err) {
-      console.error("❌ Delete product error:", err);
+      console.error(" Delete product error:", err);
       setError(err.message);
     }
   };

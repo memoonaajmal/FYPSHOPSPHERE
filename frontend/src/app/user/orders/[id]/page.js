@@ -15,7 +15,7 @@ export default function UserOrderDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  // ✅ Fetch user’s order details
+  //  Fetch user’s order details
   useEffect(() => {
     if (!id) return;
 
@@ -44,7 +44,7 @@ export default function UserOrderDetailsPage() {
         const data = await res.json();
         setOrder(data);
       } catch (err) {
-        console.error("❌ Error fetching order:", err);
+        console.error(" Error fetching order:", err);
         setError("Failed to load order.");
       } finally {
         setLoading(false);
@@ -103,7 +103,7 @@ export default function UserOrderDetailsPage() {
         {/* RIGHT COLUMN */}
         <div className={styles.rightColumn}>
           <div className={styles.card}>
-            {/* ✅ New Tracking ID section */}
+            {/*  New Tracking ID section */}
             <div className={styles.infoSection}>
               <h3>Tracking ID</h3>
               <p><strong>{order.trackingId}</strong></p>

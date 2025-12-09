@@ -8,7 +8,6 @@ const MONGO =
     : process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/shopsphere';
 
 const HF_KEY = process.env.HUGGINGFACE_API_KEY;
-// ✅ This model is configured for feature extraction
 const EMBEDDING_MODEL = 'BAAI/bge-small-en-v1.5';
 
 if (!HF_KEY) {
@@ -55,16 +54,15 @@ async function getEmbedding(text) {
 
 async function main() {
   await mongoose.connect(MONGO, { useNewUrlParser: true, useUnifiedTopology: true });
-  console.log('✅ Connected to MongoDB');
-  console.log("📁 Database:", mongoose.connection.name);
+  console.log('Connected to MongoDB');
+  console.log("Database:", mongoose.connection.name);
 
-  // Test the API first
-  console.log('\n🧪 Testing HuggingFace API...');
+  console.log('\n Testing HuggingFace API...');
   try {
     const testEmbedding = await getEmbedding('test product');
-    console.log(`✅ API test successful! Embedding size: ${testEmbedding.length} dimensions\n`);
+    console.log(`API test successful! Embedding size: ${testEmbedding.length} dimensions\n`);
   } catch (err) {
-    console.error('❌ API test failed:', err.message);
+    console.error('API test failed:', err.message);
     console.error('\nTroubleshooting:');
     console.error('  1. Verify your API key at: https://huggingface.co/settings/tokens');
     console.error('  2. Make sure you have internet connection');
@@ -80,10 +78,10 @@ async function main() {
     ]
   });
   
-  console.log(`📦 Found ${totalCount} products without embeddings\n`);
+  console.log(`Found ${totalCount} products without embeddings\n`);
   
   if (totalCount === 0) {
-    console.log('✅ All products already have embeddings!');
+    console.log('All products already have embeddings!');
     await mongoose.disconnect();
     return;
   }
@@ -104,7 +102,7 @@ async function main() {
       const text = `${doc.productDisplayName || ''} ${doc.masterCategory || ''} ${doc.subCategory || ''} ${doc.articleType || ''} ${doc.baseColour || ''}`.trim();
       
       if (!text) {
-        console.log(`⚠️  Skipping product ${doc.productId} - no text to embed`);
+        console.log(`Skipping product ${doc.productId} - no text to embed`);
         continue;
       }
       
@@ -122,23 +120,23 @@ async function main() {
       const elapsed = ((Date.now() - startTime) / 1000).toFixed(0);
       const eta = count > 0 ? (((Date.now() - startTime) / count) * (totalCount - count) / 1000).toFixed(0) : '?';
       
-      console.log(`✅ [${count}/${totalCount}] (${progress}%) ${doc.productDisplayName || doc.productId} | Elapsed: ${elapsed}s | ETA: ${eta}s`);
+      console.log(`[${count}/${totalCount}] (${progress}%) ${doc.productDisplayName || doc.productId} | Elapsed: ${elapsed}s | ETA: ${eta}s`);
       
       // Rate limiting
       await new Promise(r => setTimeout(r, 1000));
       
     } catch (err) {
       errors++;
-      console.error(`❌ [${doc.productId}] ${err.message}`);
+      console.error(`[${doc.productId}] ${err.message}`);
       await new Promise(r => setTimeout(r, 2000));
     }
   }
 
   const totalTime = ((Date.now() - startTime) / 1000).toFixed(0);
   console.log(`\n${'='.repeat(60)}`);
-  console.log(`✅ Successfully indexed: ${count} products`);
-  console.log(`❌ Failed: ${errors} products`);
-  console.log(`⏱️  Total time: ${totalTime} seconds`);
+  console.log(`Successfully indexed: ${count} products`);
+  console.log(`Failed: ${errors} products`);
+  console.log(`Total time: ${totalTime} seconds`);
   console.log(`${'='.repeat(60)}\n`);
   
   await mongoose.disconnect();

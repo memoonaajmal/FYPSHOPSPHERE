@@ -72,10 +72,9 @@ export default function CheckoutPage() {
       setLoading(true);
       const token = await user.getIdToken();
 
-      // Include storeId when sending items
       const items = cartItems.map((item) => ({
-        productId: item.id,         // product._id
-        storeId: item.storeId,      // must exist in cart slice now
+        productId: item.id,         
+        storeId: item.storeId,      
         name: item.name,
         price: item.price,
         quantity: item.qty,
@@ -129,7 +128,7 @@ export default function CheckoutPage() {
       {trackingId ? (
         <div>
           <div className={styles.successCard}>
-            <h2 className={styles.subtitle}>✅ Order Placed Successfully!</h2>
+            <h2 className={styles.subtitle}> Order Placed Successfully!</h2>
             <p className={styles.text}>
               Your tracking ID is:{" "}
               <strong className={styles.strong}>{trackingId}</strong>

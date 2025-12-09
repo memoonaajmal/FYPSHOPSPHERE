@@ -1,25 +1,25 @@
 const Store = require("../models/Store");
 const Product = require("../models/Product");
 const StoreRequest = require("../models/StoreRequest");
-const admin = require("firebase-admin"); // make sure Firebase Admin is initialized
+const admin = require("firebase-admin"); 
 const mongoose = require("mongoose");
 
-// ✅ Get all stores
+//  Get all stores
 exports.getStores = async (req, res) => {
   try {
     console.log("👉 Hitting GET /api/stores");
 
     const stores = await Store.find({});
-    console.log("✅ Stores found:", stores);
+    console.log(" Stores found:", stores);
 
     res.json(stores);
   } catch (err) {
-    console.error("❌ Error in GET /api/stores:", err);
+    console.error(" Error in GET /api/stores:", err);
     res.status(500).json({ message: err.message });
   }
 };
 
-// ✅ Get single store with products
+//  Get single store with products
 exports.getStoreWithProducts = async (req, res) => {
   try {
     const store = await Store.findById(req.params.id);
@@ -40,7 +40,7 @@ exports.getStoreWithProducts = async (req, res) => {
 
     res.json({ store, products: productsWithImage });
   } catch (err) {
-    console.error("❌ Error in GET /api/stores/:id:", err);
+    console.error(" Error in GET /api/stores/:id:", err);
     res.status(500).json({ message: err.message });
   }
 };
@@ -61,24 +61,23 @@ exports.checkSellerStore = async (req, res) => {
 // Submit store creation request using MongoDB sellerId
 exports.createStoreRequest = async (req, res) => {
   try {
-    // 🪵 Enhanced debug logs
-    console.log("📩 req.body:", req.body);
-    console.log("📎 req.files:", req.files);
-    console.log("🔍 sellerId received:", req.body.sellerId);
-    console.log("🔍 typeof sellerId:", typeof req.body.sellerId);
+    console.log(" req.body:", req.body);
+    console.log(" req.files:", req.files);
+    console.log(" sellerId received:", req.body.sellerId);
+    console.log(" typeof sellerId:", typeof req.body.sellerId);
 
     const { sellerId } = req.body;
 
-    // ✅ Better validation
+    //  Better validation
     if (!sellerId) {
-      console.error("❌ sellerId is missing from request");
+      console.error(" sellerId is missing from request");
       return res.status(400).json({
         message: "sellerId is required",
         received: req.body,
       });
     }
 
-    // ✅ Validate ObjectId format
+    //  Validate ObjectId format
     if (!mongoose.Types.ObjectId.isValid(sellerId)) {
       return res.status(400).json({
         message: "Invalid sellerId format",
@@ -87,14 +86,14 @@ exports.createStoreRequest = async (req, res) => {
 
     const objectId = new mongoose.Types.ObjectId(sellerId);
 
-    // ✅ Check if user exists
+    //  Check if user exists
     const User = require("../models/User"); // Adjust path as needed
     const userExists = await User.findById(objectId);
     if (!userExists) {
       return res.status(404).json({ message: "User not found" });
     }
 
-    // ✅ Check if seller already has a pending/approved request
+    //  Check if seller already has a pending/approved request
     const existingRequest = await StoreRequest.findOne({
       sellerId: objectId,
       status: { $in: ["pending", "approved"] },
@@ -126,10 +125,10 @@ exports.createStoreRequest = async (req, res) => {
       bannerUrl: req.files?.banner?.[0]?.path.replace(/\\/g, "/") || "",
     });
 
-    console.log("✅ Store request created:", request._id);
+    console.log(" Store request created:", request._id);
     res.json({ message: "Store request submitted successfully!", request });
   } catch (err) {
-    console.error("💥 Error in createStoreRequest:", err);
+    console.error(" Error in createStoreRequest:", err);
     res.status(500).json({
       message: "Error submitting store request",
       error: err.message,

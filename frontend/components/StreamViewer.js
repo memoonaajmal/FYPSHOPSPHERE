@@ -46,7 +46,7 @@ export default function StreamViewer({ streamId, socket }) {
         await peer.setLocalDescription(answer);
         socket.emit("answer", { sellerId, sdp: answer });
       } catch (err) {
-        console.error("❌ Error handling offer:", err);
+        console.error("Error handling offer:", err);
       }
     };
 
@@ -55,7 +55,7 @@ export default function StreamViewer({ streamId, socket }) {
         try {
           await peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
         } catch (err) {
-          console.warn("⚠️ Error adding ICE candidate:", err);
+          console.warn("Error adding ICE candidate:", err);
         }
       }
     };
@@ -64,7 +64,7 @@ export default function StreamViewer({ streamId, socket }) {
       if (peerRef.current) peerRef.current.close();
       peerRef.current = null;
       if (videoRef.current) videoRef.current.srcObject = null;
-      console.log("🛑 Stream ended by seller");
+      console.log("Stream ended by seller");
     };
 
     socket.on("offer", handleOffer);
@@ -84,7 +84,7 @@ export default function StreamViewer({ streamId, socket }) {
       peerRef.current = null;
       if (videoRef.current) videoRef.current.srcObject = null;
 
-      console.log("👋 Viewer cleanup done");
+      console.log("Viewer cleanup done");
     };
   }, [socket, streamId]);
 

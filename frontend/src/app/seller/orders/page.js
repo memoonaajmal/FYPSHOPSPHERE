@@ -17,7 +17,7 @@ export default function SellerOrdersPage() {
   const [totalPages, setTotalPages] = useState(1);
   const [storeId, setStoreId] = useState(null);
 
-  // ✅ Fetch storeId of logged-in seller
+  //  Fetch storeId of logged-in seller
   useEffect(() => {
     const fetchStoreId = async () => {
       const user = auth.currentUser;
@@ -37,7 +37,7 @@ export default function SellerOrdersPage() {
     fetchStoreId();
   }, []);
 
-  // ✅ Fetch orders from backend
+  //  Fetch orders from backend
   const fetchOrders = async () => {
     setLoading(true);
     try {
@@ -63,7 +63,7 @@ export default function SellerOrdersPage() {
       const data = await res.json();
       let ordersList = Array.isArray(data.orders) ? data.orders : [];
 
-      // ✅ Determine payment status for current store
+      //  Determine payment status for current store
       if (storeId) {
         ordersList = ordersList.map((order) => {
           const myItems = order.items.filter((it) => it.storeId === storeId);
@@ -82,7 +82,7 @@ export default function SellerOrdersPage() {
       setOrders(ordersList);
       setTotalPages(data.totalPages || 1);
     } catch (err) {
-      console.error("❌ Fetch orders error:", err);
+      console.error(" Fetch orders error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -108,14 +108,14 @@ export default function SellerOrdersPage() {
         Click "View" to see order details or update status.
       </div>
 
-      {/* ✅ Orders Table Component */}
+      {/*  Orders Table Component */}
       {orders.length === 0 ? (
         <p className={styles.message}>No orders found for your store yet.</p>
       ) : (
         <SellerOrderCard orders={orders} page={page} />
       )}
 
-      {/* ✅ Pagination */}
+      {/*  Pagination */}
       {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
     </div>
   );

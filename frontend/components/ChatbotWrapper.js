@@ -8,6 +8,6 @@ const Chatbot = dynamic(() => import('./Chatbot'), {
 });
 
 export default function ChatbotWrapper() {
-  console.log('✅ ChatbotWrapper mounted');
+  console.log(' ChatbotWrapper mounted');
   return <Chatbot />;
 }

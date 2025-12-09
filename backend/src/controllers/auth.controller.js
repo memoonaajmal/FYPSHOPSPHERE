@@ -25,7 +25,7 @@ exports.sync = async function (req, res, next) {
     const allowedRoles = ["user", "seller"];
     const finalRole = allowedRoles.includes(role) ? role : "user";
 
-    // ✅ Check if user already exists in MongoDB
+    //  Check if user already exists in MongoDB
     let user = await User.findOne({ firebaseUid: uid });
 
     if (!user) {
@@ -59,7 +59,7 @@ exports.sync = async function (req, res, next) {
       if (modified) await user.save();
     }
 
-    // ✅ Ensure roles consistency
+    //  Ensure roles consistency
     if (user.roles.includes("admin")) user.roles = ["admin"];
     if (user.roles.includes("seller") && user.roles.includes("user"))
       user.roles = ["seller"];

@@ -46,7 +46,7 @@ router.get('/orders', requireAuth, requireRole('seller'), getMyOrders);
 // Get single order details
 router.get("/orders/:orderId", requireAuth, requireRole('seller'), getOrderById);
 
-// 🆕 Mark items as paid OR returned
+//  Mark items as paid OR returned
 router.put('/orders/:orderId/status', requireAuth, requireRole('seller'), updateItemStatus);
 
 module.exports = router;

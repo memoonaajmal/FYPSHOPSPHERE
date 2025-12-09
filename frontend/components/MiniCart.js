@@ -1,10 +1,9 @@
-// components/MiniCart.js
 "use client";
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeItemFromCart } from "../redux/CartSlice";
-import styles from "./styles/MiniCart.module.css"; // reuse cart styles
+import styles from "./styles/MiniCart.module.css"; 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 

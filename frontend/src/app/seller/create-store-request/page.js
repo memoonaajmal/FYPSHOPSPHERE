@@ -73,14 +73,14 @@ export default function CreateStoreRequest() {
  const handleSubmit = async (e) => {
   e.preventDefault();
   
-  // ✅ Better validation
+  //  Better validation
   if (!user || !user._id) {
     setMessage("❌ User session expired. Please login again.");
     return;
   }
 
-  console.log("👤 User object:", user);
-  console.log("🆔 Sending sellerId:", user._id);
+  console.log(" User object:", user);
+  console.log(" Sending sellerId:", user._id);
 
   const data = new FormData();
   Object.entries(formData).forEach(([key, value]) => data.append(key, value));
@@ -89,8 +89,8 @@ export default function CreateStoreRequest() {
   if (files.banner) data.append("banner", files.banner);
   data.append("sellerId", user._id);
 
-  // ✅ Log FormData contents
-  console.log("📦 FormData being sent:");
+  //  Log FormData contents
+  console.log(" FormData being sent:");
   for (let pair of data.entries()) {
     console.log("  ", pair[0], ":", pair[1]);
   }
@@ -99,7 +99,6 @@ export default function CreateStoreRequest() {
     const res = await fetch(`${BASE_URL}/api/stores/create-request`, {
       method: "POST",
       body: data,
-      // ❌ Don't set Content-Type header - let browser set it with boundary
     });
     
     const result = await res.json();
@@ -107,7 +106,7 @@ export default function CreateStoreRequest() {
 
     if (!res.ok) {
       throw new Error(
-        `❌ Backend error (${res.status}): ${
+        ` Backend error (${res.status}): ${
           result.message || "Unknown error"
         }`
       );
@@ -117,9 +116,9 @@ export default function CreateStoreRequest() {
       "✅ Your store request has been sent successfully. Waiting for admin approval."
     );
     setExistingRequest(result.request);
-    setFormVisible(false); // ✅ Hide form after success
+    setFormVisible(false); 
   } catch (err) {
-    console.error("💥 Error submitting store request:", err);
+    console.error(" Error submitting store request:", err);
     setMessage(err.message);
   }
 };
@@ -146,13 +145,13 @@ export default function CreateStoreRequest() {
         </p>
         <p>{statusMessage}</p>
 
-        {/* ✅ Show "Create Again" button if rejected */}
+        {/*  Show "Create Again" button if rejected */}
         {existingRequest.status === "rejected" && !formVisible && (
           <button
             className={styles.button}
             style={{ marginTop: "20px" }}
             onClick={() => {
-              setFormVisible(true); // show the form
+              setFormVisible(true); 
               setExistingRequest(null); // hide the rejected request
             }}
           >
@@ -163,7 +162,7 @@ export default function CreateStoreRequest() {
     );
   }
 
-  // ✅ Show "Create Store" button first
+  //  Show "Create Store" button first
   if (!formVisible) {
     return (
       <div
@@ -192,7 +191,7 @@ export default function CreateStoreRequest() {
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
-        {/* ---------- Left Column ---------- */}
+        {/*  Left Column  */}
         <div className={styles.leftColumn}>
           {/* Basic Store Info */}
           <h3>Basic Store Info</h3>
@@ -259,7 +258,7 @@ export default function CreateStoreRequest() {
           />
         </div>
 
-        {/* ---------- Right Column ---------- */}
+        {/*  Right Column  */}
         <div className={styles.rightColumn}>
           {/* Business Info */}
           <h3>Business Info</h3>
@@ -333,7 +332,7 @@ export default function CreateStoreRequest() {
           />
         </div>
 
-        {/* ---------- Submit Button ---------- */}
+        {/*  Submit Button  */}
         <div className={styles.buttonContainer}>
           <button className={styles.button} type="submit">
             Submit Request

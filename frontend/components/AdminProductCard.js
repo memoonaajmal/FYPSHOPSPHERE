@@ -1,10 +1,10 @@
 "use client";
 import Image from "next/image";
 import Link from "next/link";
-import { Trash2 } from "lucide-react"; // ✅ delete icon
+import { Trash2 } from "lucide-react"; 
 import styles from "./styles/AdminProductCard.module.css";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; // http://localhost:4000
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL; 
 
 export default function AdminProductCard({ product, onDelete }) {
   if (!product) return null;
@@ -16,7 +16,7 @@ export default function AdminProductCard({ product, onDelete }) {
 
    return (
     <div className={styles.card}>
-      {/* ✅ Image (not clickable anymore) */}
+      {/*  Image (not clickable anymore) */}
       <div className={styles.imageWrapper}>
         <Image
           src={imageSrc}

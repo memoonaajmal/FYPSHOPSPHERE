@@ -18,7 +18,7 @@ import styles from "./styles/SalesBarChart.module.css";
 export default function SalesBarChart() {
   const [salesData, setSalesData] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [isUpdating, setIsUpdating] = useState(false); // 👈 for smooth overlay
+  const [isUpdating, setIsUpdating] = useState(false); // for smooth overlay
   const [range, setRange] = useState("weekly");
 
   const fetchSalesData = async (user, selectedRange) => {
@@ -130,7 +130,7 @@ export default function SalesBarChart() {
                 value="Sales Revenue"
                 angle={-90}
                 position="center"
-                dx={-24} // 👈 pushes label left so it’s visible
+                dx={-24} //  pushes label left so it’s visible
                 style={{
                   fill: "var(--blue)",
                   fontSize: 13,

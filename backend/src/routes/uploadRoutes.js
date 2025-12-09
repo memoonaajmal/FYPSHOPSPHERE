@@ -5,10 +5,9 @@ const { requireAuth } = require("../middleware/auth");
 
 const router = express.Router();
 
-// ✅ Store uploaded files in /backend/upload
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    cb(null, path.join(__dirname, "../../data/images")); // <-- Updated path
+    cb(null, path.join(__dirname, "../../data/images")); 
   },
   filename: (req, file, cb) => {
     const uniqueName = Date.now() + "-" + file.originalname.replace(/\s+/g, "_");

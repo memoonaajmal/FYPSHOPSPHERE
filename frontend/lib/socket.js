@@ -10,17 +10,17 @@ export const getSocket = (role, streamId, userId) => {
 
   const socket = io(process.env.NEXT_PUBLIC_BASE_URL, {
     transports: ["websocket"],
-    query: { role, streamId, userId }, // ✅ include userId
+    query: { role, streamId, userId }, 
   });
 
   socketMap.set(key, socket);
 
   socket.on("connect", () => {
-    console.log(`✅ [${role}] connected for stream ${streamId}: ${socket.id}`);
+    console.log(`[${role}] connected for stream ${streamId}: ${socket.id}`);
   });
 
   socket.on("disconnect", () => {
-    console.log(`❌ [${role}] disconnected for stream ${streamId}`);
+    console.log(`[${role}] disconnected for stream ${streamId}`);
   });
 
   if (typeof window !== "undefined" && !window.__socketUnloadAdded) {

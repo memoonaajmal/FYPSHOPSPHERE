@@ -17,7 +17,7 @@ export default function OrderDetailsPage() {
   const [error, setError] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
 
-  // ✅ Fetch seller store ID
+  //  Fetch seller store ID
   useEffect(() => {
     const fetchStoreId = async () => {
       try {
@@ -40,7 +40,7 @@ export default function OrderDetailsPage() {
     fetchStoreId();
   }, []);
 
-  // ✅ Fetch order details
+  //  Fetch order details
   useEffect(() => {
     const fetchOrder = async () => {
       if (!storeId || !id) return;
@@ -96,7 +96,7 @@ export default function OrderDetailsPage() {
       setStatus(data.myPaymentStatus || data.paymentStatus);
       setDropdownOpen(false);
     } catch {
-      alert("❌ Failed to update status");
+      alert(" Failed to update status");
     } finally {
       setStatusLoading(false);
     }
@@ -119,7 +119,7 @@ export default function OrderDetailsPage() {
           </div>
         </div>
 
-        {/* ✅ Only show dropdown when payment is pending */}
+        {/*  Only show dropdown when payment is pending */}
         {status === "pending" && (
           <div className={styles.actions}>
             <div className={styles.dropdown}>
@@ -176,7 +176,7 @@ export default function OrderDetailsPage() {
         {/* RIGHT COLUMN */}
         <div className={styles.rightColumn}>
           <div className={styles.card}>
-            {/* ✅ New Tracking ID section */}
+            {/*  New Tracking ID section */}
             <div className={styles.infoSection}>
               <h3>Tracking ID</h3>
               <p><strong>{order.trackingId}</strong></p>

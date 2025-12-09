@@ -7,7 +7,7 @@ import styles from "../../../../styles/footerAboutPage.module.css";
 export default function ContactPage() {
   const formRef = useRef();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState(null); // 'success' or 'error'
+  const [submitStatus, setSubmitStatus] = useState(null); 
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,17 +15,16 @@ export default function ContactPage() {
     setSubmitStatus(null);
 
     try {
-      // Replace these with your actual EmailJS credentials
       const result = await emailjs.sendForm(
-        'service_91kmtzo',      // Replace with your Service ID
-        'template_67y8r8i',     // Replace with your Template ID
+        'service_91kmtzo',      //  Service ID
+        'template_67y8r8i',     //  Template ID
         formRef.current,
-        'FjvUwPeQXShUVfBok'       // Replace with your Public Key
+        'FjvUwPeQXShUVfBok'       // Public Key
       );
 
       console.log('Email sent successfully:', result.text);
       setSubmitStatus('success');
-      formRef.current.reset(); // Clear the form
+      formRef.current.reset(); 
     } catch (error) {
       console.error('Failed to send email:', error);
       setSubmitStatus('error');

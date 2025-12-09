@@ -64,7 +64,7 @@ export default function Chatbot() {
     setLoading(true);
 
     try {
-      // 🛒 Step 1 — Handle checkout confirmation FIRST
+      //  Handle checkout confirmation FIRST
       if (awaitingCheckoutChoice) {
         if (userInput.includes("yes")) {
           setHistory((h) => [
@@ -95,7 +95,7 @@ export default function Chatbot() {
         return;
       }
 
-      // 🛍️ Step 2 — Handle add-to-cart yes/no
+      //  Handle add-to-cart yes/no
       if (awaitingCartChoice) {
         if (userInput.includes("no")) {
           setHistory((h) => [
@@ -126,7 +126,7 @@ export default function Chatbot() {
         return;
       }
 
-      // 🧮 Step 3 — Handle product selection
+      //  Handle product selection
       if (awaitingProductNumber) {
         const index = parseInt(userInput) - 1;
         if (isNaN(index) || index < 0 || index >= topProducts.length) {
@@ -163,7 +163,7 @@ export default function Chatbot() {
         return;
       }
 
-      // 🤖 Step 4 — Regular chatbot backend call
+      // Regular chatbot backend call
       const res = await fetch(`${BASE_URL}/api/chatbot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

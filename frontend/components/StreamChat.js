@@ -18,11 +18,11 @@ export default function StreamChat({ streamId, username, userType, socket }) {
 
   useEffect(() => {
     if (!socket) {
-      console.warn("⚠️ No socket passed to StreamChat!");
+      console.warn("No socket passed to StreamChat!");
       return;
     }
 
-    console.log("✅ Chat socket connected:", socket.id, "for", userType);
+    console.log("Chat socket connected:", socket.id, "for", userType);
 
     const handleMessage = (msg) => {
       console.log("📩 Received chat-message:", msg);
@@ -34,16 +34,16 @@ export default function StreamChat({ streamId, username, userType, socket }) {
       }
       seen.current.add(key);
 
-      // ✅ If the message is from the seller
+      // If the message is from the seller
       if (msg.userType === "seller") {
         // Always pin it
         setPinnedMessage(msg);
 
-        // ❌ NEVER add seller message to the main chat list
+        // NEVER add seller message to the main chat list
         return;
       }
 
-      // ✅ Otherwise (viewer messages)
+      // Otherwise (viewer messages)
       setMessages((prev) => [...prev, msg]);
     };
 
@@ -62,7 +62,7 @@ export default function StreamChat({ streamId, username, userType, socket }) {
       createdAt: new Date().toISOString(),
     };
 
-    console.log("📤 Emitting chat-message:", msg);
+    console.log("Emitting chat-message:", msg);
     socket.emit("chat-message", msg);
     setText("");
   };
@@ -71,7 +71,7 @@ export default function StreamChat({ streamId, username, userType, socket }) {
     <div className="w-full max-w-md border rounded-lg p-3 mt-4 bg-white shadow">
       <h3 className="font-semibold mb-2">Live Chat</h3>
 
-      {/* ✅ Pinned seller message */}
+      {/* Pinned seller message */}
       {pinnedMessage && (
         <div className="bg-gradient-to-r from-pink-100 to-purple-100 text-gray-800 p-2 rounded-lg mb-2 shadow-sm">
           <strong className="text-pink-600">{pinnedMessage.user}</strong>:{" "}
@@ -79,7 +79,7 @@ export default function StreamChat({ streamId, username, userType, socket }) {
         </div>
       )}
 
-      {/* ✅ Chat list (only viewer messages) */}
+      {/* Chat list (only viewer messages) */}
       <div className="h-64 overflow-y-auto border rounded p-2 mb-2 bg-gray-50">
         {messages.length === 0 && (
           <p className="text-gray-500 text-sm italic">No messages yet...</p>
@@ -91,7 +91,7 @@ export default function StreamChat({ streamId, username, userType, socket }) {
         ))}
       </div>
 
-      {/* ✅ Input for both seller and viewers */}
+      {/* Input for both seller and viewers */}
       <div className="flex gap-2">
         <input
           value={text}

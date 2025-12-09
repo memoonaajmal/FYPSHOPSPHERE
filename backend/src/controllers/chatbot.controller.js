@@ -64,12 +64,10 @@ const chatWithBot = async (req, res) => {
     const lowerMsg = message.toLowerCase().trim();
     console.log("📝 User query:", message);
 
-    // 🟢 Step 0: Handle small talk / greetings / casual chat
     const greetings = ["hi", "hello", "hey", "hy", "good morning", "good evening", "good afternoon"];
     const thanks = ["thank", "thanks", "thank you"];
     const about = ["who are you", "what can you do", "help", "your name"];
 
-    // 👋 Greeting messages (includes "hy" now)
     if (greetings.some((g) => lowerMsg === g || lowerMsg.startsWith(g))) {
       return res.json({
         answer:
@@ -78,7 +76,6 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 🙏 Thanks
     if (thanks.some((g) => lowerMsg.includes(g))) {
       return res.json({
         answer:
@@ -87,7 +84,6 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 🧠 About / Help
     if (about.some((g) => lowerMsg.includes(g))) {
       return res.json({
         answer:
@@ -96,7 +92,7 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 🚫 Handle yes/no messages to avoid unwanted product searches
+    //  Handle yes/no messages to avoid unwanted product searches
     if (["yes", "no", "yeah", "nope", "yup"].includes(lowerMsg)) {
       return res.json({
         answer:
@@ -105,11 +101,11 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 1️⃣ Create embedding for user query
+    //  Create embedding for user query
     const qEmbedding = await getEmbedding(message);
     console.log("🔢 Query embedding:", qEmbedding.length, "dimensions");
 
-    // 2️⃣ Retrieve products with embeddings
+    //  Retrieve products with embeddings
     const products = await Product.find({
       embedding: { $exists: true, $ne: [] },
     }).lean();
@@ -122,7 +118,7 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 3️⃣ Compute similarity
+    //  Compute similarity
     const ranked = products
       .map((p) => ({
         p,
@@ -138,7 +134,7 @@ const chatWithBot = async (req, res) => {
       );
     });
 
-    // 🟢 Get the top products
+    //  Get the top products
     const topProducts = [];
 
     for (const { p } of ranked) {
@@ -155,7 +151,7 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    // 4️⃣ Generate chatbot answer
+    //  Generate chatbot answer
     let answer = "";
     const count = topProducts.length;
 
@@ -179,10 +175,10 @@ const chatWithBot = async (req, res) => {
 
     answer += "\n\nClick any product below to learn more!";
 
-    console.log("✅ Sending response\n");
+    console.log(" Sending response\n");
     res.json({ answer, topProducts });
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error(" Error:", err.message);
     res.status(500).json({ error: "Failed to process request" });
   }
 };

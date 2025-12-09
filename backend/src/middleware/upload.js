@@ -2,11 +2,11 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 
-// ✅ Ensure uploads directory exists
+//  Ensure uploads directory exists
 const uploadDir = "uploads/";
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
-  console.log("✅ Created uploads directory");
+  console.log(" Created uploads directory");
 }
 
 // Configure storage
@@ -35,7 +35,7 @@ const fileFilter = (req, file, cb) => {
   }
 };
 
-// ✅ Configure multer with limits
+//  Configure multer with limits
 const upload = multer({
   storage: storage,
   limits: {

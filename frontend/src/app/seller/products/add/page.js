@@ -31,7 +31,7 @@ export default function AddProductPage() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // ✅ handle image selection + preview
+  //  handle image selection + preview
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -50,7 +50,7 @@ export default function AddProductPage() {
       if (!user) throw new Error("Not logged in");
       const token = await user.getIdToken();
 
-      // ✅ 1. Upload image first if selected
+      //  Upload image first if selected
       let uploadedFilename = form.imageFilename;
       if (imageFile) {
         const imgFormData = new FormData();
@@ -73,7 +73,7 @@ export default function AddProductPage() {
         uploadedFilename = filename;
       }
 
-      // ✅ 2. Save product with uploaded image filename
+      // Save product with uploaded image filename
       const res = await fetch(`${BASE_URL}/api/seller/products`, {
         method: "POST",
         headers: {

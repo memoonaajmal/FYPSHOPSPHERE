@@ -30,7 +30,7 @@ export default function RootLayout({ children }) {
             <div className={styles.layoutContainer}>
               <main className={styles.main}>{children}</main>
             </div>
-            {/* ✅ Chatbot on all pages */}
+            {/*  Chatbot on all pages */}
             <ChatbotWrapper />
           </AuthProvider>
         </ReduxProvider>

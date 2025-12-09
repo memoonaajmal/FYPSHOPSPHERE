@@ -50,14 +50,14 @@ export default function SellerDashboard() {
     <ProtectedRoute role="seller">
       <div className={styles.dashboard}>
         
-        {/* ======= 🔗 Dashboard Intro Section ======= */}
+        {/*  Dashboard Intro Section  */}
 <div className={styles.topSection}>
   {/* Title centered at the top */}
   <h1 className={styles.sectionTitleTop}>Seller Dashboard</h1>
 
   {/* Main Row */}
   <div className={styles.topRow}>
-    {/* ===== Left Side: Buttons ===== */}
+    {/*  Left Side: Buttons  */}
     <div className={styles.leftButtons}>
       <Link href="/seller/products">
         <div className={styles.card}>
@@ -74,7 +74,7 @@ export default function SellerDashboard() {
       </Link>
     </div>
 
-    {/* ===== Right Side: Live Commerce Feature ===== */}
+    {/*  Right Side: Live Commerce Feature  */}
     <div className={styles.rightFeature}>
       <div className={styles.sliderBackground}>
         {/* You can replace with an actual slider later */}
@@ -94,7 +94,7 @@ export default function SellerDashboard() {
 
 
 <div id="business-overview" className={styles.innerContent}>
-        {/* ======= 📊 Business Overview ======= */}
+        {/*   Business Overview  */}
         <div className={styles.analytics}>
           <h2 className={styles.sectionTitle}>Business Overview</h2>
 
@@ -162,12 +162,12 @@ export default function SellerDashboard() {
           )}
         </div>
 
-        {/* ======= 📈 Sales Chart Section ======= */}
+        {/*   Sales Chart Section  */}
         <div className={styles.salesSection}>
           <SalesBarChart />
         </div>
 
-        {/* ======= 🏆 Top Products Section ======= */}
+        {/*   Top Products Section  */}
         {stats?.topProducts?.length > 0 && (
           <div className={styles.topProducts}>
             <h3>Top 5 Bestsellers</h3>
@@ -189,7 +189,7 @@ export default function SellerDashboard() {
           </div>
         )}
 
-        {/* ======= 👥 Customers Insights Section ======= */}
+        {/*   Customers Insights Section  */}
         <div id="customer-analytics" className={styles.customersSection}>
           <div className={styles.leftSection}>
             <TopCustomers />

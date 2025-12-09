@@ -32,7 +32,7 @@ export default function ProfilePage() {
   const router = useRouter();
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-  // ✅ Fetch user profile
+  //  Fetch user profile
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (currentUser) => {
       if (!currentUser) {
@@ -77,7 +77,7 @@ export default function ProfilePage() {
 
   if (!authChecked || !user) return null;
 
-  // ✅ Update profile field
+  //  Update profile field
   const updateProfileField = async (updates) => {
     const token = await auth.currentUser.getIdToken();
     const res = await fetch(`${BASE_URL}/api/auth/profile`, {
@@ -118,7 +118,7 @@ export default function ProfilePage() {
     return shown + "@" + domain;
   };
 
-  // ✅ Handle Change Password (in-built Firebase)
+  //  Handle Change Password 
   const handleChangePassword = async (e) => {
     e.preventDefault();
 
@@ -182,14 +182,14 @@ export default function ProfilePage() {
     }
 
     try {
-      // Step 1: Reauthenticate with current password
+      // Reauthenticate with current password
       const credential = EmailAuthProvider.credential(
         user.email,
         emailPassword
       );
       await reauthenticateWithCredential(user, credential);
 
-      // Step 2: Check if email already exists in MongoDB
+      // Check if email already exists in MongoDB
       const emailCheckRes = await fetch(
         `${BASE_URL}/api/auth/check-email?email=${encodeURIComponent(newEmail)}`
       );
@@ -201,7 +201,7 @@ export default function ProfilePage() {
         return;
       }
 
-      // Step 3: Use verifyBeforeUpdateEmail (more secure approach)
+      // Use verifyBeforeUpdateEmail 
       await verifyBeforeUpdateEmail(user, newEmail);
 
       alert(
@@ -240,7 +240,6 @@ export default function ProfilePage() {
           break;
 
         case "auth/operation-not-allowed":
-          // If verifyBeforeUpdateEmail doesn't work, suggest alternative
           alert(
             "Email verification is required. Please ensure:\n\n" +
               "1. Your current email is verified\n" +
@@ -276,8 +275,8 @@ export default function ProfilePage() {
     <div className={styles.profileContainer}>
       <h1>Account Information</h1>
       <div className={styles.profileCard}>
-        {/* ✅ Full Name row */}
-        {/* ✅ Name row */}
+        {/*  Full Name row */}
+        {/*  Name row */}
         <div className={styles.row}>
           <div className={styles.label}>Full Name</div>
           <div className={styles.valueArea}>
@@ -312,7 +311,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* ✅ Other editable fields */}
+        {/*  Other editable fields */}
         {["gender", "birthday", "phone"].map((field) => (
           <div key={field} className={styles.row}>
             <div className={styles.label}>
@@ -368,7 +367,7 @@ export default function ProfilePage() {
           </div>
         ))}
 
-        {/* 🔹 Change Password Collapsible Section */}
+        {/*  Change Password Collapsible Section */}
         <div className={styles.passwordSection}>
           <div
             className={styles.passwordHeader}
@@ -420,7 +419,7 @@ export default function ProfilePage() {
           )}
         </div>
 
-        {/* 🔹 Change Email Collapsible Section */}
+        {/*  Change Email Collapsible Section */}
         <div className={styles.passwordSection}>
           <div
             className={styles.passwordHeader}

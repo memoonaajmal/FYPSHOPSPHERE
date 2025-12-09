@@ -1,11 +1,10 @@
-// components/MiniWishlist.js
 "use client";
 
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { removeFromWishlist } from "../redux/WishlistSlice";
 import { addItemToCart } from "../redux/CartSlice";
-import styles from "./styles/MiniCart.module.css"; // reuse cart styles
+import styles from "./styles/MiniCart.module.css"; 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 
@@ -18,7 +17,7 @@ export default function MiniWishlist({ visible, onClose }) {
 
   const handleAddToCart = (item) => {
     dispatch(addItemToCart(item));
-    onClose(); // close mini wishlist after adding to cart
+    onClose(); 
   };
 
   return (

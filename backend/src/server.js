@@ -31,7 +31,7 @@ const chatbotRoutes = require("./routes/chatbot.routes");
 
 const app = express();
 
-// ✅ Make io accessible globally before routes
+// Make io accessible globally before routes
 app.use((req, res, next) => {
   req.io = io;
   next();
@@ -45,7 +45,7 @@ app.use(compression());
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'));
 app.use(cookieParser());
 
-// ✅ CORS setup
+// CORS setup
 const cors = require('cors');
 const corsOrigins = (process.env.CORS_ORIGINS || '').trim();
 app.use(cors({
@@ -59,9 +59,7 @@ app.use(cors({
   credentials: true
 }));
 
-// ----------------------------
 // Serve images with proper cross-origin headers
-// ----------------------------
 const imagesPath = path.join(__dirname, "../data/images");
 
 app.use("/images", (req, res, next) => {
@@ -85,19 +83,19 @@ app.use("/uploads", (req, res, next) => {
 });
 app.use("/uploads", express.static(uploadsPath));
 
-// ✅ Add this logger before store routes
+// Add this logger before store routes
 app.use("/api/stores", (req, res, next) => {
   console.log("🧾 Incoming request to /api/stores:", req.method, req.path);
   next();
 });
 
-// ✅ Mount store routes (multer handles multipart form data here)
+// Mount store routes (multer handles multipart form data here)
 app.use("/api/stores", storeRoutes);
 
-// ✅ Now enable JSON parsing for other routes
+// Now enable JSON parsing for other routes
 app.use(express.json({ limit: '2mb' }));
 
-// ✅ Mount the rest
+// Mount the rest
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
 app.use('/api/facets', facetsRoutes);
@@ -111,7 +109,7 @@ app.use('/api/streams', streamRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 
 
-// ✅ Swagger docs (optional)
+// Swagger docs (optional)
 try {
   const swaggerUi = require('swagger-ui-express');
   const swaggerSpec = require('./utils/swaggerSpec');
@@ -120,7 +118,7 @@ try {
   logger.warn('Swagger UI not available: ' + e.message);
 }
 
-// ✅ Healthcheck
+// Healthcheck
 const Product = require('./models/Product');
 app.get('/api/health', async (req, res) => {
   const total = await Product.estimatedDocumentCount().catch(() => 0);
@@ -131,11 +129,11 @@ app.get('/api/health', async (req, res) => {
   });
 });
 
-// ✅ Error handlers
+// Error handlers
 app.use(notFound);
 app.use(errorHandler);
 
-// ✅ Start server
+// Start server
 connectDB()
   .then(() => {
     const server = http.createServer(app);
@@ -147,11 +145,10 @@ io = new Server(server, {
       },
     });
 
-    // ✅ Import and apply socket logic
+    // Import and apply socket logic
 const { setupSocket } = require("./socket");
 setupSocket(io);
   
-    // ✅ Start server
     server.listen(PORT, () => {
       logger.info(`Server (HTTP + WebSocket) running on port ${PORT}`);
       console.log(`Server (HTTP + WebSocket) running on port ${PORT}`);

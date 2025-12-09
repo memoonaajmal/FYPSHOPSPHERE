@@ -5,12 +5,7 @@ const User = require("../models/User");
 const Store = require("../models/Store");
 const generateTrackingId = require("../utils/trackingId");
 
-// =============================
 // Create new order
-// =============================
-// =============================
-// Create new order
-// =============================
 exports.createOrder = async (req, res) => {
   try {
     const firebaseUid = req.user.uid; // from requireAuth
@@ -25,22 +20,16 @@ exports.createOrder = async (req, res) => {
       paymentMethod,
     } = req.body;
 
-    // ----------------------------
     // Validate required fields
-    // ----------------------------
     if (!firstName || !lastName || !phone || !email || !houseAddress || !items?.length) {
       return res.status(400).json({ message: "Missing required fields" });
     }
 
-    // ----------------------------
     // Find the MongoDB user
-    // ----------------------------
     const user = await User.findOne({ email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ----------------------------
     // Build items with correct data
-    // ----------------------------
     const rebuiltItems = await Promise.all(
       items.map(async (item) => {
         // item.productId from frontend = MongoDB _id
@@ -69,9 +58,7 @@ exports.createOrder = async (req, res) => {
       })
     );
 
-    // ----------------------------
     // Calculate totals
-    // ----------------------------
     const itemsTotal = rebuiltItems.reduce(
       (sum, it) => sum + it.price * it.quantity,
       0
@@ -80,9 +67,7 @@ exports.createOrder = async (req, res) => {
     const grandTotal = itemsTotal + Number(shippingFee);
     const trackingId = generateTrackingId();
 
-    // ----------------------------
     // Create order document
-    // ----------------------------
     const order = new Order({
       user: user._id,
       firstName,
@@ -101,9 +86,7 @@ exports.createOrder = async (req, res) => {
 
     await order.save();
 
-    // ----------------------------
     // Payment method handling
-    // ----------------------------
     if (paymentMethod === "JazzCash") {
       const paymentUrl = `${process.env.CORS_ORIGINS}/checkout?orderId=${order._id}`;
       return res.json({
@@ -113,9 +96,7 @@ exports.createOrder = async (req, res) => {
       });
     }
 
-    // ----------------------------
     // COD success
-    // ----------------------------
     return res.status(201).json({
       orderId: order._id,
       trackingId: order.trackingId,
@@ -128,9 +109,7 @@ exports.createOrder = async (req, res) => {
 };
 
 
-// =============================
 // Get a single order by ID
-// =============================
 exports.getOrder = async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
@@ -153,25 +132,23 @@ exports.getOrder = async (req, res) => {
   }
 };
 
-// =============================
 // Get all orders for logged-in user (with pagination)
-// =============================
 exports.getMyOrders = async (req, res) => {
   try {
     const firebaseUid = req.user.uid;
     const user = await User.findOne({ email: req.user.email });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    // ✅ Pagination query params
+    //  Pagination query params
     const page = parseInt(req.query.page) || 1;
     const limit = parseInt(req.query.limit) || 5; // default 5 per page
     const skip = (page - 1) * limit;
 
-    // ✅ Total count
+    //  Total count
     const totalOrders = await Order.countDocuments({ user: user._id });
     const totalPages = Math.ceil(totalOrders / limit);
 
-    // ✅ Paginated orders
+    //  Paginated orders
     const orders = await Order.find({ user: user._id })
       .sort({ createdAt: -1 })
       .skip(skip)

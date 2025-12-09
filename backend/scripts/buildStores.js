@@ -139,7 +139,7 @@ async function buildStores() {
       { upsert: true, new: true, setDefaultsOnInsert: true }
     );
 
-    console.log(`✅ ${storeInfo.name} updated with ${productIds.length} productIds`);
+    console.log(`${storeInfo.name} updated with ${productIds.length} productIds`);
   }
 
   const storeDocs = await Store.find({}).select("_id name productIds").lean();
@@ -149,7 +149,7 @@ async function buildStores() {
   }
 
   await mongoose.disconnect();
-  console.log("🔌 Disconnected from MongoDB (done).");
+  console.log(" Disconnected from MongoDB (done).");
 }
 
 // run

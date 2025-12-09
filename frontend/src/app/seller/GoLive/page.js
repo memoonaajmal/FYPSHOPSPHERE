@@ -16,7 +16,7 @@ export default function GoLivePage() {
   const socketRef = useRef(null);
   const hasConnectedRef = useRef(false);
 
-  // ✅ Get seller Firebase info
+  // Get seller Firebase info
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
       if (user) {
@@ -27,7 +27,7 @@ export default function GoLivePage() {
     return () => unsubscribe();
   }, []);
 
-  // ✅ Restore saved stream
+  // Restore saved stream
   useEffect(() => {
     const saved = localStorage.getItem("activeStream");
     if (saved) {
@@ -43,7 +43,7 @@ export default function GoLivePage() {
     }
   }, []);
 
-  // ✅ Reconnect socket
+  // Reconnect socket
   useEffect(() => {
     const socket = socketRef.current;
     if (!socket || !stream?._id || hasConnectedRef.current) return;
@@ -69,7 +69,7 @@ export default function GoLivePage() {
       body: JSON.stringify({ title, sellerId }),
     });
     const data = await res.json();
-    if (!data?._id) return console.error("❌ Stream creation failed:", data);
+    if (!data?._id) return console.error("Stream creation failed:", data);
 
     setStream(data);
     localStorage.setItem("activeStream", JSON.stringify(data));
@@ -103,7 +103,7 @@ export default function GoLivePage() {
         setStream(null);
         setTitle("");
         hasConnectedRef.current = false;
-        alert("✅ Stream ended successfully!");
+        alert("Stream ended successfully!");
       }, 300);
     }
   };

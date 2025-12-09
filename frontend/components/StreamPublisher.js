@@ -22,7 +22,7 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
       socket.off("ice-candidate");
 
       socket.on("viewer-joined", async ({ viewerId }) => {
-        console.log("📡 Viewer joined:", viewerId);
+        console.log("Viewer joined:", viewerId);
 
         if (peers.current[viewerId]) {
           peers.current[viewerId].close();
@@ -62,7 +62,7 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
   }, [streamId, socket]);
 
   function cleanupStream() {
-    console.log("🧹 Cleaning up StreamPublisher...");
+    console.log("Cleaning up StreamPublisher...");
 
     socket?.emit("stream-ended", { streamId });
 
@@ -84,7 +84,7 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
     socket?.off("answer");
     socket?.off("ice-candidate");
 
-    console.log("✅ StreamPublisher cleanup complete");
+    console.log("StreamPublisher cleanup complete");
   }
 
   useImperativeHandle(ref, () => ({ cleanupStream }));

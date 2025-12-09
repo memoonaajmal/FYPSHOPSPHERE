@@ -1,6 +1,6 @@
 // controllers/product.controller.js
 const Product = require('../models/Product');
-const Price = require('../models/Price'); // ✅ Import Price model
+const Price = require('../models/Price'); 
 const { getPagination } = require('../utils/pagination');
 const { buildImageUrl } = require('../utils/buildImageUrl');
 
@@ -18,14 +18,14 @@ function buildFilters(qs) {
 
   const filter = {};
 
-  // ✅ Add allowed direct filters
+  //  Add allowed direct filters
   for (const key of allowed) {
     if (qs[key]) {
       filter[key] = key === "year" ? Number(qs[key]) : qs[key];
     }
   }
 
-  // ✅ Replace `qs.q` with `qs.search` and use regex (LIKE %keyword%)
+  //  Replace `qs.q` with `qs.search` and use regex (LIKE %keyword%)
   if (qs.search) {
     const regex = new RegExp(qs.search.trim(), "i");
     filter.$or = [
@@ -47,7 +47,7 @@ function projectImage(doc) {
   return obj;
 }
 
-// ✅ LIST with pagination + prices
+//  LIST with pagination + prices
 exports.list = async function (req, res, next) {
   try {
     const filter = buildFilters(req.query);
@@ -67,7 +67,7 @@ exports.list = async function (req, res, next) {
       Product.countDocuments(filter),
     ]);
 
-    // 🔑 Merge prices
+    //  Merge prices
     const productIds = products.map(p => p.productId);
     const prices = await Price.find({ productId: { $in: productIds } }).lean();
     const priceMap = Object.fromEntries(prices.map(p => [p.productId, p.price]));
@@ -84,7 +84,7 @@ exports.list = async function (req, res, next) {
   }
 };
 
-// ✅ Single product with price
+//  Single product with price
 exports.getOne = async function (req, res, next) {
   try {
     const product = await Product.findOne({ productId: req.params.productId });
@@ -145,7 +145,7 @@ exports.remove = async function (req, res, next) {
   }
 };
 
-// ✅ Category/product listing with filters + prices
+//  Category/product listing with filters + prices
 exports.getProducts = async (req, res) => {
   try {
     let {
@@ -210,7 +210,7 @@ exports.getProducts = async (req, res) => {
       .skip((page - 1) * limit)
       .limit(limit);
 
-    // 🔑 Merge prices
+    //  Merge prices
     const productIds = products.map(p => p.productId);
     const prices = await Price.find({ productId: { $in: productIds } }).lean();
     const priceMap = Object.fromEntries(prices.map(p => [p.productId, p.price]));

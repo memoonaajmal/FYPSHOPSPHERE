@@ -6,8 +6,8 @@ const orderItemSchema = new mongoose.Schema({
   price: { type: Number, required: true },
   quantity: { type: Number, required: true },
   image: { type: String },
-storeId: { type: String, ref: "Store", required: true }, // ✅ now stores string IDs like "store_watch"
-  itemPaymentStatus: { type: String, default: "pending" } // 🆕 individual status
+storeId: { type: String, ref: "Store", required: true }, 
+  itemPaymentStatus: { type: String, default: "pending" } 
 });
 
 const orderSchema = new mongoose.Schema(
@@ -25,7 +25,7 @@ const orderSchema = new mongoose.Schema(
     shippingFee: { type: Number, default: 0 },
     grandTotal: { type: Number, required: true },
     paymentMethod: { type: String, default: "COD" },
-    paymentStatus: { type: String, default: "pending" }, // ✅ overall payment
+    paymentStatus: { type: String, default: "pending" }, 
     trackingId: { type: String, index: true },
   },
   { timestamps: true }

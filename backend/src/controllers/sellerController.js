@@ -262,7 +262,7 @@ exports.getMyOrders = async (req, res) => {
 };
 
 /**
- * ✅ Mark this seller's items as paid OR returned
+ *  Mark this seller's items as paid OR returned
  */
 exports.updateItemStatus = async (req, res) => {
   try {
@@ -313,7 +313,7 @@ exports.updateItemStatus = async (req, res) => {
 };
 
 /**
- * ✅ Get single order details for this seller
+ *  Get single order details for this seller
  */
 exports.getOrderById = async (req, res) => {
   try {

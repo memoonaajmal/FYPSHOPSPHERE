@@ -5,9 +5,7 @@ const Store = require("../models/Store");
 ;
 const StoreRequest = require("../models/StoreRequest");
 
-// ======================================================
-// 🧩 USERS
-// ======================================================
+// USERS
 
 exports.getAllUsers = async (req, res) => {
   try {
@@ -42,9 +40,9 @@ exports.deleteUser = async (req, res) => {
     if (user.firebaseUid) {
       try {
         await admin.auth().deleteUser(user.firebaseUid);
-        console.log(`✅ Firebase user ${user.firebaseUid} deleted`);
+        console.log(` Firebase user ${user.firebaseUid} deleted`);
       } catch (firebaseErr) {
-        console.error("❌ Firebase delete error:", firebaseErr);
+        console.error(" Firebase delete error:", firebaseErr);
       }
     }
 
@@ -59,9 +57,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
-// ======================================================
-// 🛒 ORDERS (BY EMAIL)
-// ======================================================
+//  ORDERS (BY EMAIL)
 
 exports.getOrdersByEmail = async (req, res) => {
   try {
@@ -92,9 +88,7 @@ exports.getOrdersByEmail = async (req, res) => {
   }
 };
 
-// ======================================================
-// 🏪 STORE REQUESTS
-// ======================================================
+//  STORE REQUESTS
 
 exports.getAllStoreRequests = async (req, res) => {
   try {
@@ -140,7 +134,7 @@ exports.updateStoreRequestStatus = async (req, res) => {
     if (!request)
       return res.status(404).json({ message: "Store request not found" });
 
-    // ✅ Create store if approved
+    //  Create store if approved
     if (status === "approved") {
       const existingStore = await Store.findOne({
         sellerId: request.sellerId._id,
@@ -153,7 +147,7 @@ exports.updateStoreRequestStatus = async (req, res) => {
           categories: [request.category],
           productIds: [],
         });
-        console.log("✅ New Store Created:", newStore._id);
+        console.log(" New Store Created:", newStore._id);
       }
     }
 
@@ -164,9 +158,7 @@ exports.updateStoreRequestStatus = async (req, res) => {
   }
 };
 
-// ======================================================
-// 📦 STORE ORDERS (ADMIN VIEW)
-// ======================================================
+// STORE ORDERS (ADMIN VIEW)
 
 exports.getStoreOrdersForAdmin = async (req, res) => {
   try {
@@ -216,9 +208,7 @@ exports.getStoreOrdersForAdmin = async (req, res) => {
   }
 };
 
-// ======================================================
-// 📊 ANALYTICS / DASHBOARD DATA
-// ======================================================
+//  ANALYTICS / DASHBOARD DATA
 
 const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
@@ -226,26 +216,26 @@ const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 
 exports.getAnalytics = async (req, res) => {
   try {
-    // ✅ Total Sales
+    //  Total Sales
     const totalSalesAgg = await Order.aggregate([
       { $group: { _id: null, total: { $sum: "$grandTotal" } } },
     ]);
     const totalSales = totalSalesAgg[0]?.total || 0;
 
-    // ✅ Total Users
+    //  Total Users
     const totalUsers = await User.countDocuments();
 
-    // ✅ Active Stores (with products)
+    //  Active Stores (with products)
     const activeStores = await Store.countDocuments({
       productIds: { $exists: true, $ne: [] },
     });
 
-    // ✅ Pending Orders
+    //  Pending Orders
     const pendingOrders = await Order.countDocuments({
       paymentStatus: "pending",
     });
 
-    // ✅ Monthly Sales (last 12 months)
+    //  Monthly Sales (last 12 months)
     const salesByMonth = await Order.aggregate([
       {
         $group: {
@@ -261,7 +251,7 @@ exports.getAnalytics = async (req, res) => {
       return { month, sales: match ? match.total : 0 };
     });
 
-    // ✅ Store-wise Sales (Top 5)
+    //  Store-wise Sales (Top 5)
     const storeSales = await Order.aggregate([
       { $unwind: "$items" },
       {
@@ -291,16 +281,16 @@ exports.getAnalytics = async (req, res) => {
 exports.getAllStoresWithStats = async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 6; // ✅ 5 stores per page
+    const limit = parseInt(req.query.limit) || 6; //  5 stores per page
     const skip = (page - 1) * limit;
 
-    // ✅ Count total stores for pagination
+    //  Count total stores for pagination
     const totalStores = await Store.countDocuments();
 
-    // ✅ Get paginated stores
+    //  Get paginated stores
     const stores = await Store.find().skip(skip).limit(limit).lean();
 
-    // ✅ Add stats for each store (orders + sales)
+    //  Add stats for each store (orders + sales)
     const storesWithStats = await Promise.all(
       stores.map(async (store) => {
         // Fetch all orders containing this store's products
@@ -328,14 +318,14 @@ exports.getAllStoresWithStats = async (req, res) => {
       })
     );
 
-    // ✅ Send paginated result
+    //  Send paginated result
     res.status(200).json({
       stores: storesWithStats,
       totalPages: Math.ceil(totalStores / limit),
       currentPage: page,
     });
   } catch (err) {
-    console.error("❌ Error fetching stores with stats:", err);
+    console.error(" Error fetching stores with stats:", err);
     res.status(500).json({
       message: "Failed to load stores with stats",
       error: err.message,
@@ -343,7 +333,7 @@ exports.getAllStoresWithStats = async (req, res) => {
   }
 };
 
-// ✅ Fetch recently placed orders (sorted by creation time)
+//  Fetch recently placed orders (sorted by creation time)
 exports.getRecentOrders = async (req, res) => {
   try {
     const orders = await Order.findOne()
@@ -353,8 +343,8 @@ exports.getRecentOrders = async (req, res) => {
 
     res.status(200).json({ orders });
   } catch (error) {
-    console.error("❌ Error fetching recent orders:", error);
+    console.error(" Error fetching recent orders:", error);
     res.status(500).json({ message: "Failed to fetch recent orders" });
   }
 };
-// ✅ Get the most recently created stores
+//  Get the most recently created stores

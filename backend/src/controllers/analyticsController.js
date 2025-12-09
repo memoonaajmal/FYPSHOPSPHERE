@@ -11,21 +11,21 @@ exports.getDashboardAnalytics = async (req, res) => {
       return res.status(401).json({ error: "Unauthorized" });
     }
 
-    // 1️⃣ Find stores belonging to this seller
+    //  Find stores belonging to this seller
     const stores = await Store.find({ sellerId });
     const storeIds = stores.map((s) => s._id);
 
-    // 2️⃣ Collect all productIds from seller's stores
+    //  Collect all productIds from seller's stores
     const sellerProductIds = stores.flatMap((s) => s.productIds);
 
-    // 3️⃣ Get prices for those products
+    //  Get prices for those products
     const prices = await Price.find({ productId: { $in: sellerProductIds } });
     const priceMap = {};
     prices.forEach((p) => {
       priceMap[p.productId] = p.price;
     });
 
-    // 4️⃣ Get all orders that include items from seller's stores
+    //  Get all orders that include items from seller's stores
     const allOrders = await Order.find({
       "items.storeId": { $in: storeIds },
     });
@@ -38,7 +38,7 @@ exports.getDashboardAnalytics = async (req, res) => {
 
     const productSales = {}; // for bestseller tracking
 
-    // 5️⃣ Calculate revenue and stats
+    //  Calculate revenue and stats
     for (const order of allOrders) {
       let sellerHasItem = false;
 
@@ -50,7 +50,7 @@ exports.getDashboardAnalytics = async (req, res) => {
           productSales[item.productId] =
             (productSales[item.productId] || 0) + item.quantity;
 
-          // ✅ Use Price model for revenue
+          //  Use Price model for revenue
           const productPrice = priceMap[item.productId] || 0;
           if (order.paymentStatus === "paid") {
             totalRevenue += productPrice * item.quantity;
@@ -66,7 +66,7 @@ exports.getDashboardAnalytics = async (req, res) => {
       }
     }
 
-    // 6️⃣ Compute top 5 bestsellers
+    //  Compute top 5 bestsellers
     const topProducts = Object.entries(productSales)
       .sort((a, b) => b[1] - a[1])
       .slice(0, 5);
@@ -97,7 +97,7 @@ exports.getDashboardAnalytics = async (req, res) => {
 };
 
 
-// 📊 GET /api/analytics/sales?range=daily|weekly|monthly
+//  GET /api/analytics/sales?range=daily|weekly|monthly
 exports.getSalesAnalytics = async (req, res) => {
   try {
     const sellerId = req.user?.id;
@@ -107,11 +107,11 @@ exports.getSalesAnalytics = async (req, res) => {
 
     const range = req.query.range || "weekly"; // default: weekly
 
-    // 1️⃣ Find seller's stores
+    //  Find seller's stores
     const stores = await Store.find({ sellerId });
     const storeIds = stores.map((s) => s._id);
 
-    // 2️⃣ Define date filter based on range
+    //  Define date filter based on range
     const now = new Date();
     let startDate;
 
@@ -126,14 +126,14 @@ exports.getSalesAnalytics = async (req, res) => {
       startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     }
 
-    // 3️⃣ Get orders since startDate
+    //  Get orders since startDate
     const orders = await Order.find({
       "items.storeId": { $in: storeIds },
       paymentStatus: "paid",
       createdAt: { $gte: startDate },
     });
 
-    // 4️⃣ Create a map based on range
+    //  Create a map based on range
     const salesMap = {};
 
     orders.forEach((order) => {
@@ -158,7 +158,7 @@ exports.getSalesAnalytics = async (req, res) => {
       salesMap[key] = (salesMap[key] || 0) + orderTotal;
     });
 
-    // 5️⃣ Build chart data in correct order
+    //  Build chart data in correct order
     let labels = [];
     if (range === "daily") {
       labels = Array.from({ length: 24 }, (_, i) =>
@@ -186,7 +186,7 @@ exports.getSalesAnalytics = async (req, res) => {
 };
 
 
-// 📊 GET /api/analytics/top-customers
+//  GET /api/analytics/top-customers
 exports.getTopCustomers = async (req, res) => {
   try {
     const sellerId = req.user?.id;
@@ -240,7 +240,7 @@ exports.getTopCustomers = async (req, res) => {
   }
 };
 
-// 📊 GET /api/analytics/customer-summary
+//  GET /api/analytics/customer-summary
 exports.getCustomerSummary = async (req, res) => {
   try {
     const sellerId = req.user?.id;

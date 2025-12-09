@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { requireAuth, requireRole } = require("../middleware/auth");
 
-// Import all controller functions (including getAnalytics)
 const {
   getAllUsers,
   getUserById,
@@ -12,14 +11,13 @@ const {
   getStoreRequestById,
   updateStoreRequestStatus,
   getStoreOrdersForAdmin,
-  getAnalytics, // ✅ added
+  getAnalytics, 
 
   getAllStoresWithStats,
   getRecentOrders,
  getRecentStores
 } = require("../controllers/adminController");
 
-// ==================== USER ROUTES ====================
 
 // Get all users
 router.get("/users",getAllUsers);
@@ -33,7 +31,6 @@ router.delete("/users/:id", requireAuth, requireRole("admin"),deleteUser);
 // Get orders by email
 router.get("/email/:email", requireAuth, requireRole("admin"),getOrdersByEmail);
 
-// ==================== STORE REQUEST ROUTES ====================
 
 // Fetch all store requests
 router.get("/store-requests", getAllStoreRequests);
@@ -44,13 +41,12 @@ router.get("/store-requests/:id",getStoreRequestById);
 // Update store request status (approve/reject)
 router.patch("/store-requests/:id", updateStoreRequestStatus);
 
-// ==================== STORE ORDERS & ANALYTICS ====================
 
 // Admin: Get all store orders
 router.get("/orders", requireAuth, requireRole("admin"), getStoreOrdersForAdmin);
 
 // Admin: Get analytics summary
-router.get("/analytics", requireAuth, requireRole("admin"), getAnalytics); // ✅ fixed
+router.get("/analytics", requireAuth, requireRole("admin"), getAnalytics); 
 router.get("/stores", requireAuth, requireRole("admin"),getAllStoresWithStats);
 router.get("/recent-orders",requireAuth, requireRole("admin"),  getRecentOrders);
 

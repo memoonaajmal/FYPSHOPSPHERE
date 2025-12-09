@@ -1,7 +1,7 @@
 const LiveStream = require("../models/LiveStream");
-const User = require("../models/User"); // import user model
+const User = require("../models/User"); 
 const { nanoid } = require("nanoid");
-const { rooms } = require("../socket"); // ✅ Import rooms for cleanup
+const { rooms } = require("../socket"); // Import rooms for cleanup
 
 exports.createStream = async (req, res) => {
   const { title, sellerId } = req.body;
@@ -45,7 +45,7 @@ exports.getStreamBySlug = async (req, res) => {
 exports.endStream = async (req, res) => {
   try {
     const streamId = req.params.id;
-    console.log("🧩 req.io available:", !!req.io);
+    console.log("req.io available:", !!req.io);
 
     // Update DB
     await LiveStream.findByIdAndUpdate(streamId, { status: "ended" });
@@ -67,14 +67,14 @@ exports.endStream = async (req, res) => {
 
       // Remove room from memory
       delete rooms[streamId];
-      console.log(`🛑 Stream ${streamId} ended & sockets cleaned`);
+      console.log(`Stream ${streamId} ended & sockets cleaned`);
     } else {
-      console.warn(`⚠️ No room found or req.io missing for stream ${streamId}`);
+      console.warn(`No room found or req.io missing for stream ${streamId}`);
     }
 
     res.json({ success: true });
   } catch (err) {
-    console.error("❌ Failed to end stream:", err);
+    console.error("Failed to end stream:", err);
     res.status(500).json({ success: false, error: err.message });
   }
 };

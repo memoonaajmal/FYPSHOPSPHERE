@@ -11,20 +11,20 @@ import styles from "./styles/Navbar.module.css";
 export default function Navbar() {
   const { user } = useAuth();
   const [role, setRole] = useState(null);
-  const [isRoleLoaded, setIsRoleLoaded] = useState(false); // ✅ wait until role is determined
+  const [isRoleLoaded, setIsRoleLoaded] = useState(false); 
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
-  // ---------- SCROLL LISTENER ----------
+  // SCROLL LISTENER
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // ---------- CHECK ROLE AND STORE ----------
+  //CHECK ROLE AND STORE 
 useEffect(() => {
   setIsRoleLoaded(false);
   const auth = getAuth();
@@ -72,7 +72,7 @@ useEffect(() => {
 }, [user]);
 
 
-  // ---------- SCROLL FUNCTIONS ----------
+  //  SCROLL FUNCTIONS 
   const scrollToElementWithOffset = (selector) => {
     const el = document.querySelector(selector);
     if (!el) return false;
@@ -123,9 +123,9 @@ useEffect(() => {
     }
   }, [pathname]);
 
-  // ---------- CENTER LINKS ----------
+  //  CENTER LINKS 
   const renderCenterLinks = () => {
-    if (!isRoleLoaded) return null; // don't render anything until role is loaded
+    if (!isRoleLoaded) return null; 
 
     if (role === "seller") {
       return (
@@ -174,7 +174,7 @@ useEffect(() => {
     );
   };
 
-  // ---------- RIGHT ICONS ----------
+  //  RIGHT ICONS 
   const renderRightIcons = () => {
     if (!isRoleLoaded) return null;
 
@@ -244,12 +244,12 @@ useEffect(() => {
           </Link>
         </div>
 
-        {/* ---------- CENTER LINKS ---------- */}
+        {/*  CENTER LINKS  */}
         <div className={`${styles.centerLinks} ${menuOpen ? styles.active : ""}`}>
           {renderCenterLinks()}
         </div>
 
-        {/* ---------- RIGHT ICONS + HAMBURGER ---------- */}
+        {/*  RIGHT ICONS + HAMBURGER  */}
         <div className={styles.icons}>
           {renderRightIcons()}
           <button
