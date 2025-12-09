@@ -25,11 +25,11 @@ export default function StreamChat({ streamId, username, userType, socket }) {
     console.log("Chat socket connected:", socket.id, "for", userType);
 
     const handleMessage = (msg) => {
-      console.log("📩 Received chat-message:", msg);
+      console.log(" Received chat-message:", msg);
 
       const key = msgKey(msg);
       if (seen.current.has(key)) {
-        console.log("↩️ Duplicate message ignored:", key);
+        console.log(" Duplicate message ignored:", key);
         return;
       }
       seen.current.add(key);

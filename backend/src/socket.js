@@ -59,7 +59,7 @@ socket.on("leave-stream", ({ streamId }) => {
   const room = rooms[streamId];
   if (!room) return;
 
-  // 🧹 Remove viewer
+  // Remove viewer
   if (room.viewers.has(socket.id)) {
     room.viewers.delete(socket.id);
     socket.leave(streamId);
@@ -136,7 +136,7 @@ socket.on("chat-message", async ({ streamId, user, text, userType }) => {
         else if (room.viewers.has(socket.id)) {
           room.viewers.delete(socket.id);
           if (room.sellerSocketId) io.to(room.sellerSocketId).emit("viewer-left", { viewerId: socket.id });
-          console.log(`🚪 Viewer ${socket.id} disconnected from ${streamId}`);
+          console.log(` Viewer ${socket.id} disconnected from ${streamId}`);
         }
       }
     });

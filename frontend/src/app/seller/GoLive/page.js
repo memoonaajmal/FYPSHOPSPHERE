@@ -38,7 +38,7 @@ export default function GoLivePage() {
           socketRef.current = getSocket("seller", parsed._id);
         }
       } catch (err) {
-        console.warn("⚠️ Could not parse saved stream:", err);
+        console.warn(" Could not parse saved stream:", err);
       }
     }
   }, []);

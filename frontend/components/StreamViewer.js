@@ -72,7 +72,7 @@ export default function StreamViewer({ streamId, socket }) {
     socket.on("stream-ended", handleEnd);
 
     socket.emit("join-stream", { streamId });
-    console.log("👀 Viewer ready for stream:", streamId);
+    console.log(" Viewer ready for stream:", streamId);
 
     return () => {
       socket.emit("leave-stream", { streamId });
