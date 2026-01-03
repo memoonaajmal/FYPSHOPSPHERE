@@ -43,6 +43,7 @@
     "node-fetch": "^3.3.2",
     "pino": "^9.0.0",
     "pino-pretty": "^11.2.2",
+    "playwright": "^1.57.0",
     "qs": "^6.13.0",
     "socket.io": "^4.8.1",
     "swagger-jsdoc": "^6.2.8",
@@ -52,5 +53,10 @@
   },
   "devDependencies": {
     "nodemon": "^3.1.4"
-  }
+  },
+  "description": "1. unzip 2. cd backend 3. npm install 4. cp .env.example .env 5. edit .env to point CSV_PATH and IMAGES_DIR 6. npm run seed:drop 7. npm run dev",
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs"
 }
