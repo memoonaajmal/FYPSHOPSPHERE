@@ -10,38 +10,66 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
     if (!socket) return;
 
     async function startStream() {
-      const localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+      const localStream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+
       streamRef.current = localStream;
       videoRef.current.srcObject = localStream;
 
+      // Start stream ONLY once per mount
       socket.emit("start-stream", { streamId });
 
-      // Cleanup old listeners before adding new ones
+      // Clean old listeners (important with shared socket)
       socket.off("viewer-joined");
+      socket.off("viewer-left");
       socket.off("answer");
       socket.off("ice-candidate");
 
       socket.on("viewer-joined", async ({ viewerId }) => {
-        console.log("Viewer joined:", viewerId);
-
+        // Defensive cleanup (viewer rejoin case)
         if (peers.current[viewerId]) {
-          peers.current[viewerId].close();
+          try { peers.current[viewerId].close(); } catch (e) {}
           delete peers.current[viewerId];
         }
 
-        const peer = new RTCPeerConnection({ iceServers: [{ urls: "stun:stun.l.google.com:19302" }] });
+        const peer = new RTCPeerConnection({
+          iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+        });
+
         peers.current[viewerId] = peer;
 
-        localStream.getTracks().forEach(track => peer.addTrack(track, localStream));
+        localStream.getTracks().forEach(track =>
+          peer.addTrack(track, localStream)
+        );
 
         peer.onicecandidate = (e) => {
-          if (e.candidate)
-            socket.emit("ice-candidate", { target: viewerId, candidate: e.candidate });
+          if (e.candidate) {
+            socket.emit("ice-candidate", {
+              target: viewerId,
+              candidate: e.candidate,
+            });
+          }
         };
 
         const offer = await peer.createOffer();
         await peer.setLocalDescription(offer);
-        socket.emit("offer", { viewerId, sdp: peer.localDescription });
+
+        socket.emit("offer", {
+          viewerId,
+          sdp: peer.localDescription,
+        });
+      });
+
+      // ✅ CRITICAL FOR REJOIN
+      socket.on("viewer-left", ({ viewerId }) => {
+        const peer = peers.current[viewerId];
+        if (peer) {
+          try { peer.close(); } catch (e) {}
+          delete peers.current[viewerId];
+          console.log("Peer cleaned for viewer:", viewerId);
+        }
       });
 
       socket.on("answer", async ({ viewerId, sdp }) => {
@@ -52,19 +80,18 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
 
       socket.on("ice-candidate", async ({ from, candidate }) => {
         const peer = peers.current[from];
-        if (peer && candidate) await peer.addIceCandidate(new RTCIceCandidate(candidate));
+        if (peer && candidate) {
+          await peer.addIceCandidate(new RTCIceCandidate(candidate));
+        }
       });
     }
 
     startStream();
-
     return () => cleanupStream();
   }, [streamId, socket]);
 
   function cleanupStream() {
-    console.log("Cleaning up StreamPublisher...");
-
-    socket?.emit("stream-ended", { streamId });
+    // ❌ DO NOT emit "stream-ended" here (this breaks rejoin)
 
     Object.values(peers.current).forEach(peer => {
       try { peer.close(); } catch (e) {}
@@ -75,16 +102,12 @@ const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket },
       streamRef.current.getTracks().forEach(track => track.stop());
     }
 
-    const video = videoRef.current;
-    if (video) video.srcObject = null;
-
-    streamRef.current = null;
+    if (videoRef.current) videoRef.current.srcObject = null;
 
     socket?.off("viewer-joined");
+    socket?.off("viewer-left");
     socket?.off("answer");
     socket?.off("ice-candidate");
-
-    console.log("StreamPublisher cleanup complete");
   }
 
   useImperativeHandle(ref, () => ({ cleanupStream }));

@@ -54,18 +54,25 @@ socket.on("join-stream", ({ streamId }) => {
   }
 });
 
-// Viewer leaves
-socket.on("leave-stream", ({ streamId }) => {
-  const room = rooms[streamId];
-  if (!room) return;
+// ✅ FIX: Viewer leaves (IMPORTANT)
+    socket.on("leave-stream", ({ streamId }) => {
+      const room = rooms[streamId];
+      if (!room) return;
 
-  // Remove viewer
-  if (room.viewers.has(socket.id)) {
-    room.viewers.delete(socket.id);
-    socket.leave(streamId);
-    console.log(` Viewer ${socket.id} left stream ${streamId}`);
-  }
-});
+      if (room.viewers.has(socket.id)) {
+        room.viewers.delete(socket.id);
+        socket.leave(streamId);
+
+        // 🔥 TELL SELLER TO DESTROY PEER
+        if (room.sellerSocketId) {
+          io.to(room.sellerSocketId).emit("viewer-left", {
+            viewerId: socket.id,
+          });
+        }
+
+        console.log(`Viewer ${socket.id} left stream ${streamId}`);
+      }
+    });
 
 
     //  WebRTC signaling
