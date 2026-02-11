@@ -9,6 +9,35 @@ import styles from "./styles/Chatbot.module.css";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:4000";
 
+// 🔢 NUMBER WORD TO DIGIT CONVERTER
+const numberWords = {
+  zero: 0, one: 1, two: 2, three: 3, four: 4,
+  five: 5, six: 6, seven: 7, eight: 8, nine: 9,
+  ten: 10, eleven: 11, twelve: 12, thirteen: 13, fourteen: 14,
+  fifteen: 15, sixteen: 16, seventeen: 17, eighteen: 18, nineteen: 19,
+  twenty: 20, thirty: 30, forty: 40, fifty: 50,
+  sixty: 60, seventy: 70, eighty: 80, ninety: 90,
+  hundred: 100, thousand: 1000
+};
+
+function convertNumberWordsToDigits(text) {
+  let result = text.toLowerCase();
+  
+  // Handle compound numbers like "twenty one" or "twenty-one"
+  const compoundPattern = /(twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety)[\s-]?(one|two|three|four|five|six|seven|eight|nine)/g;
+  result = result.replace(compoundPattern, (match, tens, ones) => {
+    return String(numberWords[tens] + numberWords[ones]);
+  });
+  
+  // Replace individual number words
+  Object.keys(numberWords).forEach(word => {
+    const regex = new RegExp(`\\b${word}\\b`, 'gi');
+    result = result.replace(regex, String(numberWords[word]));
+  });
+  
+  return result;
+}
+
 export default function Chatbot() {
   const dispatch = useDispatch();
   const [isOpen, setIsOpen] = useState(() => {
@@ -35,12 +64,12 @@ export default function Chatbot() {
   const [awaitingCheckoutChoice, setAwaitingCheckoutChoice] = useState(false);
 
   /* 🎤 Voice states */
-const [listening, setListening] = useState(false);
-const [voiceReady, setVoiceReady] = useState(false);
-const [voiceLoading, setVoiceLoading] = useState(false);
-const recognitionRef = useRef(null);
-const transcriptRef = useRef(""); // ADD THIS LINE
-const autoSendTimerRef = useRef(null);
+  const [listening, setListening] = useState(false);
+  const [voiceReady, setVoiceReady] = useState(false);
+  const [voiceLoading, setVoiceLoading] = useState(false);
+  const recognitionRef = useRef(null);
+  const transcriptRef = useRef("");
+  const autoSendTimerRef = useRef(null);
 
   const messagesEndRef = useRef(null);
 
@@ -72,144 +101,150 @@ const autoSendTimerRef = useRef(null);
     recognition.maxAlternatives = 1;
     recognition.continuous = false;
 
-recognition.onstart = () => {
-  setListening(true);
-  setVoiceLoading(false);
-  setVoiceReady(true);
-  transcriptRef.current = ""; // ADD THIS LINE
-};
+    recognition.onstart = () => {
+      setListening(true);
+      setVoiceLoading(false);
+      setVoiceReady(true);
+      transcriptRef.current = "";
+    };
 
-recognition.onend = () => {
-  setListening(false);
-  setVoiceReady(false);
-  
-  // Process any remaining transcript when recognition ends
-  if (transcriptRef.current) {
-    const finalTranscript = transcriptRef.current.trim();
-    if (finalTranscript) {
-      processTranscript(finalTranscript);
-    }
-    transcriptRef.current = "";
-  }
-};
-
-recognition.onresult = (event) => {
-  let interimTranscript = "";
-  let finalTranscript = "";
-
-  for (let i = event.resultIndex; i < event.results.length; i++) {
-    const transcript = event.results[i][0].transcript;
-    if (event.results[i].isFinal) {
-      finalTranscript += transcript;
-    } else {
-      interimTranscript += transcript;
-    }
-  }
-
-  // Update the transcript ref with the latest result
-  if (finalTranscript) {
-    transcriptRef.current = finalTranscript;
-  } else if (interimTranscript) {
-    transcriptRef.current = interimTranscript;
-  }
-
-  // Show interim results in the input field
-  setInput(transcriptRef.current.trim());
-
-  // If we have a final result, process it immediately
-  if (finalTranscript) {
-    const cleanTranscript = finalTranscript.trim();
-    processTranscript(cleanTranscript);
-  }
-};
-
-recognition.onerror = (event) => {
-  console.error("Speech recognition error:", event.error);
-  
-  // Don't treat "no-speech" as a real error for short utterances
-  if (event.error === "no-speech") {
-    if (transcriptRef.current) {
-      processTranscript(transcriptRef.current.trim());
-    }
-  }
-  
-  setListening(false);
-  setVoiceLoading(false);
-  setVoiceReady(false);
-  transcriptRef.current = "";
-};
-
-recognitionRef.current = recognition;
-
-return () => {
-  if (autoSendTimerRef.current) {
-    clearTimeout(autoSendTimerRef.current);
-  }
-};
-}, [awaitingCartChoice, awaitingCheckoutChoice]);
-
-
-const processTranscript = (transcript) => {
-  if (!transcript) return;
-
-  // Clear any existing timer
-  if (autoSendTimerRef.current) {
-    clearTimeout(autoSendTimerRef.current);
-  }
-
-  const normalizedInput = transcript.toLowerCase();
-  
-  // Auto-send for simple yes/no responses in conversation flows
-  if (
-    (awaitingCartChoice || awaitingCheckoutChoice) &&
-    (normalizedInput === "yes" || 
-     normalizedInput === "no" || 
-     normalizedInput === "y" || 
-     normalizedInput === "n" ||
-     normalizedInput.includes("yes") ||
-     normalizedInput.includes("no"))
-  ) {
-    // Extract the actual yes/no
-    let command = normalizedInput;
-    if (normalizedInput.includes("yes")) command = "yes";
-    if (normalizedInput.includes("no")) command = "no";
-    
-    // Small delay to show the text, then auto-send
-    autoSendTimerRef.current = setTimeout(() => {
-      send(command);
-    }, 500);
-  }
-};
-
-const toggleListening = () => {
-  if (!recognitionRef.current) return;
-
-  if (listening) {
-    recognitionRef.current.stop();
-} else {
-  setVoiceLoading(true);
-  transcriptRef.current = ""; // ADD THIS LINE
-  
-  setTimeout(() => {
-    if (recognitionRef.current) {
-      try {
-        recognitionRef.current.start();
-      } catch (error) {
-        console.error("Error starting recognition:", error);
-        setVoiceLoading(false);
+    recognition.onend = () => {
+      setListening(false);
+      setVoiceReady(false);
+      
+      // Process any remaining transcript when recognition ends
+      if (transcriptRef.current) {
+        const finalTranscript = transcriptRef.current.trim();
+        if (finalTranscript) {
+          processTranscript(finalTranscript);
+        }
+        transcriptRef.current = "";
       }
+    };
+
+    recognition.onresult = (event) => {
+      let interimTranscript = "";
+      let finalTranscript = "";
+
+      for (let i = event.resultIndex; i < event.results.length; i++) {
+        const transcript = event.results[i][0].transcript;
+        if (event.results[i].isFinal) {
+          finalTranscript += transcript;
+        } else {
+          interimTranscript += transcript;
+        }
+      }
+
+      // Update the transcript ref with the latest result
+      if (finalTranscript) {
+        transcriptRef.current = finalTranscript;
+      } else if (interimTranscript) {
+        transcriptRef.current = interimTranscript;
+      }
+
+      // 🔢 Convert number words to digits before showing
+      const convertedText = convertNumberWordsToDigits(transcriptRef.current.trim());
+      setInput(convertedText);
+
+      // If we have a final result, process it immediately
+      if (finalTranscript) {
+        const cleanTranscript = finalTranscript.trim();
+        processTranscript(cleanTranscript);
+      }
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      
+      // Don't treat "no-speech" as a real error for short utterances
+      if (event.error === "no-speech") {
+        if (transcriptRef.current) {
+          processTranscript(transcriptRef.current.trim());
+        }
+      }
+      
+      setListening(false);
+      setVoiceLoading(false);
+      setVoiceReady(false);
+      transcriptRef.current = "";
+    };
+
+    recognitionRef.current = recognition;
+
+    return () => {
+      if (autoSendTimerRef.current) {
+        clearTimeout(autoSendTimerRef.current);
+      }
+    };
+  }, [awaitingCartChoice, awaitingCheckoutChoice]);
+
+  const processTranscript = (transcript) => {
+    if (!transcript) return;
+
+    // Clear any existing timer
+    if (autoSendTimerRef.current) {
+      clearTimeout(autoSendTimerRef.current);
     }
-  }, 1000); // CHANGE 2500 to 1000
-}
-};
 
+    // 🔢 Convert number words to digits
+    const convertedTranscript = convertNumberWordsToDigits(transcript);
+    const normalizedInput = convertedTranscript.toLowerCase();
+    
+    // Auto-send for simple yes/no responses in conversation flows
+    if (
+      (awaitingCartChoice || awaitingCheckoutChoice) &&
+      (normalizedInput === "yes" || 
+       normalizedInput === "no" || 
+       normalizedInput === "y" || 
+       normalizedInput === "n" ||
+       normalizedInput.includes("yes") ||
+       normalizedInput.includes("no"))
+    ) {
+      // Extract the actual yes/no
+      let command = normalizedInput;
+      if (normalizedInput.includes("yes")) command = "yes";
+      if (normalizedInput.includes("no")) command = "no";
+      
+      // Small delay to show the text, then auto-send
+      autoSendTimerRef.current = setTimeout(() => {
+        send(command);
+      }, 500);
+    } else if (awaitingProductNumber) {
+      // Auto-send for product number selection
+      autoSendTimerRef.current = setTimeout(() => {
+        send(convertedTranscript);
+      }, 500);
+    }
+  };
 
-const getMicButtonTitle = () => {
-  if (voiceLoading) return "Preparing voice input...";
-  if (listening && voiceReady) return "Ready! Speak now";
-  if (listening) return "Listening...";
-  return "Voice input";
-};
+  const toggleListening = () => {
+    if (!recognitionRef.current) return;
+
+    if (listening) {
+      recognitionRef.current.stop();
+    } else {
+      setVoiceLoading(true);
+      transcriptRef.current = "";
+      
+      setTimeout(() => {
+        if (recognitionRef.current) {
+          try {
+            recognitionRef.current.start();
+          } catch (error) {
+            console.error("Error starting recognition:", error);
+            setVoiceLoading(false);
+          }
+        }
+      }, 1000);
+    }
+  };
+
+  const getMicButtonTitle = () => {
+    if (voiceLoading) return "Preparing voice input...";
+    if (listening && voiceReady) return "Ready! Speak now";
+    if (listening) return "Listening...";
+    return "Voice input";
+  };
 
   const cleanFilename = (filename) =>
     filename?.replace(/["']/g, "").trim() || "";
@@ -218,24 +253,22 @@ const getMicButtonTitle = () => {
     setImageErrors((prev) => new Set(prev).add(filename));
   };
 
-async function send(overrideInput = null) {
-  const finalInput = (overrideInput || input).trim();
-  // ADD THIS NEW FUNCTION:
+  async function send(overrideInput = null) {
+    const finalInput = (overrideInput || input).trim();
 
     if (!finalInput || loading) return;
 
     const userMsg = { sender: "user", text: finalInput };
     const userInput = finalInput.toLowerCase();
 
-setHistory((h) => [...h, userMsg]);
-setInput("");
-setLoading(true);
+    setHistory((h) => [...h, userMsg]);
+    setInput("");
+    setLoading(true);
 
-// ADD THESE 3 LINES:
-transcriptRef.current = "";
-if (autoSendTimerRef.current) {
-  clearTimeout(autoSendTimerRef.current);
-}
+    transcriptRef.current = "";
+    if (autoSendTimerRef.current) {
+      clearTimeout(autoSendTimerRef.current);
+    }
 
     try {
       // ✅ Handle checkout confirmation
@@ -544,31 +577,30 @@ if (autoSendTimerRef.current) {
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              // WITH THIS:
-placeholder={
-  voiceLoading
-    ? "Preparing microphone..."
-    : voiceReady
-    ? "🎤 Ready! Speak now..."
-    : listening
-    ? "Listening..."
-    : "Ask about products..."
-}
+              placeholder={
+                voiceLoading
+                  ? "Preparing microphone..."
+                  : voiceReady
+                  ? "🎤 Ready! Speak now..."
+                  : listening
+                  ? "Listening..."
+                  : "Ask about products..."
+              }
               disabled={loading}
             />
 
             {/* 🎤 MIC BUTTON */}
             <button 
-  onClick={toggleListening} 
-  title={getMicButtonTitle()}
-  disabled={voiceLoading}
-  style={{
-    opacity: voiceLoading ? 0.5 : 1,
-    color: voiceReady ? '#4CAF50' : listening ? '#ff9800' : 'inherit'
-  }}
->
-  {listening ? <MicOff size={20} /> : <Mic size={20} />}
-</button>
+              onClick={toggleListening} 
+              title={getMicButtonTitle()}
+              disabled={voiceLoading}
+              style={{
+                opacity: voiceLoading ? 0.5 : 1,
+                color: voiceReady ? '#4CAF50' : listening ? '#ff9800' : 'inherit'
+              }}
+            >
+              {listening ? <MicOff size={20} /> : <Mic size={20} />}
+            </button>
 
             <button onClick={() => send()} disabled={loading || !input.trim()}>
               <Send size={20} />
