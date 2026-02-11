@@ -1,23 +1,40 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function StreamViewer({ streamId, socket }) {
   const videoRef = useRef();
   const peerRef = useRef(null);
+  const [viewerCount, setViewerCount] = useState(0);
 
   useEffect(() => {
     if (!socket || !streamId) return;
 
+    // Cleanup old peer
+    if (peerRef.current) {
+      peerRef.current.close();
+      peerRef.current = null;
+    }
+    if (videoRef.current) videoRef.current.srcObject = null;
+
+    // Cleanup old listeners
+    socket.off("offer");
+    socket.off("ice-candidate");
+    socket.off("viewer-count");
+
+    // Viewer count updates
+    socket.on("viewer-count", ({ count }) => {
+      setViewerCount(count);
+    });
+
+    // Create WebRTC peer
     const createPeer = () => {
       const peer = new RTCPeerConnection({
         iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
       });
 
       peer.ontrack = (e) => {
-        if (videoRef.current) {
-          videoRef.current.srcObject = e.streams[0];
-        }
+        if (videoRef.current) videoRef.current.srcObject = e.streams[0];
       };
 
       peer.onicecandidate = (e) => {
@@ -33,9 +50,7 @@ export default function StreamViewer({ streamId, socket }) {
     };
 
     const handleOffer = async ({ sellerId, sdp }) => {
-      if (peerRef.current) {
-        try { peerRef.current.close(); } catch {}
-      }
+      if (peerRef.current) peerRef.current.close();
 
       const peer = createPeer();
       peer.sellerId = sellerId;
@@ -48,49 +63,34 @@ export default function StreamViewer({ streamId, socket }) {
       socket.emit("answer", { sellerId, sdp: answer });
     };
 
-    const handleICE = async ({ candidate }) => {
+    socket.once("offer", handleOffer);
+
+    socket.on("ice-candidate", ({ candidate }) => {
       if (candidate && peerRef.current) {
-        await peerRef.current.addIceCandidate(
-          new RTCIceCandidate(candidate)
-        );
+        peerRef.current.addIceCandidate(new RTCIceCandidate(candidate));
       }
-    };
-
-    const handleEnd = () => {
-      if (peerRef.current) peerRef.current.close();
-      peerRef.current = null;
-      if (videoRef.current) videoRef.current.srcObject = null;
-    };
-
-    socket.on("offer", handleOffer);
-    socket.on("ice-candidate", handleICE);
-    socket.on("stream-ended", handleEnd);
-
-    socket.emit("join-stream", { streamId });
+    });
 
     return () => {
-      // 🔥 THIS FIXES EVERYTHING
-      socket.emit("leave-stream", { streamId });
-
-      socket.off("offer", handleOffer);
-      socket.off("ice-candidate", handleICE);
-      socket.off("stream-ended", handleEnd);
-
       if (peerRef.current) peerRef.current.close();
       peerRef.current = null;
-
       if (videoRef.current) videoRef.current.srcObject = null;
 
-      socket.disconnect(); // 🔥 CRITICAL
+      socket.off("viewer-count");
+      socket.off("offer");
+      socket.off("ice-candidate");
     };
-  }, [streamId, socket]);
+  }, [socket, streamId]);
 
   return (
-    <video
-      ref={videoRef}
-      autoPlay
-      playsInline
-      className="rounded-lg border w-full max-w-md"
-    />
+    <div className="flex flex-col items-center gap-1">
+      <p className="text-sm text-gray-600">👀 {viewerCount} watching</p>
+      <video
+        ref={videoRef}
+        autoPlay
+        playsInline
+        className="rounded-lg border w-full max-w-md"
+      />
+    </div>
   );
 }

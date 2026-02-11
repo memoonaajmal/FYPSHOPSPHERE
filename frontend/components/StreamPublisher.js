@@ -1,133 +1,169 @@
 "use client";
-import { useEffect, useRef, useImperativeHandle, forwardRef } from "react";
 
-const StreamPublisher = forwardRef(({ streamId, isStreamActive = true, socket }, ref) => {
-  const videoRef = useRef();
-  const peers = useRef({});
-  const streamRef = useRef(null);
+import {
+  useEffect,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+  useState,
+} from "react";
 
-  useEffect(() => {
-    if (!socket) return;
+const StreamPublisher = forwardRef(
+  ({ streamId, isStreamActive = true, socket }, ref) => {
+    const videoRef = useRef();
+    const peers = useRef({});
+    const streamRef = useRef(null);
 
-    async function startStream() {
-      const localStream = await navigator.mediaDevices.getUserMedia({
-        video: true,
-        audio: true,
-      });
+    const [viewerCount, setViewerCount] = useState(0);
+    const [viewers, setViewers] = useState([]); // ✅ viewer names
 
-      streamRef.current = localStream;
-      videoRef.current.srcObject = localStream;
+    useEffect(() => {
+      if (!socket) return;
 
-      // Start stream ONLY once per mount
-      socket.emit("start-stream", { streamId });
-
-      // Clean old listeners (important with shared socket)
-      socket.off("viewer-joined");
-      socket.off("viewer-left");
-      socket.off("answer");
-      socket.off("ice-candidate");
-
-      socket.on("viewer-joined", async ({ viewerId }) => {
-        // Defensive cleanup (viewer rejoin case)
-        if (peers.current[viewerId]) {
-          try { peers.current[viewerId].close(); } catch (e) {}
-          delete peers.current[viewerId];
-        }
-
-        const peer = new RTCPeerConnection({
-          iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      async function startStream() {
+        const localStream = await navigator.mediaDevices.getUserMedia({
+          video: true,
+          audio: true,
         });
 
-        peers.current[viewerId] = peer;
+        streamRef.current = localStream;
+        videoRef.current.srcObject = localStream;
 
-        localStream.getTracks().forEach(track =>
-          peer.addTrack(track, localStream)
-        );
+        socket.emit("start-stream", { streamId });
 
-        peer.onicecandidate = (e) => {
-          if (e.candidate) {
-            socket.emit("ice-candidate", {
-              target: viewerId,
-              candidate: e.candidate,
-            });
+        socket.off("viewer-joined");
+        socket.off("viewer-left");
+        socket.off("answer");
+        socket.off("ice-candidate");
+        socket.off("viewer-list");
+
+        socket.on("viewer-joined", async ({ viewerId }) => {
+          setViewerCount((prev) => prev + 1);
+
+          const peer = new RTCPeerConnection({
+            iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+          });
+
+          peers.current[viewerId] = peer;
+
+          localStream.getTracks().forEach((track) =>
+            peer.addTrack(track, localStream)
+          );
+
+          peer.onicecandidate = (e) => {
+            if (e.candidate) {
+              socket.emit("ice-candidate", {
+                target: viewerId,
+                candidate: e.candidate,
+              });
+            }
+          };
+
+          const offer = await peer.createOffer();
+          await peer.setLocalDescription(offer);
+
+          socket.emit("offer", {
+            viewerId,
+            sdp: peer.localDescription,
+          });
+        });
+
+        socket.on("viewer-left", ({ viewerId }) => {
+          setViewerCount((prev) => Math.max(0, prev - 1));
+
+          const peer = peers.current[viewerId];
+          if (peer) {
+            peer.close();
+            delete peers.current[viewerId];
           }
-        };
-
-        const offer = await peer.createOffer();
-        await peer.setLocalDescription(offer);
-
-        socket.emit("offer", {
-          viewerId,
-          sdp: peer.localDescription,
         });
-      });
 
-      // ✅ CRITICAL FOR REJOIN
-      socket.on("viewer-left", ({ viewerId }) => {
-        const peer = peers.current[viewerId];
-        if (peer) {
-          try { peer.close(); } catch (e) {}
-          delete peers.current[viewerId];
-          console.log("Peer cleaned for viewer:", viewerId);
-        }
-      });
+        socket.on("viewer-list", ({ viewers }) => {
+          setViewers(viewers);
+        });
 
-      socket.on("answer", async ({ viewerId, sdp }) => {
-        const peer = peers.current[viewerId];
-        if (!peer) return;
-        await peer.setRemoteDescription(new RTCSessionDescription(sdp));
-      });
+        socket.on("answer", async ({ viewerId, sdp }) => {
+          const peer = peers.current[viewerId];
+          if (!peer) return;
+          await peer.setRemoteDescription(
+            new RTCSessionDescription(sdp)
+          );
+        });
 
-      socket.on("ice-candidate", async ({ from, candidate }) => {
-        const peer = peers.current[from];
-        if (peer && candidate) {
-          await peer.addIceCandidate(new RTCIceCandidate(candidate));
-        }
-      });
+        socket.on("ice-candidate", async ({ from, candidate }) => {
+          const peer = peers.current[from];
+          if (peer && candidate) {
+            await peer.addIceCandidate(
+              new RTCIceCandidate(candidate)
+            );
+          }
+        });
+      }
+
+      startStream();
+      return () => cleanupStream();
+    }, [streamId, socket]);
+
+    function cleanupStream() {
+      Object.values(peers.current).forEach((peer) => peer.close());
+      peers.current = {};
+
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((t) => t.stop());
+      }
+
+      if (videoRef.current) videoRef.current.srcObject = null;
+
+      socket?.off("viewer-joined");
+      socket?.off("viewer-left");
+      socket?.off("viewer-list");
+      socket?.off("answer");
+      socket?.off("ice-candidate");
+
+      setViewerCount(0);
+      setViewers([]);
     }
 
-    startStream();
-    return () => cleanupStream();
-  }, [streamId, socket]);
+    useImperativeHandle(ref, () => ({ cleanupStream }));
 
-  function cleanupStream() {
-    // ❌ DO NOT emit "stream-ended" here (this breaks rejoin)
+    useEffect(() => {
+      if (!isStreamActive) cleanupStream();
+    }, [isStreamActive]);
 
-    Object.values(peers.current).forEach(peer => {
-      try { peer.close(); } catch (e) {}
-    });
-    peers.current = {};
+    return (
+      <div className="flex flex-col items-center">
+        <h2 className="text-xl font-semibold mb-1">🎥 You are Live!</h2>
 
-    if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
-    }
+        <p className="text-sm text-gray-600 mb-2">
+          Viewers: {viewerCount}
+        </p>
 
-    if (videoRef.current) videoRef.current.srcObject = null;
+        {/* ✅ VIEWER NAMES */}
+        <div className="w-full max-w-md mb-2">
+          <p className="text-sm font-semibold">Joined users:</p>
+          {viewers.length === 0 ? (
+            <p className="text-xs text-gray-500 italic">
+              No viewers yet
+            </p>
+          ) : (
+            <ul className="text-sm">
+              {viewers.map((name, i) => (
+                <li key={i}>👤 {name}</li>
+              ))}
+            </ul>
+          )}
+        </div>
 
-    socket?.off("viewer-joined");
-    socket?.off("viewer-left");
-    socket?.off("answer");
-    socket?.off("ice-candidate");
+        <video
+          ref={videoRef}
+          autoPlay
+          muted
+          playsInline
+          className="rounded-lg border w-full max-w-md"
+        />
+      </div>
+    );
   }
-
-  useImperativeHandle(ref, () => ({ cleanupStream }));
-
-  useEffect(() => {
-    if (!isStreamActive) cleanupStream();
-  }, [isStreamActive]);
-
-  return (
-    <div className="flex flex-col items-center">
-      <h2 className="text-xl font-semibold mb-2">🎥 You are Live!</h2>
-      <video
-        ref={videoRef}
-        autoPlay
-        muted
-        playsInline
-        className="rounded-lg border w-full max-w-md"
-      />
-    </div>
-  );
-});
+);
 
 export default StreamPublisher;
