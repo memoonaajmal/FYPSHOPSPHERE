@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { addItemToCart } from "../redux/CartSlice";
-import { MessageCircle, X, Send } from "lucide-react";
+import { MessageCircle, X, Send, Mic, MicOff } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./styles/Chatbot.module.css";
@@ -33,6 +33,15 @@ export default function Chatbot() {
   const [awaitingCartChoice, setAwaitingCartChoice] = useState(false);
   const [awaitingProductNumber, setAwaitingProductNumber] = useState(false);
   const [awaitingCheckoutChoice, setAwaitingCheckoutChoice] = useState(false);
+
+  /* 🎤 Voice states */
+const [listening, setListening] = useState(false);
+const [voiceReady, setVoiceReady] = useState(false);
+const [voiceLoading, setVoiceLoading] = useState(false);
+const recognitionRef = useRef(null);
+const transcriptRef = useRef(""); // ADD THIS LINE
+const autoSendTimerRef = useRef(null);
+
   const messagesEndRef = useRef(null);
 
   // Save chat state
@@ -48,6 +57,160 @@ export default function Chatbot() {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [history]);
 
+  /* 🎙️ Setup Speech Recognition */
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const SpeechRecognition =
+      window.SpeechRecognition || window.webkitSpeechRecognition;
+
+    if (!SpeechRecognition) return;
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = "en-US";
+    recognition.interimResults = true; 
+    recognition.maxAlternatives = 1;
+    recognition.continuous = false;
+
+recognition.onstart = () => {
+  setListening(true);
+  setVoiceLoading(false);
+  setVoiceReady(true);
+  transcriptRef.current = ""; // ADD THIS LINE
+};
+
+recognition.onend = () => {
+  setListening(false);
+  setVoiceReady(false);
+  
+  // Process any remaining transcript when recognition ends
+  if (transcriptRef.current) {
+    const finalTranscript = transcriptRef.current.trim();
+    if (finalTranscript) {
+      processTranscript(finalTranscript);
+    }
+    transcriptRef.current = "";
+  }
+};
+
+recognition.onresult = (event) => {
+  let interimTranscript = "";
+  let finalTranscript = "";
+
+  for (let i = event.resultIndex; i < event.results.length; i++) {
+    const transcript = event.results[i][0].transcript;
+    if (event.results[i].isFinal) {
+      finalTranscript += transcript;
+    } else {
+      interimTranscript += transcript;
+    }
+  }
+
+  // Update the transcript ref with the latest result
+  if (finalTranscript) {
+    transcriptRef.current = finalTranscript;
+  } else if (interimTranscript) {
+    transcriptRef.current = interimTranscript;
+  }
+
+  // Show interim results in the input field
+  setInput(transcriptRef.current.trim());
+
+  // If we have a final result, process it immediately
+  if (finalTranscript) {
+    const cleanTranscript = finalTranscript.trim();
+    processTranscript(cleanTranscript);
+  }
+};
+
+recognition.onerror = (event) => {
+  console.error("Speech recognition error:", event.error);
+  
+  // Don't treat "no-speech" as a real error for short utterances
+  if (event.error === "no-speech") {
+    if (transcriptRef.current) {
+      processTranscript(transcriptRef.current.trim());
+    }
+  }
+  
+  setListening(false);
+  setVoiceLoading(false);
+  setVoiceReady(false);
+  transcriptRef.current = "";
+};
+
+recognitionRef.current = recognition;
+
+return () => {
+  if (autoSendTimerRef.current) {
+    clearTimeout(autoSendTimerRef.current);
+  }
+};
+}, [awaitingCartChoice, awaitingCheckoutChoice]);
+
+
+const processTranscript = (transcript) => {
+  if (!transcript) return;
+
+  // Clear any existing timer
+  if (autoSendTimerRef.current) {
+    clearTimeout(autoSendTimerRef.current);
+  }
+
+  const normalizedInput = transcript.toLowerCase();
+  
+  // Auto-send for simple yes/no responses in conversation flows
+  if (
+    (awaitingCartChoice || awaitingCheckoutChoice) &&
+    (normalizedInput === "yes" || 
+     normalizedInput === "no" || 
+     normalizedInput === "y" || 
+     normalizedInput === "n" ||
+     normalizedInput.includes("yes") ||
+     normalizedInput.includes("no"))
+  ) {
+    // Extract the actual yes/no
+    let command = normalizedInput;
+    if (normalizedInput.includes("yes")) command = "yes";
+    if (normalizedInput.includes("no")) command = "no";
+    
+    // Small delay to show the text, then auto-send
+    autoSendTimerRef.current = setTimeout(() => {
+      send(command);
+    }, 500);
+  }
+};
+
+const toggleListening = () => {
+  if (!recognitionRef.current) return;
+
+  if (listening) {
+    recognitionRef.current.stop();
+} else {
+  setVoiceLoading(true);
+  transcriptRef.current = ""; // ADD THIS LINE
+  
+  setTimeout(() => {
+    if (recognitionRef.current) {
+      try {
+        recognitionRef.current.start();
+      } catch (error) {
+        console.error("Error starting recognition:", error);
+        setVoiceLoading(false);
+      }
+    }
+  }, 1000); // CHANGE 2500 to 1000
+}
+};
+
+
+const getMicButtonTitle = () => {
+  if (voiceLoading) return "Preparing voice input...";
+  if (listening && voiceReady) return "Ready! Speak now";
+  if (listening) return "Listening...";
+  return "Voice input";
+};
+
   const cleanFilename = (filename) =>
     filename?.replace(/["']/g, "").trim() || "";
 
@@ -55,18 +218,29 @@ export default function Chatbot() {
     setImageErrors((prev) => new Set(prev).add(filename));
   };
 
-    async function send() {
-    if (!input.trim() || loading) return;
-    const userMsg = { sender: "user", text: input };
-    const userInput = input.toLowerCase();
-    setHistory((h) => [...h, userMsg]);
-    setInput("");
-    setLoading(true);
+async function send(overrideInput = null) {
+  const finalInput = (overrideInput || input).trim();
+  // ADD THIS NEW FUNCTION:
+
+    if (!finalInput || loading) return;
+
+    const userMsg = { sender: "user", text: finalInput };
+    const userInput = finalInput.toLowerCase();
+
+setHistory((h) => [...h, userMsg]);
+setInput("");
+setLoading(true);
+
+// ADD THESE 3 LINES:
+transcriptRef.current = "";
+if (autoSendTimerRef.current) {
+  clearTimeout(autoSendTimerRef.current);
+}
 
     try {
-      //  Handle checkout confirmation FIRST
+      // ✅ Handle checkout confirmation
       if (awaitingCheckoutChoice) {
-        if (userInput.includes("yes")) {
+        if (userInput === "yes" || userInput === "y") {
           setHistory((h) => [
             ...h,
             { sender: "bot", text: "Taking you to the checkout page... 💳" },
@@ -77,10 +251,13 @@ export default function Chatbot() {
           return;
         }
 
-        if (userInput.includes("no")) {
+        if (userInput === "no" || userInput === "n") {
           setHistory((h) => [
             ...h,
-            { sender: "bot", text: "No problem! 😊 You can keep exploring products." },
+            {
+              sender: "bot",
+              text: "No problem! 😊 You can keep exploring products.",
+            },
           ]);
           setAwaitingCheckoutChoice(false);
           setLoading(false);
@@ -95,25 +272,32 @@ export default function Chatbot() {
         return;
       }
 
-      //  Handle add-to-cart yes/no
+      // ✅ Handle add-to-cart yes/no
       if (awaitingCartChoice) {
-        if (userInput.includes("no")) {
+        if (userInput === "no" || userInput === "n") {
           setHistory((h) => [
             ...h,
-            { sender: "bot", text: "Alright 😊 Let me know if you want to explore something else!" },
+            {
+              sender: "bot",
+              text: "Alright 😊 Let me know if you want to explore something else!",
+            },
           ]);
           setAwaitingCartChoice(false);
+          setTopProducts([]);
           setLoading(false);
           return;
         }
 
-        if (userInput.includes("yes")) {
+        if (userInput === "yes" || userInput === "y") {
           const productList = topProducts
             .map((p, i) => `${i + 1}. ${p.productDisplayName}`)
             .join("\n");
           setHistory((h) => [
             ...h,
-            { sender: "bot", text: `Great! Which product would you like to add?\n${productList}` },
+            {
+              sender: "bot",
+              text: `Great! Which product would you like to add?\n${productList}`,
+            },
           ]);
           setAwaitingCartChoice(false);
           setAwaitingProductNumber(true);
@@ -121,18 +305,24 @@ export default function Chatbot() {
           return;
         }
 
-        setHistory((h) => [...h, { sender: "bot", text: "Please reply with 'yes' or 'no'." }]);
+        setHistory((h) => [
+          ...h,
+          { sender: "bot", text: "Please reply with 'yes' or 'no'." },
+        ]);
         setLoading(false);
         return;
       }
 
-      //  Handle product selection
+      // ✅ Handle product selection
       if (awaitingProductNumber) {
         const index = parseInt(userInput) - 1;
         if (isNaN(index) || index < 0 || index >= topProducts.length) {
           setHistory((h) => [
             ...h,
-            { sender: "bot", text: "Please enter a valid product number (e.g., 1, 2, 3)." },
+            {
+              sender: "bot",
+              text: "Please enter a valid product number (e.g., 1, 2, 3).",
+            },
           ]);
           setLoading(false);
           return;
@@ -147,13 +337,19 @@ export default function Chatbot() {
             image: `${BASE_URL}/images/${selected.imageFilename}`,
             storeId: selected.storeId,
             qty: 1,
-          })
+          }),
         );
 
         setHistory((h) => [
           ...h,
-          { sender: "bot", text: `✅ ${selected.productDisplayName} added to your cart! 🛒` },
-          { sender: "bot", text: "Would you like to go to the checkout page? (Yes/No)" },
+          {
+            sender: "bot",
+            text: `✅ ${selected.productDisplayName} added to your cart! 🛒`,
+          },
+          {
+            sender: "bot",
+            text: "Would you like to go to the checkout page? (Yes/No)",
+          },
         ]);
 
         setAwaitingProductNumber(false);
@@ -163,7 +359,7 @@ export default function Chatbot() {
         return;
       }
 
-      // Regular chatbot backend call
+      // ✅ Regular chatbot backend call (only if NOT in any flow)
       const res = await fetch(`${BASE_URL}/api/chatbot/chat`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -175,19 +371,33 @@ export default function Chatbot() {
 
       setHistory((h) => [
         ...h,
-        { sender: "bot", text: data.answer || "No answer received", products: data.topProducts || [] },
+        {
+          sender: "bot",
+          text: data.answer || "No answer received",
+          products: data.topProducts || [],
+        },
       ]);
 
+      // ✅ Only ask to add products if we have products
       if (data.topProducts?.length > 0) {
         setHistory((h) => [
           ...h,
-          { sender: "bot", text: "Would you like to add one of these to your cart? (Yes/No)" },
+          {
+            sender: "bot",
+            text: "Would you like to add one of these to your cart? (Yes/No)",
+          },
         ]);
         setAwaitingCartChoice(true);
       }
     } catch (err) {
       console.error("Chatbot error:", err);
-      setHistory((h) => [...h, { sender: "bot", text: "Sorry, I encountered an error. Please try again." }]);
+      setHistory((h) => [
+        ...h,
+        {
+          sender: "bot",
+          text: "Sorry, I encountered an error. Please try again.",
+        },
+      ]);
     } finally {
       setLoading(false);
     }
@@ -271,7 +481,7 @@ export default function Chatbot() {
                           const cleaned = cleanFilename(p.imageFilename);
                           const imageSrc = `${BASE_URL.replace(
                             /\/$/,
-                            ""
+                            "",
                           )}/images/${cleaned}`;
                           const hasError = imageErrors.has(cleaned);
 
@@ -329,20 +539,38 @@ export default function Chatbot() {
             <div ref={messagesEndRef} />
           </div>
 
-          {/* Input */}
           <div className={styles.inputArea}>
             <input
               value={input}
               onChange={(e) => setInput(e.target.value)}
               onKeyPress={handleKeyPress}
-              placeholder="Ask about products..."
+              // WITH THIS:
+placeholder={
+  voiceLoading
+    ? "Preparing microphone..."
+    : voiceReady
+    ? "🎤 Ready! Speak now..."
+    : listening
+    ? "Listening..."
+    : "Ask about products..."
+}
               disabled={loading}
             />
-            <button
-              onClick={send}
-              disabled={loading || !input.trim()}
-              aria-label="Send"
-            >
+
+            {/* 🎤 MIC BUTTON */}
+            <button 
+  onClick={toggleListening} 
+  title={getMicButtonTitle()}
+  disabled={voiceLoading}
+  style={{
+    opacity: voiceLoading ? 0.5 : 1,
+    color: voiceReady ? '#4CAF50' : listening ? '#ff9800' : 'inherit'
+  }}
+>
+  {listening ? <MicOff size={20} /> : <Mic size={20} />}
+</button>
+
+            <button onClick={() => send()} disabled={loading || !input.trim()}>
               <Send size={20} />
             </button>
           </div>

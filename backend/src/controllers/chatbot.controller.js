@@ -5,6 +5,7 @@ const fetch = (...args) =>
 const Product = require("../models/Product");
 
 const HF_KEY = process.env.HUGGINGFACE_API_KEY;
+const GROQ_API_KEY = process.env.GROQ_API_KEY;
 const EMBEDDING_MODEL = "BAAI/bge-small-en-v1.5";
 
 async function getEmbedding(text) {
@@ -43,6 +44,66 @@ async function getEmbedding(text) {
   throw new Error("Unexpected embedding response");
 }
 
+// Generate response using Groq API
+async function generateAIResponse(userMessage, products = []) {
+  const url = "https://api.groq.com/openai/v1/chat/completions";
+
+  // Build context about products with PKR currency
+  let productContext = "";
+  if (products.length > 0) {
+    productContext = "\n\nI found these products:\n";
+    products.forEach((p, idx) => {
+      productContext += `${idx + 1}. ${p.productDisplayName} - ${p.baseColour} ${p.gender} - PKR ${p.price}\n`;
+    });
+  }
+
+  const systemPrompt = `You are ShopSphere Assistant, a friendly AI shopping assistant for an e-commerce platform in Pakistan.
+
+Your role:
+- Help users find products they're looking for
+- Be enthusiastic and use emojis appropriately (👜, ⌚, 😎, ✨, 🛍️, 💍, 👟)
+- Keep responses concise (2-3 sentences max)
+- When products are found, briefly describe them and encourage exploration
+- Be warm, helpful, and conversational
+
+Guidelines:
+- Only reference products that are provided to you
+- Don't make up product details
+- Be natural and friendly
+- Always use PKR (Pakistani Rupees) as the currency
+- Always end with encouragement to explore`;
+
+  const userPrompt = `User query: "${userMessage}"${productContext}
+
+Generate a brief, friendly response (2-3 sentences max). Remember to use PKR for currency.`;
+
+  const res = await fetch(url, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${GROQ_API_KEY}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "llama-3.3-70b-versatile",
+      messages: [
+        { role: "system", content: systemPrompt },
+        { role: "user", content: userPrompt },
+      ],
+      temperature: 0.7,
+      max_tokens: 150,
+    }),
+  });
+
+  if (!res.ok) {
+    const errorText = await res.text();
+    throw new Error(`Groq API error: ${res.status} ${errorText}`);
+  }
+
+  const result = await res.json();
+  console.log("🧮 Token usage:", result.usage);
+
+  return result.choices[0].message.content;
+}
 
 function cosineSim(a, b) {
   let dot = 0,
@@ -64,35 +125,60 @@ const chatWithBot = async (req, res) => {
     const lowerMsg = message.toLowerCase().trim();
     console.log("📝 User query:", message);
 
-    const greetings = ["hi", "hello", "hey", "hy", "good morning", "good evening", "good afternoon"];
+    const greetings = [
+      "hi",
+      "hello",
+      "hey",
+      "hy",
+      "good morning",
+      "good evening",
+      "good afternoon",
+    ];
     const thanks = ["thank", "thanks", "thank you"];
     const about = ["who are you", "what can you do", "help", "your name"];
 
+    // Handle simple queries with AI
     if (greetings.some((g) => lowerMsg === g || lowerMsg.startsWith(g))) {
-      return res.json({
-        answer:
-          "👋 Hi there! I'm your ShopSphere Assistant. You can ask me about any product — like *blue handbags*, *men’s watches*, or *sunglasses*! 😊",
-        topProducts: [],
-      });
+      try {
+        const answer = await generateAIResponse(message, []);
+        return res.json({ answer, topProducts: [] });
+      } catch (error) {
+        console.error("⚠️ AI error:", error.message);
+        return res.json({
+          answer:
+            "👋 Hi there! I'm your ShopSphere Assistant. Ask me about any product!",
+          topProducts: [],
+        });
+      }
     }
 
     if (thanks.some((g) => lowerMsg.includes(g))) {
-      return res.json({
-        answer:
-          "You're most welcome! 💖 Let me know if you'd like to explore more products or categories.",
-        topProducts: [],
-      });
+      try {
+        const answer = await generateAIResponse(message, []);
+        return res.json({ answer, topProducts: [] });
+      } catch (error) {
+        return res.json({
+          answer:
+            "You're welcome! 💖 Let me know if you'd like to explore more products.",
+          topProducts: [],
+        });
+      }
     }
 
     if (about.some((g) => lowerMsg.includes(g))) {
-      return res.json({
-        answer:
-          "I'm ShopSphere’s AI shopping assistant! 🛍️ I can help you find products by color, category, or style — just tell me what you’re looking for!",
-        topProducts: [],
-      });
+      try {
+        const answer = await generateAIResponse(message, []);
+        return res.json({ answer, topProducts: [] });
+      } catch (error) {
+        return res.json({
+          answer:
+            "I'm ShopSphere's AI shopping assistant! 🛍️ I can help you find products!",
+          topProducts: [],
+        });
+      }
     }
 
-    //  Handle yes/no messages to avoid unwanted product searches
+    // Handle yes/no messages
     if (["yes", "no", "yeah", "nope", "yup"].includes(lowerMsg)) {
       return res.json({
         answer:
@@ -101,11 +187,22 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    //  Create embedding for user query
-    const qEmbedding = await getEmbedding(message);
+    // Create embedding for user query
+    let qEmbedding;
+    try {
+      qEmbedding = await getEmbedding(message);
+    } catch (e) {
+      console.error("⚠️ Embedding failed:", e.message);
+      return res.json({
+        answer:
+          "I'm having trouble understanding your request right now, but you can browse products manually 🛍️",
+        topProducts: [],
+      });
+    }
+
     console.log("🔢 Query embedding:", qEmbedding.length, "dimensions");
 
-    //  Retrieve products with embeddings
+    // Retrieve products with embeddings
     const products = await Product.find({
       embedding: { $exists: true, $ne: [] },
     }).lean();
@@ -118,7 +215,7 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    //  Compute similarity
+    // Compute similarity
     const ranked = products
       .map((p) => ({
         p,
@@ -130,11 +227,11 @@ const chatWithBot = async (req, res) => {
     console.log("🎯 Top matches:");
     ranked.forEach((item, idx) => {
       console.log(
-        `  ${idx + 1}. ${item.p.productDisplayName} (score: ${item.score.toFixed(3)})`
+        `  ${idx + 1}. ${item.p.productDisplayName} (score: ${item.score.toFixed(3)})`,
       );
     });
 
-    //  Get the top products
+    // Get the top products
     const topProducts = [];
 
     for (const { p } of ranked) {
@@ -151,34 +248,24 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    //  Generate chatbot answer
-    let answer = "";
-    const count = topProducts.length;
-
-    if (lowerMsg.includes("watch")) {
-      answer = `I found ${count} great watches that match your search! Check out these ${topProducts[0].gender.toLowerCase()} watches in ${topProducts[0].baseColour.toLowerCase()}. ⌚`;
-    } else if (lowerMsg.includes("handbag") || lowerMsg.includes("bag")) {
-      answer = `Perfect! I found ${count} stylish handbags for you. These ${topProducts[0].baseColour.toLowerCase()} bags would look amazing! 👜`;
-    } else if (lowerMsg.includes("sunglasses") || lowerMsg.includes("glasses")) {
-      answer = `I've got ${count} awesome sunglasses options! These would look great on you! 😎`;
-    } else if (
-      lowerMsg.includes("earring") ||
-      lowerMsg.includes("jewelry") ||
-      lowerMsg.includes("necklace")
-    ) {
-      answer = `Found ${count} beautiful jewelry pieces for you! These would add perfect sparkle to any outfit! ✨`;
-    } else if (lowerMsg.includes("shoe") || lowerMsg.includes("footwear")) {
-      answer = `Here are ${count} shoe options that match what you're looking for! 👟`;
-    } else {
-      answer = `Great choice! I found ${count} products that match your search. 🛍️`;
+    // Generate response using AI
+    let answer;
+    try {
+      answer = await generateAIResponse(message, topProducts);
+      // Add call-to-action if not already present
+      if (!answer.includes("Click") && !answer.includes("below")) {
+        answer += "\n\nClick any product below to learn more!";
+      }
+    } catch (aiError) {
+      console.error("⚠️ AI error:", aiError.message);
+      // Fallback to simple response
+      answer = `Great choice! I found ${topProducts.length} products that match your search. 🛍️\n\nClick any product below to learn more!`;
     }
 
-    answer += "\n\nClick any product below to learn more!";
-
-    console.log(" Sending response\n");
+    console.log("✅ Sending response\n");
     res.json({ answer, topProducts });
   } catch (err) {
-    console.error(" Error:", err.message);
+    console.error("❌ Error:", err.message);
     res.status(500).json({ error: "Failed to process request" });
   }
 };
@@ -187,4 +274,3 @@ module.exports = {
   getEmbedding,
   chatWithBot,
 };
-
