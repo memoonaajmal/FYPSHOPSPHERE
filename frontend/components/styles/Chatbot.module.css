@@ -335,6 +335,48 @@
   animation: pulse 1s infinite;
 }
 
+/* 🎤 MIC BUTTON STATES */
+.micBtn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: white; /* icon always white */
+  transition: all 0.2s ease;
+}
+
+/* Idle (default) */
+.micIdle {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+/* Voice Ready */
+.micReady {
+  background: #4CAF50;
+}
+
+/* Listening */
+.micListening {
+  background: #ff4d4d;
+  animation: pulse 1s infinite;
+}
+
+/* Loading / Disabled */
+.micDisabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Hover effect */
+.micBtn:hover:not(.micDisabled) {
+  transform: scale(1.05);
+}
+
+
 .disclaimer {
   background: #fff3cd;
   color: #856404;

@@ -128,9 +128,7 @@ export default function ChatbotUI({
                                     alt={p.productDisplayName || "Product"}
                                     width={120}
                                     height={120}
-                                    onError={() =>
-                                      handleImageError(cleaned)
-                                    }
+                                    onError={() => handleImageError(cleaned)}
                                   />
                                 ) : (
                                   <div className={styles.noImage}>
@@ -180,27 +178,28 @@ export default function ChatbotUI({
                 voiceLoading
                   ? "Preparing microphone..."
                   : voiceReady
-                  ? "🎤 Ready! Speak now..."
-                  : listening
-                  ? "Listening..."
-                  : "Ask about products..."
+                    ? "🎤 Ready! Speak now..."
+                    : listening
+                      ? "Listening..."
+                      : "Ask about products..."
               }
               disabled={loading}
             />
 
-            {/* 🎤 MIC BUTTON */}
+            {/* MIC BUTTON */}
             <button
               onClick={toggleListening}
               title={getMicButtonTitle()}
               disabled={voiceLoading}
-              style={{
-                opacity: voiceLoading ? 0.5 : 1,
-                color: voiceReady
-                  ? "#4CAF50"
+              className={`${styles.micBtn} ${
+                voiceLoading
+                  ? styles.micDisabled
                   : listening
-                  ? "#ff9800"
-                  : "inherit",
-              }}
+                    ? styles.micListening
+                    : voiceReady
+                      ? styles.micReady
+                      : styles.micIdle
+              }`}
             >
               {listening ? <MicOff size={20} /> : <Mic size={20} />}
             </button>
