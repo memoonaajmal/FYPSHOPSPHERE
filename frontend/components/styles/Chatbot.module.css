@@ -335,6 +335,15 @@
   animation: pulse 1s infinite;
 }
 
+.disclaimer {
+  background: #fff3cd;
+  color: #856404;
+  padding: 8px;
+  font-size: 12px;
+  text-align: center;
+}
+
+
 @keyframes pulse {
   0% { transform: scale(1); }
   50% { transform: scale(1.1); }
