@@ -1,5 +1,6 @@
 // backend/src/controllers/jazzcashController.js
 const Order = require("../models/Order");
+const User = require("../models/User"); // ✅ Add this
 const { generateSecureHash, formatTxnDate } = require("../utils/jazzcash");
 const mongoose = require("mongoose");
 
@@ -8,19 +9,30 @@ const mongoose = require("mongoose");
  */
 exports.preparePayment = async (req, res) => {
   try {
-    const userId = req.user.uid;
+    const firebaseUid = req.user.uid; // Firebase UID from auth
     const { orderId } = req.query;
 
     if (!orderId || !mongoose.Types.ObjectId.isValid(orderId)) {
       return res.status(400).json({ message: "Invalid orderId" });
     }
 
+    // 🔑 Map Firebase UID → Mongo user
+    const user = await User.findOne({ firebaseUid });
+    if (!user) {
+      return res.status(401).json({ message: "User not found" });
+    }
+
     const order = await Order.findById(orderId);
     if (!order) return res.status(404).json({ message: "Order not found" });
-    if (order.user.toString() !== userId)
+
+    // 🔒 Compare Mongo ObjectId → ObjectId
+    if (!order.user.equals(user._id)) {
       return res.status(403).json({ message: "Forbidden" });
-    if (order.paymentMethod !== "JazzCash")
+    }
+
+    if (order.paymentMethod !== "JazzCash") {
       return res.status(400).json({ message: "Order not set for JazzCash" });
+    }
 
     const amountInt = Math.round(Number(order.grandTotal) * 100);
     const txnRefNo = `T${Date.now()}`;
@@ -106,7 +118,8 @@ exports.callbackHandler = async (req, res) => {
     }
 
     // Redirect to frontend (status=success or failed)
-    const frontendRedirect = `${process.env.CORS_ORIGINS || ""}/checkout?trackingId=${order.trackingId}&status=${respCode === '000' ? 'success' : 'failed'}`;
+// DEV ONLY: relative redirect avoids CORS issues
+const frontendRedirect = `/checkout?trackingId=${order.trackingId}&status=${respCode === '000' ? 'success' : 'failed'}`;
     console.log("Redirecting to frontend:", frontendRedirect);
 
     return res.send(`

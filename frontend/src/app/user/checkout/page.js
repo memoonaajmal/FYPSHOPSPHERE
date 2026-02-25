@@ -15,11 +15,14 @@ export default function CheckoutPage() {
     (acc, item) => acc + item.price * item.qty,
     0
   );
+
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const [discountedTotal, setDiscountedTotal] = useState(itemsTotal);
+  const [trackingId, setTrackingId] = useState("");
+
   const [formData, setFormData] = useState({
     firstName: "",
     lastName: "",
@@ -27,9 +30,10 @@ export default function CheckoutPage() {
     address: "",
     paymentMethod: "COD",
   });
-  const [trackingId, setTrackingId] = useState("");
 
-  // check if user is logged in
+  // -------------------------
+  // Auth check
+  // -------------------------
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (u) => {
       if (!u) {
@@ -42,7 +46,9 @@ export default function CheckoutPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // Update discounted total dynamically
+  // -------------------------
+  // JazzCash discount logic
+  // -------------------------
   useEffect(() => {
     if (formData.paymentMethod === "JazzCash") {
       const discount = itemsTotal * 0.05;
@@ -55,11 +61,56 @@ export default function CheckoutPage() {
   if (loading) return <p className={styles.text}>Loading...</p>;
   if (!user) return null;
 
+  // -------------------------
+  // Helpers
+  // -------------------------
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
+  const redirectToJazzCash = async (orderId, token) => {
+    try {
+      const res = await fetch(
+        `${BASE_URL}/api/jazzcash/prepare?orderId=${orderId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.message || "JazzCash prepare failed");
+      }
+
+      const { paymentUrl, paymentFields } = await res.json();
+
+      // create POST form for JazzCash
+      const form = document.createElement("form");
+      form.method = "POST";
+      form.action = paymentUrl;
+
+      Object.entries(paymentFields).forEach(([key, value]) => {
+        const input = document.createElement("input");
+        input.type = "hidden";
+        input.name = key;
+        input.value = value;
+        form.appendChild(input);
+      });
+
+      document.body.appendChild(form);
+      form.submit();
+    } catch (err) {
+      console.error("redirectToJazzCash error:", err);
+      alert(err.message || "Failed to redirect to JazzCash");
+    }
+  };
+
+  // -------------------------
+  // Submit handler
+  // -------------------------
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -73,8 +124,8 @@ export default function CheckoutPage() {
       const token = await user.getIdToken();
 
       const items = cartItems.map((item) => ({
-        productId: item.id,         
-        storeId: item.storeId,      
+        productId: item.id,
+        storeId: item.storeId,
         name: item.name,
         price: item.price,
         quantity: item.qty,
@@ -84,15 +135,17 @@ export default function CheckoutPage() {
       const paymentMethod =
         formData.paymentMethod === "COD" ? "COD" : "JazzCash";
 
+      // -------------------------
+      // Create order
+      // -------------------------
       const res = await fetch(`${BASE_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        
         body: JSON.stringify({
-          userId: user.uid,
+          userId: user.uid, // send Firebase UID
           email: user.email,
           firstName: formData.firstName,
           lastName: formData.lastName,
@@ -100,41 +153,58 @@ export default function CheckoutPage() {
           houseAddress: formData.address,
           items,
           itemsTotal:
-            formData.paymentMethod === "JazzCash"
-              ? discountedTotal
-              : itemsTotal,
+            paymentMethod === "JazzCash" ? discountedTotal : itemsTotal,
           paymentMethod,
         }),
       });
 
       const data = await res.json();
-      if (res.ok) {
-        setTrackingId(data.trackingId);
-        dispatch(clearCart());
-      } else {
+      if (!res.ok) {
         alert(data.message || "Checkout failed");
+        return;
       }
+
+      // clear cart
+      dispatch(clearCart());
+
+      // -------------------------
+      // JazzCash flow → redirect
+      // -------------------------
+      if (paymentMethod === "JazzCash") {
+        await redirectToJazzCash(data._id || data.orderId, token); // <-- ensure orderId from backend
+        return;
+      }
+
+      // COD flow → show success
+      setTrackingId(data.trackingId);
     } catch (err) {
-      console.error("createOrder error:", err);
+      console.error("checkout error:", err);
       alert("Something went wrong.");
     } finally {
       setLoading(false);
     }
   };
 
+  // -------------------------
+  // UI
+  // -------------------------
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Checkout</h1>
+
       {trackingId ? (
         <div>
           <div className={styles.successCard}>
-            <h2 className={styles.subtitle}> Order Placed Successfully!</h2>
+            <h2 className={styles.subtitle}>Order Placed Successfully!</h2>
             <p className={styles.text}>
               Your tracking ID is:{" "}
               <strong className={styles.strong}>{trackingId}</strong>
             </p>
           </div>
-          <button className={styles.button} onClick={() => router.push("/")}>
+          <button
+            className={styles.button}
+            onClick={() => router.push("/")}
+          >
             Continue Shopping
           </button>
         </div>
@@ -169,7 +239,6 @@ export default function CheckoutPage() {
           />
           <input
             type="email"
-            name="email"
             value={user.email}
             readOnly
             className={`${styles.input} ${styles.readOnlyInput}`}
@@ -183,7 +252,6 @@ export default function CheckoutPage() {
             className={styles.textarea}
           />
 
-          {/* Payment Method */}
           <div>
             <p className={styles.label}>Payment:</p>
             <div className={styles.radioGroup}>
