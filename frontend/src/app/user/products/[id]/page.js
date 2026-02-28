@@ -136,7 +136,7 @@ export default function ProductDetailsPage({ params }) {
           alt={product.productDisplayName}
           width={500}
           height={500}
-          style={{ objectFit: "cover", display: "block" }}
+          style={{ display: "block", objectFit: "contain", }}
         />
       </Box>
 
