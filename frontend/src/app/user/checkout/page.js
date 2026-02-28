@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import styles from "../../../styles/Checkout.module.css";
+import Recommendations from "../../../../components/Recommendations";
 
 export default function CheckoutPage() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function CheckoutPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const itemsTotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.qty,
-    0
+    0,
   );
 
   const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
@@ -22,6 +23,7 @@ export default function CheckoutPage() {
   const [loading, setLoading] = useState(true);
   const [discountedTotal, setDiscountedTotal] = useState(itemsTotal);
   const [trackingId, setTrackingId] = useState("");
+  const [token, setToken] = useState(null);
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -35,14 +37,18 @@ export default function CheckoutPage() {
   // Auth check
   // -------------------------
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (u) => {
+    const unsubscribe = onAuthStateChanged(auth, async (u) => {
       if (!u) {
         router.push("/authentication/auth?redirect=/user/checkout");
       } else {
         setUser(u);
+
+        const t = await u.getIdToken();
+        setToken(t);
       }
       setLoading(false);
     });
+
     return () => unsubscribe();
   }, [router]);
 
@@ -77,7 +83,7 @@ export default function CheckoutPage() {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-        }
+        },
       );
 
       if (!res.ok) {
@@ -193,7 +199,8 @@ export default function CheckoutPage() {
       <h1 className={styles.title}>Checkout</h1>
 
       {trackingId ? (
-        <div>
+        <>
+          {/* SUCCESS MESSAGE */}
           <div className={styles.successCard}>
             <h2 className={styles.subtitle}>Order Placed Successfully!</h2>
             <p className={styles.text}>
@@ -201,13 +208,18 @@ export default function CheckoutPage() {
               <strong className={styles.strong}>{trackingId}</strong>
             </p>
           </div>
-          <button
-            className={styles.button}
-            onClick={() => router.push("/")}
-          >
-            Continue Shopping
-          </button>
-        </div>
+
+          {/* RECOMMENDATION SECTION */}
+          <div className={styles.recommendationSection}>
+            <Recommendations token={token} />
+          </div>
+
+          <div style={{ marginTop: "30px" }}>
+            <button className={styles.button} onClick={() => router.push("/")}>
+              Continue Shopping
+            </button>
+          </div>
+        </>
       ) : (
         <form onSubmit={handleSubmit} className={styles.formWrapper}>
           <input
@@ -277,8 +289,7 @@ export default function CheckoutPage() {
                   className={styles.radioInput}
                 />
                 <span>
-                  JazzCash{" "}
-                  <span className={styles.discountText}>(5% off)</span>
+                  JazzCash <span className={styles.discountText}>(5% off)</span>
                 </span>
               </label>
             </div>

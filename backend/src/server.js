@@ -28,6 +28,7 @@ const analyticsRoutes = require("./routes/analyticsRoutes");
 const streamRoutes = require("./routes/streamRoutes");
 const chatbotRoutes = require("./routes/chatbot.routes");
 const chatRoutes = require("./routes/chat.routes");
+const recommendationRoutes = require("./routes/recommendation.routes");
 
 
 
@@ -111,6 +112,7 @@ app.use("/api/analytics", analyticsRoutes);
 app.use('/api/streams', streamRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/chat", chatRoutes);
+app.use("/api/recommendation", recommendationRoutes);
 
 
 // Swagger docs (optional)

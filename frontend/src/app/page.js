@@ -8,6 +8,9 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { ShoppingBag, Bot, Globe2, Sparkles} from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";import dynamic from 'next/dynamic';
 import ProductCard from "../../components/ProductCard";
+import { auth } from "../../firebase/config";
+import { onAuthStateChanged } from "firebase/auth";
+import Recommendations from "../../components/Recommendations";
 
 
 
@@ -90,6 +93,18 @@ function HomeContent() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [recentlyViewed, setRecentlyViewed] = useState([]);
+  const [token, setToken] = useState(null);
+
+  useEffect(() => {
+  const unsubscribe = onAuthStateChanged(auth, async (user) => {
+    if (user) {
+      const t = await user.getIdToken();
+      setToken(t);
+    }
+  });
+  return () => unsubscribe();
+}, []);
+  
 
   useEffect(() => {
     async function fetchStores() {
@@ -213,6 +228,15 @@ function HomeContent() {
           </>
         )}
       </section>
+
+
+      {token && (
+  <section className={styles.recommendationSection}>
+    <h2 className={styles.heading}>Recommended For You</h2>
+
+    <Recommendations token={token} variant="slider" />
+  </section>
+)}
 
 
 

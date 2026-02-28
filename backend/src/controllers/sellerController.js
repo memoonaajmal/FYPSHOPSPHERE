@@ -3,7 +3,7 @@ const Store = require("../models/Store");
 const Order = require("../models/Order");
 const Price = require("../models/Price");
 const mongoose = require("mongoose");
-const { getEmbedding } = require("./chatbot.controller");
+const { getEmbedding } = require("../utils/embedding");
 
 /**
  * Helper: generate a unique productId string
