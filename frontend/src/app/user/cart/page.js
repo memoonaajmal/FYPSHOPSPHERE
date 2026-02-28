@@ -48,7 +48,7 @@ export default function CartPage() {
         {/* LEFT SIDE - Items */}
         <div className={styles.cartLeft}>
           <h1 className={styles.cartTitle}>
-            Shopping Cart <span>({cartItems.length} Items)</span>
+            Shopping Cart <span>({cartItems.length} items)</span>
           </h1>
 
           <div className={styles.tableHeader}>

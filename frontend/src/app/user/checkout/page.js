@@ -221,94 +221,139 @@ export default function CheckoutPage() {
           </div>
         </>
       ) : (
-        <form onSubmit={handleSubmit} className={styles.formWrapper}>
-          <input
-            type="text"
-            name="firstName"
-            placeholder="First Name"
-            required
-            value={formData.firstName}
-            onChange={handleChange}
-            className={styles.input}
-          />
-          <input
-            type="text"
-            name="lastName"
-            placeholder="Last Name"
-            required
-            value={formData.lastName}
-            onChange={handleChange}
-            className={styles.input}
-          />
-          <input
-            type="text"
-            name="phone"
-            placeholder="Phone Number"
-            required
-            value={formData.phone}
-            onChange={handleChange}
-            className={styles.input}
-          />
-          <input
-            type="email"
-            value={user.email}
-            readOnly
-            className={`${styles.input} ${styles.readOnlyInput}`}
-          />
-          <textarea
-            name="address"
-            placeholder="House Address"
-            required
-            value={formData.address}
-            onChange={handleChange}
-            className={styles.textarea}
-          />
+        <div className={styles.checkoutGrid}>
+  {/* LEFT: FORM */}
+  <form onSubmit={handleSubmit} className={styles.formWrapper}>
+    <h2 className={styles.sectionTitle}>Shipping Details</h2>
 
-          <div>
-            <p className={styles.label}>Payment:</p>
-            <div className={styles.radioGroup}>
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="COD"
-                  checked={formData.paymentMethod === "COD"}
-                  onChange={handleChange}
-                  className={styles.radioInput}
-                />
-                <span>Cash on Delivery</span>
-              </label>
+    <input
+      type="text"
+      name="firstName"
+      placeholder="First Name"
+      required
+      value={formData.firstName}
+      onChange={handleChange}
+      className={styles.input}
+    />
+    <input
+      type="text"
+      name="lastName"
+      placeholder="Last Name"
+      required
+      value={formData.lastName}
+      onChange={handleChange}
+      className={styles.input}
+    />
+    <input
+      type="text"
+      name="phone"
+      placeholder="Phone Number"
+      required
+      value={formData.phone}
+      onChange={handleChange}
+      className={styles.input}
+    />
+    <input
+      type="email"
+      value={user.email}
+      readOnly
+      className={`${styles.input} ${styles.readOnlyInput}`}
+    />
+    <textarea
+      name="address"
+      placeholder="House Address"
+      required
+      value={formData.address}
+      onChange={handleChange}
+      className={styles.textarea}
+    />
 
-              <label className={styles.radioLabel}>
-                <input
-                  type="radio"
-                  name="paymentMethod"
-                  value="JazzCash"
-                  checked={formData.paymentMethod === "JazzCash"}
-                  onChange={handleChange}
-                  className={styles.radioInput}
-                />
-                <span>
-                  JazzCash <span className={styles.discountText}>(5% off)</span>
-                </span>
-              </label>
-            </div>
-          </div>
+    <div className={styles.paymentContainer}>
+        <h3 className={styles.paymentTitle}>Payment method:</h3>
 
-          <p className={styles.text}>
-            Total:{" "}
-            <strong className={styles.strong}>
-              PKR{" "}
-              {formData.paymentMethod === "JazzCash"
-                ? discountedTotal
-                : itemsTotal}
-            </strong>
-          </p>
+  <div className={styles.radioGroup}>
+    <label
+      className={`${styles.radioLabel} ${formData.paymentMethod === "COD" ? styles.active : ""}`}
+    >
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="COD"
+        checked={formData.paymentMethod === "COD"}
+        onChange={handleChange}
+      />
+<span className={styles.icon}>
+  <img src="/images/cod.png" alt="Cash on Delivery" />
+</span>      <span className={styles.text}>Cash on Delivery</span>
+    </label>
 
-          <button type="submit" disabled={loading} className={styles.button}>
-            {loading ? "Placing Order..." : "Place Order"}
-          </button>
-        </form>
+    <label
+      className={`${styles.radioLabel} ${formData.paymentMethod === "JazzCash" ? styles.active : ""}`}
+    >
+      <input
+        type="radio"
+        name="paymentMethod"
+        value="JazzCash"
+        checked={formData.paymentMethod === "JazzCash"}
+        onChange={handleChange}
+      />
+<span className={styles.icon}>
+  <img src="/images/jazzcash.png" alt="JazzCash" />
+</span>      <span className={styles.text}>JazzCash (5% off)</span>
+    </label>
+  </div>
+
+  <div className={styles.separator}></div>
+
+  <div className={styles.infoBox}>
+    {formData.paymentMethod === "COD" && (
+      <p>No advance payment. Pay later in cash at your doorstep.</p>
+    )}
+    {formData.paymentMethod === "JazzCash" && (
+      <p>Enjoy an instant 5% discount when you pay with JazzCash.</p>
+    )}
+  </div>
+</div>
+
+    <button type="submit" disabled={loading} className={styles.button}>
+      {loading ? "Placing Order..." : "Place Order"}
+    </button>
+  </form>
+
+  {/* RIGHT: CART SUMMARY */}
+  <div className={styles.summaryCard}>
+    <h2 className={styles.sectionTitle}>Order Summary</h2>
+
+    {cartItems.map((item) => (
+      <div key={item.id} className={styles.cartItem}>
+        <img src={item.image} className={styles.cartImage} />
+        <div className={styles.cartInfo}>
+          <p className={styles.cartName}>{item.name}</p>
+          <p className={styles.cartQty}>Qty: {item.qty}</p>
+        </div>
+        <p className={styles.cartPrice}>
+          PKR {item.price * item.qty}
+        </p>
+      </div>
+    ))}
+
+    <div className={styles.summaryDivider}></div>
+
+    <p className={styles.total}>
+      Total:{" "}
+      <strong>
+        PKR{" "}
+        {formData.paymentMethod === "JazzCash"
+          ? discountedTotal
+          : itemsTotal}
+      </strong>
+    </p>
+
+    {formData.paymentMethod === "JazzCash" && (
+      <p className={styles.discountNote}>5% discount applied</p>
+    )}
+  </div>
+</div>
       )}
     </div>
   );

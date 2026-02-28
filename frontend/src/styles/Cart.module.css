@@ -1,51 +1,69 @@
-/* ======== Page Background Sheen (outside cart) ======== */
+/* ======== Page Wrapper ======== */
 .cartPageWrapper {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue-soft) 100%);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
   padding: 3rem 0;
-  overflow-x: auto; /* allow horizontal scroll for small screens */
+  overflow-x: auto;
+
+  /* Deep dark navy background */
+  background: #0d1320;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Glowing mesh blobs remain unchanged */
 .cartPageWrapper::before {
   content: "";
-  position: absolute;
-  top: 0;
-  left: -50%;
-  width: 200%;
-  height: 100%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.06),
-    rgba(39,70,144,0.04),
-    rgba(234,240,251,0.06)
-  );
-  transform: rotate(5deg);
-  opacity: 0.6;
+  position: fixed;
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.35) 0%, transparent 65%);
+  border-radius: 50%;
   pointer-events: none;
-  animation: pageSheen 14s ease-in-out infinite alternate;
+  z-index: 0;
+  filter: blur(40px);
 }
 
-@keyframes pageSheen {
-  0% { transform: rotate(5deg) translateX(-3%); }
-  100% { transform: rotate(5deg) translateX(3%); }
+.cartPageWrapper::after {
+  content: "";
+  position: fixed;
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.28) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
 }
 
-/* ======== Cart Page ======== */
+/* ======== Cart Container ======== */
 .cartPage {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 2rem;
   max-width: 1100px;
-  margin: 3rem auto;
   padding: 2rem;
-  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+
+  /* Rounded corners and subtle shadow */
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 255, 0.98));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
   color: var(--text);
   font-family: "Inter", sans-serif;
+
+  /* sit above background blobs */
+  position: relative;
+  z-index: 1;
 }
 
 .cartLeft {
