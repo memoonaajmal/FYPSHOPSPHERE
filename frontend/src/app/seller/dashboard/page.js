@@ -15,7 +15,7 @@ import Image from "next/image";
 export default function SellerDashboard() {
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  
   useEffect(() => {
     const auth = getAuth();
 
@@ -51,40 +51,43 @@ export default function SellerDashboard() {
       <div className={styles.dashboard}>
         
         {/*  Dashboard Intro Section  */}
-<div className={styles.topSection}>
-  {/* Title centered at the top */}
-  <h1 className={styles.sectionTitleTop}>Seller Dashboard</h1>
+<div className={styles.sdHeroSection}>
+  <div className={styles.sdHeroRow}>
 
-  {/* Main Row */}
-  <div className={styles.topRow}>
-    {/*  Left Side: Buttons  */}
-    <div className={styles.leftButtons}>
-      <Link href="/seller/products">
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>🛍️ View My Products</h2>
-          <p className={styles.cardText}>Manage, add, or update products</p>
-        </div>
-      </Link>
+    {/* LEFT HERO */}
+    <div className={styles.sdHeroLeft}>
+      <h1 className={styles.sdHeroTitle}>
+        Your Products, <br /> <span>Live and Interactive.</span>
+      </h1>
 
-      <Link href="/seller/orders">
-        <div className={styles.card}>
-          <h2 className={styles.cardTitle}>📦 Order History</h2>
-          <p className={styles.cardText}>Track all placed orders easily</p>
-        </div>
-      </Link>
-    </div>
+      <p className={styles.sdHeroSubtitle}>
+        Bring your brand to life with live streaming that connects with customers.
+      </p>
 
-    {/*  Right Side: Live Commerce Feature  */}
-    <div className={styles.rightFeature}>
-      <div className={styles.sliderBackground}>
-        {/* You can replace with an actual slider later */}
-        <div className={styles.overlay}></div>
-<Link href="/seller/GoLive" className={styles.liveButtonLink}>
-  <button className={styles.liveButton}>🎥 Live Commerce Feature</button>
-</Link>
+      <div className={styles.sdHeroActions}>
+        <Link href="/seller/GoLive">
+          <button className={styles.sdPrimaryBtn}>Start Streaming</button>
+        </Link>
 
+        <Link href="/seller/orders">
+          <button className={styles.sdSecondaryBtn}>Your Catalog</button>
+        </Link>
       </div>
     </div>
+
+
+
+{/* RIGHT SIDE */}
+<div className={styles.sdHeroRight}>
+  <div className={styles.sdImage}>
+    <div
+      className={styles.sdImageInner}
+      style={{ backgroundImage: "url(/images/dashboard.png)" }}
+    />
+  </div>
+</div>
+
+
   </div>
 </div>
 
