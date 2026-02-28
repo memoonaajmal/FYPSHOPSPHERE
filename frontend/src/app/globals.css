@@ -20,8 +20,6 @@
   --section-bg: var(--blue-soft);
   --text: var(--navy);
 
-  /* Navbar height = pill height (~52px) + top+bottom padding (2 × 0.5rem = ~16px) */
-  --navbar-height: 68px;
 }
 
 body {
@@ -66,28 +64,3 @@ a {
   padding: 0 !important;
 }
 
-/* Adjust for fixed navbar so content doesn't hide underneath */
-body {
-  padding-top: var(--navbar-height);
-}
-
-/* Laptop screens */
-@media (max-width: 1280px) {
-  :root {
-    --navbar-height: 68px;
-  }
-}
-
-/* Tablets / small laptops */
-@media (max-width: 1024px) {
-  :root {
-    --navbar-height: 68px;
-  }
-}
-
-/* Mobile screens */
-@media (max-width: 900px) {
-  :root {
-    --navbar-height: 68px;
-  }
-}
