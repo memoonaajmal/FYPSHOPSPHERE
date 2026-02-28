@@ -29,7 +29,7 @@
 /* SECTION */
 .sdHeroSection {
   background: var(--section-bg);
-  padding: 60px;
+  padding: 130px 60px 60px; /* top | left-right | bottom */
   border-radius: 20px;
   box-shadow: var(--card-shadow);
 }
