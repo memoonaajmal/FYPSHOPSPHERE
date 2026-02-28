@@ -4,7 +4,7 @@
   "main": "src/server.js",
   "scripts": {
     "dev": "nodemon --ignore data/ src/server.js",
-    "start": "node src/server.js",
+    "start": "npm run dev",
     "seed": "node scripts/seed.js",
     "buildStores": "node scripts/buildStores.js",
     "seedPrices": "node scripts/seedPrices.js",

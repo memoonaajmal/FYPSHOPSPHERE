@@ -150,8 +150,8 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
             const re = f[263];
             const cx = ((le.x + re.x) / 2) * c.width;
             const cy = ((le.y + re.y) / 2) * c.height;
-            const w = rec.glasses.width_px;
-            const h = w * 0.45;
+         const w = sm.ipd * 1.6;
+const h = w * (o.naturalHeight / o.naturalWidth);
             ctx.drawImage(o, cx - w / 2, cy - h / 1.8, w, h);
           }
         }else if (t.includes("ring") && handR?.landmarks?.[0]) {
