@@ -1,6 +1,5 @@
 "use client";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { ShoppingCart, Heart, User, Menu, X } from "lucide-react";
@@ -11,7 +10,7 @@ import styles from "./styles/Navbar.module.css";
 export default function Navbar() {
   const { user } = useAuth();
   const [role, setRole] = useState(null);
-  const [isRoleLoaded, setIsRoleLoaded] = useState(false); 
+  const [isRoleLoaded, setIsRoleLoaded] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const router = useRouter();
@@ -24,59 +23,57 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  //CHECK ROLE AND STORE 
-useEffect(() => {
-  setIsRoleLoaded(false);
-  const auth = getAuth();
+  // CHECK ROLE AND STORE
+  useEffect(() => {
+    setIsRoleLoaded(false);
+    const auth = getAuth();
 
-  const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
-    if (!user || !currentUser) {
-      setRole(null);
-      setIsRoleLoaded(true);
-      return;
-    }
+    const unsubscribe = auth.onAuthStateChanged(async (currentUser) => {
+      if (!user || !currentUser) {
+        setRole(null);
+        setIsRoleLoaded(true);
+        return;
+      }
 
-    const userRoles = user.roles || [];
+      const userRoles = user.roles || [];
 
-    if (userRoles.includes("admin")) {
-      setRole("admin");
-      setIsRoleLoaded(true);
-    } else if (userRoles.includes("seller")) {
-      try {
-        const token = await currentUser.getIdToken();
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/stores/check/exists`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-            credentials: "include",
-          }
-        );
+      if (userRoles.includes("admin")) {
+        setRole("admin");
+        setIsRoleLoaded(true);
+      } else if (userRoles.includes("seller")) {
+        try {
+          const token = await currentUser.getIdToken();
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASE_URL}/api/stores/check/exists`,
+            {
+              headers: { Authorization: `Bearer ${token}` },
+              credentials: "include",
+            }
+          );
 
-        if (!res.ok) throw new Error("Unauthorized");
+          if (!res.ok) throw new Error("Unauthorized");
 
-        const data = await res.json();
-        setRole(data.hasStore ? "seller" : "new-seller");
-      } catch (error) {
-        console.error("Failed to fetch seller store:", error);
-        setRole("new-seller");
-      } finally {
+          const data = await res.json();
+          setRole(data.hasStore ? "seller" : "new-seller");
+        } catch (error) {
+          console.error("Failed to fetch seller store:", error);
+          setRole("new-seller");
+        } finally {
+          setIsRoleLoaded(true);
+        }
+      } else {
+        setRole("user");
         setIsRoleLoaded(true);
       }
-    } else {
-      setRole("user");
-      setIsRoleLoaded(true);
-    }
-  });
+    });
 
-  return () => unsubscribe();
-}, [user]);
+    return () => unsubscribe();
+  }, [user]);
 
-
-  //  SCROLL FUNCTIONS 
+  // SCROLL FUNCTIONS
   const scrollToElementWithOffset = (selector) => {
     const el = document.querySelector(selector);
     if (!el) return false;
-
     const nav = document.getElementById("main-navbar");
     const navHeight = nav ? nav.getBoundingClientRect().height : 0;
     const rectTop = el.getBoundingClientRect().top + window.scrollY;
@@ -123,9 +120,13 @@ useEffect(() => {
     }
   }, [pathname]);
 
-  //  CENTER LINKS 
+  // Helper: is this link active?
+  const isActive = (href) =>
+    pathname === href || pathname.startsWith(href + "/");
+
+  // CENTER LINKS
   const renderCenterLinks = () => {
-    if (!isRoleLoaded) return null; 
+    if (!isRoleLoaded) return null;
 
     if (role === "seller") {
       return (
@@ -142,81 +143,134 @@ useEffect(() => {
           >
             Customer Analytics
           </button>
-          <Link href="/seller/products">My Products</Link>
-          <Link href="/seller/orders">Order History</Link>
-          <Link href="/seller/GoLive">Go Live</Link>
+          <Link
+            href="/seller/products"
+            className={isActive("/seller/products") ? styles.active : ""}
+          >
+            My Products
+          </Link>
+          <Link
+            href="/seller/orders"
+            className={isActive("/seller/orders") ? styles.active : ""}
+          >
+            Order History
+          </Link>
+          <Link
+            href="/seller/GoLive"
+            className={isActive("/seller/GoLive") ? styles.active : ""}
+          >
+            Go Live
+          </Link>
         </>
       );
     }
 
     if (role === "new-seller") {
-      return ;
+      return null;
     }
 
     if (role === "admin") {
       return (
         <>
-          <Link href="/admin/users">Manage Users</Link>
-          <Link href="/admin/stores">Manage Stores</Link>
-          <Link href="/admin/store-requests">Approve Stores</Link>
+          <Link
+            href="/admin/users"
+            className={isActive("/admin/users") ? styles.active : ""}
+          >
+            Manage Users
+          </Link>
+          <Link
+            href="/admin/stores"
+            className={isActive("/admin/stores") ? styles.active : ""}
+          >
+            Manage Stores
+          </Link>
+          <Link
+            href="/admin/store-requests"
+            className={isActive("/admin/store-requests") ? styles.active : ""}
+          >
+            Approve Stores
+          </Link>
         </>
       );
     }
 
+    // Default: guest or user
     return (
       <>
-        <Link href="/user/products">Explore Products</Link>
-        {role === "user" && <Link href="/user/orders">My Orders</Link>}
-        <Link href="/footer/quickLinks/about">About Us</Link>
-                {role === "user" && <Link href="/user/LiveList">Live</Link>}
-
+        <Link
+          href="/user/products"
+          className={isActive("/user/products") ? styles.active : ""}
+        >
+          Explore Products
+        </Link>
+        {role === "user" && (
+          <Link
+            href="/user/orders"
+            className={isActive("/user/orders") ? styles.active : ""}
+          >
+            My Orders
+          </Link>
+        )}
+        <Link
+          href="/footer/quickLinks/about"
+          className={isActive("/footer/quickLinks/about") ? styles.active : ""}
+        >
+          About Us
+        </Link>
+        {role === "user" && (
+          <Link
+            href="/user/LiveList"
+            className={isActive("/user/LiveList") ? styles.active : ""}
+          >
+            Live
+          </Link>
+        )}
       </>
     );
   };
 
-  //  RIGHT ICONS 
+  // RIGHT ICONS
   const renderRightIcons = () => {
     if (!isRoleLoaded) return null;
 
     if (role === "admin" || role === "seller" || role === "new-seller") {
       return (
-        <div className={styles.icons}>
-          <Link href="/profile">
-            <User size={22} />
-          </Link>
-        </div>
+        <Link href="/profile">
+          <User size={20} />
+        </Link>
       );
     }
 
     if (role === "user") {
       return (
-        <div className={styles.icons}>
+        <>
           <Link href="/user/cart">
-            <ShoppingCart size={22} />
+            <ShoppingCart size={20} />
           </Link>
           <Link href="/user/wishlist">
-            <Heart size={22} />
+            <Heart size={20} />
           </Link>
           <Link href="/profile">
-            <User size={22} />
+            <User size={20} />
           </Link>
-        </div>
+        </>
       );
     }
 
+    // Guest — Login / Sign Up as a distinct white pill button
     return (
-      <div className={styles.icons}>
+      <>
         <Link href="/user/cart">
-          <ShoppingCart size={22} />
+          <ShoppingCart size={20} />
         </Link>
         <Link href="/user/wishlist">
-          <Heart size={22} />
+          <Heart size={20} />
         </Link>
-        <Link href="/authentication/auth">
-          <User size={22} />
+        <Link href="/authentication/auth" className={styles.loginBtn}>
+          <User size={18} />
           <span>Login / Sign Up</span>
         </Link>
-      </div>
+      </>
     );
   };
 
@@ -225,38 +279,30 @@ useEffect(() => {
       id="main-navbar"
       className={`${styles.navbar} ${isScrolled ? styles.scrolled : ""}`}
     >
-      <div className={styles.navBackground}></div>
       <div className={styles.navInner}>
+        {/* LOGO — text only, no image */}
         <div className={styles.logoWrapper}>
           <Link href="/" className={styles.logoLink}>
-            <Image
-              src={`${process.env.NEXT_PUBLIC_BASE_URL.replace(
-                /\/$/,
-                ""
-              )}/images/NavbarLogo.png`}
-              alt="ShopSphere Logo"
-              width={40}
-              height={40}
-              className={styles.logoImg}
-              priority
-            />
             <span className={styles.logoText}>ShopSphere</span>
           </Link>
         </div>
 
-        {/*  CENTER LINKS  */}
-        <div className={`${styles.centerLinks} ${menuOpen ? styles.active : ""}`}>
+        {/* CENTER LINKS */}
+        <div
+          className={`${styles.centerLinks} ${menuOpen ? styles.active : ""}`}
+        >
           {renderCenterLinks()}
         </div>
 
-        {/*  RIGHT ICONS + HAMBURGER  */}
+        {/* RIGHT ICONS + HAMBURGER */}
         <div className={styles.icons}>
           {renderRightIcons()}
           <button
             className={styles.hamburger}
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-label="Toggle menu"
           >
-            {menuOpen ? <X size={24} /> : <Menu size={24} />}
+            {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
       </div>

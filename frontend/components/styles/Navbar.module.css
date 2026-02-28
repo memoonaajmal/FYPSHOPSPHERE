@@ -1,79 +1,89 @@
 /* ---------- Navbar Layout ---------- */
 .navbar {
-  position: fixed; 
+  position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   z-index: 9999;
   display: flex;
   justify-content: center;
-  padding: 0.8rem 2rem;
-  background: rgba(255, 255, 255, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  transition: all 0.3s ease;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  padding: 0.5rem 0.75rem;
+  background: transparent;
+  transition: padding 0.3s ease;
+  pointer-events: none;
 }
 
-/* ---------- Frosted Blur Background ---------- */
 .navBackground {
-  position: absolute;
-  inset: 0;
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  background: rgba(255, 255, 255, 0.15);
-  z-index: -1;
+  display: none;
 }
 
-/* ---------- Inner Container ---------- */
+/* ---------- The Single Unified Pill ---------- */
 .navInner {
+  pointer-events: all;
   position: relative;
   width: 100%;
-  max-width: 1400px; /* default max-width */
-  display: grid;
-  grid-template-columns: minmax(120px, 1fr) auto minmax(120px, 1fr);
+  max-width: 1400px;
+  display: flex;
   align-items: center;
-  column-gap: 1rem;
+  justify-content: space-between;
+  gap: 0;
+
+  background: #1e2a40;
+  border-radius: 100px;
+  padding: 0.35rem 0.45rem 0.35rem 1.4rem;
+  box-shadow:
+    0 8px 32px rgba(15, 20, 40, 0.35),
+    0 2px 8px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  transition: box-shadow 0.3s ease, background 0.3s ease, padding 0.3s ease;
 }
 
-/* ---------- Logo Section ---------- */
+.navbar.scrolled .navInner {
+  background: #19243a;
+  box-shadow:
+    0 12px 40px rgba(15, 20, 40, 0.45),
+    0 3px 10px rgba(0, 0, 0, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+/* ---------- Logo — styled text only, no image ---------- */
 .logoWrapper {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  flex-shrink: 0;
   background: transparent;
-  border-radius: 10px;
-  padding: 0.3rem 0.6rem;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
+  padding: 0;
+  border-radius: 0;
+  box-shadow: none;
 }
 
 .logoLink {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
   text-decoration: none;
-  transition: transform 0.2s ease;
-}
-
-.logoLink:hover {
-  transform: scale(1.05);
+  padding: 0.4rem 0;
 }
 
 .logoImg {
-  border-radius: 10px;
-  transition: transform 0.3s ease;
+  display: none;
 }
 
 .logoText {
-  font-size: 1.5rem;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--navy), var(--blue));
-  color: transparent;
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  white-space: nowrap;
+  font-style: italic;
+  /* "Shop" in white, "Sphere" in soft accent */
+  background: linear-gradient(90deg, #ffffff 0%, #ffffff 45%, #7b9fd4 52%, #4d73be 100%);
   background-clip: text;
   -webkit-background-clip: text;
-  letter-spacing: 0.5px;
-  white-space: nowrap;
+  color: transparent;
+  transition: opacity 0.2s ease;
+}
+
+.logoLink:hover .logoText {
+  opacity: 0.82;
 }
 
 /* ---------- Center Links ---------- */
@@ -81,117 +91,135 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 1.8rem;
-  flex-wrap: wrap;
+  gap: 0.1rem;
+  flex: 1;
+  padding: 0 0.6rem;
 }
 
-.centerLinks a {
+.centerLinks a,
+.navBtn {
   position: relative;
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.68);
   font-weight: 500;
+  font-size: 0.88rem;
   text-decoration: none;
-  transition: color 0.3s ease;
+  padding: 0.48rem 1rem;
+  border-radius: 100px;
+  transition: background 0.2s ease, color 0.2s ease;
+  white-space: nowrap;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.1px;
 }
 
-.centerLinks a::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--blue), var(--blue-soft));
-  border-radius: 2px;
-  transition: width 0.3s ease;
+.centerLinks a::after,
+.navBtn::after {
+  display: none;
 }
 
-.centerLinks a:hover {
-  color: var(--blue);
+.centerLinks a:hover,
+.navBtn:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: none;
 }
 
-.centerLinks a:hover::after {
-  width: 100%;
+/* Active — white filled pill */
+.centerLinks a.active {
+  background: #ffffff;
+  color: #1e2a40 !important;
+  font-weight: 600;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.centerLinks a.active:hover {
+  background: #f0f4ff;
+  color: #1e2a40 !important;
 }
 
 /* ---------- Right Icons ---------- */
 .icons {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  gap: 1.2rem;
-  min-width: 120px;
+  gap: 0.1rem;
+  flex-shrink: 0;
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
 }
 
 .icons a {
-  color: var(--text);
+  color: rgba(255, 255, 255, 0.72);
   display: flex;
   align-items: center;
   text-decoration: none;
-  transition: transform 0.2s ease, color 0.3s ease;
+  padding: 0.45rem 0.55rem;
+  border-radius: 100px;
+  transition: background 0.2s ease, color 0.2s ease;
 }
 
 .icons a:hover {
-  transform: scale(1.1);
-  color: var(--blue);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
+  transform: none;
 }
 
 .icons span {
-  margin-left: 0.4rem;
-  font-size: 0.9rem;
-  color: var(--blue);
-  font-weight: 500;
+  margin-left: 0.3rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  white-space: nowrap;
 }
 
-/* ---------- Nav Button ---------- */
-.navBtn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: var(--text);
-  font-weight: 500;
-  transition: color 1s ease;
-  position: relative;
-  font-size: inherit;
+/* Login button — stands out as white pill */
+.loginBtn {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.35rem;
+  background: #ffffff !important;
+  color: #1e2a40 !important;
+  padding: 0.45rem 1.1rem !important;
+  border-radius: 100px;
+  font-weight: 600;
+  font-size: 0.85rem;
+  text-decoration: none;
+  transition: background 0.2s ease !important;
+  margin-left: 0.3rem;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.15);
 }
 
-.navBtn::after {
-  content: "";
-  position: absolute;
-  left: 0;
-  bottom: -4px;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--blue), var(--blue-soft));
-  border-radius: 2px;
-  transition: width 1s ease;
+.loginBtn:hover {
+  background: #dce8ff !important;
+  color: #1e2a40 !important;
+  transform: none !important;
 }
 
-.navBtn:hover {
-  color: var(--blue);
+.loginBtn span {
+  color: #1e2a40 !important;
+  margin-left: 0 !important;
+  font-size: 0.85rem;
 }
 
-.navBtn:hover::after {
-  width: 100%;
-}
-
-.iconWrapper {
-  position: relative;
-  display: inline-block;
-}
-
-/* ---------- Hamburger Button ---------- */
+/* ---------- Hamburger ---------- */
 .hamburger {
   display: none;
   background: none;
   border: none;
   cursor: pointer;
-  color: var(--text);
-  transition: transform 0.2s ease;
+  color: rgba(255, 255, 255, 0.8);
+  padding: 0.45rem 0.6rem;
+  border-radius: 100px;
+  transition: background 0.2s ease, color 0.2s ease;
+  margin-left: 0.2rem;
 }
 
 .hamburger:hover {
-  transform: scale(1.1);
-  color: var(--blue);
+  background: rgba(255, 255, 255, 0.1);
+  color: #ffffff;
 }
 
 /* ---------- Mobile Dropdown ---------- */
@@ -199,68 +227,62 @@
   display: flex !important;
   flex-direction: column;
   position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  padding: 1rem 0;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+  top: calc(100% + 0.6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: auto;
+  min-width: 240px;
+  background: #1e2a40;
+  border-radius: 20px;
+  padding: 0.5rem;
+  box-shadow: 0 10px 40px rgba(15, 20, 40, 0.45), 0 2px 8px rgba(0,0,0,0.2);
+  gap: 0.15rem;
+  flex: unset;
   z-index: 9998;
 }
 
-.centerLinks.active a {
-  padding: 0.8rem 2rem;
+.centerLinks.active a,
+.centerLinks.active .navBtn {
+  padding: 0.7rem 1.4rem;
   width: 100%;
   text-align: center;
+  border-radius: 12px;
 }
 
-/* ---------- Navbar Scroll ---------- */
+/* ---------- Scroll Shrink ---------- */
 .navbar.scrolled {
-  background: rgba(255, 255, 255, 0.35);
-  box-shadow: 0 6px 25px rgba(0, 0, 0, 0.12);
-  transition: background 0.3s ease, box-shadow 0.3s ease;
+  padding: 0.4rem 0.75rem;
 }
 
-/* ---------- Responsive Breakpoints ---------- */
-
-/* Laptops & Medium Screens */
+/* ---------- Responsive ---------- */
 @media (max-width: 1280px) {
-  .centerLinks { gap: 1.4rem; }
-  .logoText { font-size: 1.4rem; }
-  .navInner { padding: 0.8rem 1.5rem; }
+  .centerLinks a, .navBtn { font-size: 0.83rem; padding: 0.44rem 0.82rem; }
+  .logoText { font-size: 1.2rem; }
 }
 
-/* Tablets */
 @media (max-width: 1024px) {
-  .centerLinks { gap: 1.2rem; }
-  .logoText { font-size: 1.3rem; }
+  .centerLinks a, .navBtn { font-size: 0.8rem; padding: 0.4rem 0.7rem; }
 }
 
-/* Small Screens / Mobile */
 @media (max-width: 900px) {
-  .navInner { grid-template-columns: 1fr auto auto; padding: 0.8rem 1.2rem; }
-  .centerLinks { display: none; }
+  .centerLinks { display: none; flex: unset; padding: 0; }
   .hamburger { display: inline-flex; }
-  .logoText { font-size: 1.3rem; }
+  .logoText { font-size: 1.1rem; }
+  .navInner { padding: 0.35rem 0.45rem 0.35rem 1rem; }
 }
 
-/* Ultra-Wide Screens */
 @media (min-width: 1600px) {
-  .navInner { max-width: 1800px; }
-  .logoText { font-size: 1.8rem; }
-  .centerLinks { gap: 2.5rem; }
+  .navInner { max-width: 1700px; }
+  .logoText { font-size: 1.5rem; }
+  .centerLinks a, .navBtn { font-size: 0.95rem; padding: 0.52rem 1.2rem; }
 }
 
 @media (min-width: 2000px) {
-  .navInner { display: flex; justify-content: space-between; }
+  .navInner { max-width: 1900px; }
 }
 
-/* Extreme 4K Screens */
 @media (min-width: 3000px) {
-  .navInner { max-width: 2800px; }
-  .logoText { font-size: 2rem; }
-  .centerLinks { gap: 3rem; }
-  .icons { gap: 2rem; min-width: 180px; }
+  .navInner { max-width: 2600px; }
+  .logoText { font-size: 1.8rem; }
+  .centerLinks a, .navBtn { font-size: 1.1rem; padding: 0.65rem 1.4rem; }
 }

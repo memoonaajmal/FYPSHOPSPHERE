@@ -1,27 +1,28 @@
 :root {
   --white: #ffffff;
 
-  --navy: #26314a;            /* Dark navy for headers, accents */
-  --blue: #274690;            /* Primary blue for buttons, links */
+  --navy: #26314a;
+  --blue: #274690;
   --blue-light: #3e5ba9;
-  --blue-verylight: #6e82b8;  /* Lighter blue for hover, highlights */
-  --blue-soft: #eaf0fb;       /* Very light blue for card backgrounds/sections */
-  --success: #00b894;         /* Emerald */
-  --warning: #e17055;         /* Coral */
-  --danger: #d63031;          /* Crimson */
-  --muted: #8f9bb3;           /* Muted text */
-  --border: #dbe4ee;          /* Soft blue border */
-  --card-shadow: 0 8px 28px rgba(39, 70, 144, 0.08); /* Blue shadow */
-  --bg: var(--white);         /* Keep background white */
+  --blue-verylight: #6e82b8;
+  --blue-soft: #eaf0fb;
+  --success: #00b894;
+  --warning: #e17055;
+  --danger: #d63031;
+  --muted: #8f9bb3;
+  --border: #dbe4ee;
+  --card-shadow: 0 8px 28px rgba(39, 70, 144, 0.08);
+  --bg: var(--white);
 
   --accent-gradient: linear-gradient(90deg, var(--blue), var(--blue-light));
   --button-bg: var(--blue);
   --button-text: var(--white);
   --section-bg: var(--blue-soft);
   --text: var(--navy);
-  --navbar-height: 75px; /* default navbar height */
-}
 
+  /* Navbar height = pill height (~52px) + top+bottom padding (2 × 0.5rem = ~16px) */
+  --navbar-height: 68px;
+}
 
 body {
   color: var(--text);
@@ -30,7 +31,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-/* ...rest of your code... */
 
 @media (prefers-color-scheme: dark) {
   :root {
@@ -44,8 +44,6 @@ body {
   max-width: 100vw;
   overflow-x: hidden;
 }
-
-
 
 * {
   box-sizing: border-box;
@@ -70,27 +68,26 @@ a {
 
 /* Adjust for fixed navbar so content doesn't hide underneath */
 body {
-  padding-top: var(--navbar-height); /* adjust if navbar height changes */
+  padding-top: var(--navbar-height);
 }
 
-
-/* Laptop screens (wider screens) */
+/* Laptop screens */
 @media (max-width: 1280px) {
   :root {
-    --navbar-height: 100px; /* slightly taller */
+    --navbar-height: 68px;
   }
 }
 
 /* Tablets / small laptops */
 @media (max-width: 1024px) {
   :root {
-    --navbar-height: 101px; /* taller */
+    --navbar-height: 68px;
   }
 }
 
 /* Mobile screens */
 @media (max-width: 900px) {
   :root {
-    --navbar-height: 102px; /* tallest */
+    --navbar-height: 68px;
   }
 }
