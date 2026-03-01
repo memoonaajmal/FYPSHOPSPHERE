@@ -6,6 +6,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { clearCart } from "../../../../redux/CartSlice";
 import { onAuthStateChanged } from "firebase/auth";
 import styles from "../../../styles/Checkout.module.css";
+import successStyles from "../../../styles/SuccessCheckout.module.css";
 import Recommendations from "../../../../components/Recommendations";
 
 export default function CheckoutPage() {
@@ -200,25 +201,67 @@ export default function CheckoutPage() {
 
       {trackingId ? (
         <>
-          {/* SUCCESS MESSAGE */}
-          <div className={styles.successCard}>
-            <h2 className={styles.subtitle}>Order Placed Successfully!</h2>
-            <p className={styles.text}>
-              Your tracking ID is:{" "}
-              <strong className={styles.strong}>{trackingId}</strong>
-            </p>
-          </div>
+{/* SUCCESS MESSAGE */}
+<div className={successStyles.successCard}>
+  
+  {/* =========================
+       SECTION 1: Order Status & Progress
+  ========================= */}
+  <div className={successStyles.orderStatusSection}>
+    <div className={successStyles.successIcon}>✓</div>
+    <h2 className={successStyles.subtitle}>Order Placed Successfully!</h2>
+    <p className={successStyles.text}>
+      Your tracking ID is <strong className={successStyles.strong}>{trackingId}</strong>
+    </p>
 
-          {/* RECOMMENDATION SECTION */}
-          <div className={styles.recommendationSection}>
-            <Recommendations token={token} />
-          </div>
+    {/* Progress Tracker */}
+    <div className={successStyles.progressWrapper}>
+      <div className={successStyles.progressBar}>
+        <div className={successStyles.step}>
+          <div className={successStyles.stepCircle}>✓</div>
+          <div className={successStyles.stepLabel}>Order Confirmed</div>
+        </div>
+        <div className={successStyles.step}>
+          <div className={successStyles.stepCircle}>2</div>
+          <div className={successStyles.stepLabel}>In Production</div>
+        </div>
+        <div className={successStyles.step}>
+          <div className={successStyles.stepCircle}>3</div>
+          <div className={successStyles.stepLabel}>Quality Check</div>
+        </div>
+        <div className={successStyles.step}>
+          <div className={successStyles.stepCircle}>4</div>
+          <div className={successStyles.stepLabel}>Shipped</div>
+        </div>
+        <div className={successStyles.step}>
+          <div className={successStyles.stepCircle}>5</div>
+          <div className={successStyles.stepLabel}>Delivered</div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-          <div style={{ marginTop: "30px" }}>
-            <button className={styles.button} onClick={() => router.push("/")}>
-              Continue Shopping
-            </button>
-          </div>
+  {/* =========================
+       SECTION 2: Recommendations
+  ========================= */}
+  <div className={successStyles.recommendationSectionWrapper}>
+    <div className={successStyles.topProducts}>
+      <h2>Your Next Pick</h2>
+      <Recommendations token={token} variant="slider" />
+    </div>
+  </div>
+
+  {/* =========================
+       SECTION 3: Continue Shopping Button
+  ========================= */}
+  <div className={successStyles.continueButtonSection}>
+    <button className={successStyles.button} onClick={() => router.push("/")}>
+      Continue Shopping
+    </button>
+  </div>
+
+</div>
+
         </>
       ) : (
         <div className={styles.checkoutGrid}>
