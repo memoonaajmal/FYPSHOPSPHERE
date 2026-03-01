@@ -418,3 +418,11 @@
     transform: translateY(-8px);
   }
 }
+/* Prevent fixed-position breakage */
+.cartPageWrapper,
+.cartPage,
+.cartRow,
+.actionsContainer {
+  transform: none !important;
+  filter: none !important;
+}
