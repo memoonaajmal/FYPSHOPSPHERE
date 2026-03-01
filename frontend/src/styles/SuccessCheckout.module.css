@@ -2,16 +2,14 @@
    SUCCESS CARD FULL WIDTH
 ========================= */
 .successCard {
-  width: 100vw;               /* full viewport width */
+  width: 100vw;
   max-width: 100%;
-  margin: 0;                  /* remove auto centering */
-  background: var(--blue-soft);
-  padding: 60px 40px 40px;    /* extra top padding for icon */
+  margin: 0;
   box-shadow: var(--card-shadow);
   display: flex;
   flex-direction: column;
-  gap: 40px;                  /* spacing between sections */
   box-sizing: border-box;
+  overflow-x: hidden; /* ← ADD THIS */
 }
 
 /* =========================
@@ -28,7 +26,8 @@
    SECTION 1: ORDER STATUS & PROGRESS
 ========================= */
 .orderStatusSection {
-  padding: 50px 0px 30px;
+      background: var(--blue-soft);
+  padding: 150px 0px 50px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -37,7 +36,6 @@
   gap: 20px;
 }
 
-/* Success Icon Circle */
 .successIcon {
   width: 90px;
   height: 90px;
@@ -46,11 +44,15 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 48px;
-  color: var(--success);
-  font-weight: bold;
   margin-bottom: 25px;
   box-shadow: 0 10px 25px rgba(13, 19, 32, 0.15);
+  overflow: hidden; /* ensures image doesn't overflow */
+}
+
+.successIconImage {
+  width: 60%;       /* adjust size as needed */
+  height: 60%;
+  object-fit: contain; /* maintain aspect ratio */
 }
 
 /* Title */
@@ -127,6 +129,12 @@
   margin-bottom: 6px;
   z-index: 2;
 }
+/* Completed step (tick) */
+.completed {
+  background: var(--blue);   /* green or your preferred color */
+  color: var(--white);           /* tick color white */
+  box-shadow: 0 0 12px rgba(2, 6, 138, 0.4); /* optional glow */
+}
 
 .stepLabel {
   font-size: 0.875rem;
@@ -134,30 +142,51 @@
   text-align: center;
 }
 
+.continueButtonSection {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  min-width: 180px;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background: var(--blue-light);
+}
+
 /* =========================
    SECTION 2: RECOMMENDATIONS FULL WIDTH
 ========================= */
 .recommendationSectionWrapper {
-  width: 100vw;
-  position: relative;
-  left: 50%;
-  right: 50%;
-  margin-left: -50vw;
-  margin-right: -50vw;
+  width: 100%;           /* ← was 100vw with negative margins */
   background: var(--blue-soft);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  gap: 0;                  /* no gap since topProducts handles spacing */
+  gap: 0;
   padding: 0;
+  /* ← REMOVE: position, left, right, margin-left, margin-right */
 }
 
 .topProducts {
   position: relative;           
   width: 100%;                 /* full width of parent */
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
-  padding: 60px 0px 60px;           /* top/bottom 60px, left/right 60px */
+  padding: 45px 0px 60px;           /* top/bottom 60px, left/right 60px */
   display: flex;
   flex-direction: column;        /* heading above cards */
   align-items: center;           /* center heading and cards horizontally */
@@ -173,11 +202,11 @@
 
 /* Heading inside topProducts */
 .topProducts h2 {
-  font-size: 1.6rem;
-  font-weight: 700;
+  align-self: flex-start;   /* move heading to start */
+  width: 100%;              /* take full row */
+  text-align: left;         /* left-align text */
+  padding-left: 40px;       /* match section padding */
   color: var(--white);
-  text-align: center;
-  margin: 0;
 }
 
 /* Glowing mesh blobs BELOW cards */
@@ -211,7 +240,7 @@
 
 /* Scroll container and content */
 .scrollContainer {
-  overflow-x: auto;
+  overflow-x: hidden;
   overflow-y: hidden;
   width: 100%;
   padding-bottom: 8px;
@@ -222,7 +251,7 @@
   gap: 14px;
   width: max-content;
   align-items: stretch;
-  animation: scrollInfinite 28s linear infinite;
+  animation: scrollInfinite 38s linear infinite;
 }
 
 .scrollContent:hover {
@@ -258,34 +287,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 16px;
-}
-
-/* =========================
-   SECTION 3: CONTINUE BUTTON
-========================= */
-.continueButtonSection {
-  width: 100%;
-  display: flex;
-  justify-content: flex-start;
-  margin-top: 10px;
-}
-
-.button {
-  padding: 14px 20px;
-  border: none;
-  border-radius: 8px;
-  background: var(--button-bg);
-  color: var(--button-text);
-  font-weight: 600;
-  cursor: pointer;
-  width: auto;
-  min-width: 180px;
-  max-width: 300px;
-  transition: all 0.3s ease;
-}
-
-.button:hover {
-  background: var(--blue-light);
 }
 
 /* =========================

@@ -208,7 +208,13 @@ export default function CheckoutPage() {
        SECTION 1: Order Status & Progress
   ========================= */}
   <div className={successStyles.orderStatusSection}>
-    <div className={successStyles.successIcon}>✓</div>
+    <div className={successStyles.successIcon}>
+  <img
+    src="/images/orderconfirmation.png"
+    alt="Order Confirmation"
+    className={successStyles.successIconImage}
+  />
+</div>
     <h2 className={successStyles.subtitle}>Order Placed Successfully!</h2>
     <p className={successStyles.text}>
       Your tracking ID is <strong className={successStyles.strong}>{trackingId}</strong>
@@ -218,7 +224,7 @@ export default function CheckoutPage() {
     <div className={successStyles.progressWrapper}>
       <div className={successStyles.progressBar}>
         <div className={successStyles.step}>
-          <div className={successStyles.stepCircle}>✓</div>
+          <div className={`${successStyles.stepCircle} ${successStyles.completed}`}>✓</div>
           <div className={successStyles.stepLabel}>Order Confirmed</div>
         </div>
         <div className={successStyles.step}>
@@ -239,6 +245,12 @@ export default function CheckoutPage() {
         </div>
       </div>
     </div>
+  <div className={successStyles.continueButtonSection}>
+    <button className={successStyles.button} onClick={() => router.push("/")}>
+      Continue Shopping
+    </button>
+  </div>
+
   </div>
 
   {/* =========================
@@ -249,15 +261,6 @@ export default function CheckoutPage() {
       <h2>Your Next Pick</h2>
       <Recommendations token={token} variant="slider" />
     </div>
-  </div>
-
-  {/* =========================
-       SECTION 3: Continue Shopping Button
-  ========================= */}
-  <div className={successStyles.continueButtonSection}>
-    <button className={successStyles.button} onClick={() => router.push("/")}>
-      Continue Shopping
-    </button>
   </div>
 
 </div>

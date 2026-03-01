@@ -238,7 +238,7 @@
   gap: 14px;
   width: max-content;
   align-items: stretch;
-  animation: scrollInfinite 28s linear infinite;
+  animation: scrollInfinite 20s linear infinite;
 }
 
 .scrollContent:hover {
@@ -263,7 +263,6 @@
 }
 
 .productCardWrapper:hover {
-  transform: translateY(-6px) scale(1.02);
   background: var(--section-bg);
   box-shadow: 0 25px 60px rgba(39, 70, 144, 0.15);
   border: 1px solid var(--blue);
