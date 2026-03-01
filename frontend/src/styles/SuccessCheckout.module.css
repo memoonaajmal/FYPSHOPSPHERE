@@ -1,0 +1,297 @@
+/* =========================
+   SUCCESS CARD FULL WIDTH
+========================= */
+.successCard {
+  width: 100vw;               /* full viewport width */
+  max-width: 100%;
+  margin: 0;                  /* remove auto centering */
+  background: var(--blue-soft);
+  padding: 60px 40px 40px;    /* extra top padding for icon */
+  box-shadow: var(--card-shadow);
+  display: flex;
+  flex-direction: column;
+  gap: 40px;                  /* spacing between sections */
+  box-sizing: border-box;
+}
+
+/* =========================
+   UNIFORM SECTION WRAPPER
+========================= */
+.successSection {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* =========================
+   SECTION 1: ORDER STATUS & PROGRESS
+========================= */
+.orderStatusSection {
+  padding: 50px 0px 30px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;        /* center circle & text */
+  text-align: center;
+  gap: 20px;
+}
+
+/* Success Icon Circle */
+.successIcon {
+  width: 90px;
+  height: 90px;
+  background: var(--white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 48px;
+  color: var(--success);
+  font-weight: bold;
+  margin-bottom: 25px;
+  box-shadow: 0 10px 25px rgba(13, 19, 32, 0.15);
+}
+
+/* Title */
+.subtitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--blue);
+  margin-bottom: 10px;
+}
+
+/* Text */
+.text {
+  font-size: 15px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.strong {
+  font-weight: 700;
+  color: var(--blue-light);
+}
+
+/* =========================
+   PROGRESS TRACKER STYLE
+========================= */
+.progressWrapper {
+  width: 100%;
+  max-width: 700px;           /* fixed width for tracker */
+  margin: 0 auto;             /* center tracker in section */
+  background: var(--white);
+  padding: 30px;
+  border-radius: 14px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+}
+
+.progressBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.progressBar::before {
+  content: "";
+  position: absolute;
+  top: 18px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--border);
+  z-index: 0;
+}
+
+/* Step */
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.stepCircle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--blue-soft);
+  color: var(--blue);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  margin-bottom: 6px;
+  z-index: 2;
+}
+
+.stepLabel {
+  font-size: 0.875rem;
+  color: var(--blue);
+  text-align: center;
+}
+
+/* =========================
+   SECTION 2: RECOMMENDATIONS FULL WIDTH
+========================= */
+.recommendationSectionWrapper {
+  width: 100vw;
+  position: relative;
+  left: 50%;
+  right: 50%;
+  margin-left: -50vw;
+  margin-right: -50vw;
+  background: var(--blue-soft);
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 0;                  /* no gap since topProducts handles spacing */
+  padding: 0;
+}
+
+.topProducts {
+  position: relative;           
+  width: 100%;                 /* full width of parent */
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 60px 0px 60px;           /* top/bottom 60px, left/right 60px */
+  display: flex;
+  flex-direction: column;        /* heading above cards */
+  align-items: center;           /* center heading and cards horizontally */
+  gap: 40px;                     /* spacing between heading and cards */
+  box-sizing: border-box;
+
+  /* Dark navy background */
+  background: #0d1320;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Heading inside topProducts */
+.topProducts h2 {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--white);
+  text-align: center;
+  margin: 0;
+}
+
+/* Glowing mesh blobs BELOW cards */
+.topProducts::before {
+  content: "";
+  position: absolute;
+  bottom: -150px;               
+  left: -150px;                 
+  width: 700px;                 
+  height: 700px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.4) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;                   
+  filter: blur(60px);
+}
+
+.topProducts::after {
+  content: "";
+  position: absolute;
+  bottom: -100px;                
+  right: -120px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.35) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: -1;                   
+  filter: blur(50px);
+}
+
+/* Scroll container and content */
+.scrollContainer {
+  overflow-x: auto;
+  overflow-y: hidden;
+  width: 100%;
+  padding-bottom: 8px;
+}
+
+.scrollContent {
+  display: flex;
+  gap: 14px;
+  width: max-content;
+  align-items: stretch;
+  animation: scrollInfinite 28s linear infinite;
+}
+
+.scrollContent:hover {
+  animation-play-state: paused;
+}
+
+/* Individual cards inside the scroll */
+.productCardWrapper {
+  flex: 0 0 auto;
+  width: 240px;
+  background: var(--white);
+  border-radius: 10px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: 0 10px 25px rgba(39, 70, 144, 0.06);
+  transform: translateZ(0);
+  transition: transform 260ms ease, box-shadow 260ms ease, background 260ms ease;
+  border: 1px solid var(--border);
+  position: relative;
+  z-index: 1;                    
+}
+
+.productCardWrapper:hover {
+  background: var(--section-bg);
+  box-shadow: 0 25px 60px rgba(39, 70, 144, 0.15);
+  border: 1px solid var(--blue);
+}
+
+/* Grid fallback */
+.recommendationGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+/* =========================
+   SECTION 3: CONTINUE BUTTON
+========================= */
+.continueButtonSection {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 10px;
+}
+
+.button {
+  padding: 14px 20px;
+  border: none;
+  border-radius: 8px;
+  background: var(--button-bg);
+  color: var(--button-text);
+  font-weight: 600;
+  cursor: pointer;
+  width: auto;
+  min-width: 180px;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.button:hover {
+  background: var(--blue-light);
+}
+
+/* =========================
+   SCROLL ANIMATION KEYFRAMES
+========================= */
+@keyframes scrollInfinite {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
