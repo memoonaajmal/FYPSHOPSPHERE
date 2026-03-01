@@ -111,7 +111,7 @@ export default function AboutPage() {
             </div>
             <h3 className={styles.featureTitle}>Smart Recommendations</h3>
             <p className={styles.featureText}>
-              Discover products tailored to your preferences. Our AI analyzes your 
+              Discover products tailored to your preferences. Analyzes your 
               browsing history and behavior to suggest items you'll love, making 
               every shopping session personalized and efficient.
             </p>
@@ -123,9 +123,9 @@ export default function AboutPage() {
             </div>
             <h3 className={styles.featureTitle}>Order Management</h3>
             <p className={styles.featureText}>
-              Track and organize your purchase history effortlessly. Our AI-powered 
-              system lets you sort orders by date and category, making it simple to 
-              review past purchases and reorder favorites.
+              Track and organize your purchase history effortlessly. Our system lets you review past purchases and 
+              reorder your favorites easily.
+
             </p>
           </div>
 
