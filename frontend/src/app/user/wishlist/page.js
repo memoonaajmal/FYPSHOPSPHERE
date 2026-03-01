@@ -21,9 +21,17 @@ export default function WishlistPage() {
 
   if (wishlistItems.length === 0) {
     return (
-      <div className={styles.emptyCart}>
-        <h2>Your wishlist is empty ❤️</h2>
-      </div>
+      <div className={styles.emptyCartPage}>
+  <div className={styles.emptyCart}>
+    <img
+      src="/images/emptywishlist.png"
+      alt="Empty wishlist"
+      className={styles.emptyCartImage}
+    />
+    <h2>Your wishlist is empty!</h2>
+    <p>Explore more and shortlist some items.</p>
+  </div>
+</div>
     );
   }
 
