@@ -230,13 +230,7 @@ function HomeContent() {
       </section>
 
 
-      {token && (
-  <section className={styles.recommendationSection}>
-    <h2 className={styles.heading}>Recommended For You</h2>
-
-    <Recommendations token={token} variant="slider" />
-  </section>
-)}
+      
 
 
 
