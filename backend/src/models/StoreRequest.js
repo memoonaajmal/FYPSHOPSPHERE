@@ -6,7 +6,7 @@ const storeRequestSchema = new mongoose.Schema({
 
   storeName: { type: String, required: true },
   description: { type: String },
-  category: { type: String, enum: ["Electronics", "Clothing", "Grocery", "Other"], required: true },
+  category: { type: String, enum: ["Fashion", "Clothing", "Beauty & Health", "Home & Living", "Sports", "Electronics", "Grocery", "Other"], required: true },
 
   email: { type: String, required: true },
   phoneNumber: { type: String, required: true },

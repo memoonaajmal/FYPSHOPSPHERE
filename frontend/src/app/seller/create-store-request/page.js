@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import styles from "../styles/CreateStoreRequest.module.css";
+import fStyles from "../styles/Storerequestform.module.css";
 
 export default function CreateStoreRequest() {
   const { user } = useAuth();
@@ -13,12 +14,12 @@ export default function CreateStoreRequest() {
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("");
 
-  const [formVisible, setFormVisible] = useState(false); 
+  const [formVisible, setFormVisible] = useState(false);
 
   const [formData, setFormData] = useState({
     storeName: "",
     description: "",
-    category: "Electronics",
+    category: "Fashion",
     email: "",
     phoneNumber: "",
     businessName: "",
@@ -43,7 +44,7 @@ export default function CreateStoreRequest() {
     const fetchExistingRequest = async () => {
       try {
         const res = await fetch(
-          `${BASE_URL}/api/stores/my-request?sellerId=${user._id}`
+          `${BASE_URL}/api/stores/my-request?sellerId=${user._id}`,
         );
         if (res.status === 404) {
           setExistingRequest(null);
@@ -70,133 +71,191 @@ export default function CreateStoreRequest() {
   const handleFileChange = (e) =>
     setFiles({ ...files, [e.target.name]: e.target.files[0] });
 
- const handleSubmit = async (e) => {
-  e.preventDefault();
-  
-  //  Better validation
-  if (!user || !user._id) {
-    setMessage("❌ User session expired. Please login again.");
-    return;
-  }
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-  console.log(" User object:", user);
-  console.log(" Sending sellerId:", user._id);
-
-  const data = new FormData();
-  Object.entries(formData).forEach(([key, value]) => data.append(key, value));
-  if (files.cnicImage) data.append("cnicImage", files.cnicImage);
-  if (files.logo) data.append("logo", files.logo);
-  if (files.banner) data.append("banner", files.banner);
-  data.append("sellerId", user._id);
-
-  //  Log FormData contents
-  console.log(" FormData being sent:");
-  for (let pair of data.entries()) {
-    console.log("  ", pair[0], ":", pair[1]);
-  }
-
-  try {
-    const res = await fetch(`${BASE_URL}/api/stores/create-request`, {
-      method: "POST",
-      body: data,
-    });
-    
-    const result = await res.json();
-    console.log("📨 Backend response:", result);
-
-    if (!res.ok) {
-      throw new Error(
-        ` Backend error (${res.status}): ${
-          result.message || "Unknown error"
-        }`
-      );
+    if (!user || !user._id) {
+      setMessage("❌ User session expired. Please login again.");
+      return;
     }
 
-    setMessage(
-      "✅ Your store request has been sent successfully. Waiting for admin approval."
-    );
-    setExistingRequest(result.request);
-    setFormVisible(false); 
-  } catch (err) {
-    console.error(" Error submitting store request:", err);
-    setMessage(err.message);
-  }
-};
+    console.log(" User object:", user);
+    console.log(" Sending sellerId:", user._id);
+
+    const data = new FormData();
+    Object.entries(formData).forEach(([key, value]) => data.append(key, value));
+    if (files.cnicImage) data.append("cnicImage", files.cnicImage);
+    if (files.logo) data.append("logo", files.logo);
+    if (files.banner) data.append("banner", files.banner);
+    data.append("sellerId", user._id);
+
+    console.log(" FormData being sent:");
+    for (let pair of data.entries()) {
+      console.log("  ", pair[0], ":", pair[1]);
+    }
+
+    try {
+      const res = await fetch(`${BASE_URL}/api/stores/create-request`, {
+        method: "POST",
+        body: data,
+      });
+
+      const result = await res.json();
+      console.log("📨 Backend response:", result);
+
+      if (!res.ok) {
+        throw new Error(
+          ` Backend error (${res.status}): ${result.message || "Unknown error"}`,
+        );
+      }
+
+      setMessage(
+        "✅ Your store request has been sent successfully. Waiting for admin approval.",
+      );
+      setExistingRequest(result.request);
+      setFormVisible(false);
+    } catch (err) {
+      console.error(" Error submitting store request:", err);
+      setMessage(err.message);
+    }
+  };
 
   if (loading)
-    return <p style={{ padding: "20px", textAlign: "center" }}>Loading...</p>;
+    return <p style={{ padding: "20px", textAlign: "center", color: "#fff" }}>Loading...</p>;
 
+  // ── Status card (pending / rejected) ──
   if (existingRequest) {
     if (existingRequest.status === "approved") return null;
 
-    const statusMessage =
-      existingRequest.status === "pending"
-        ? "⏳ Your request is under review."
-        : "❌ Your store request was rejected.";
+    const isPending = existingRequest.status === "pending";
 
     return (
-      <div className={styles.container}>
-        <h1 className={styles.title}>Your Store Request</h1>
-        <p>
-          <strong>Store Name:</strong> {existingRequest.storeName}
-        </p>
-        <p>
-          <strong>Status:</strong> {existingRequest.status}
-        </p>
-        <p>{statusMessage}</p>
+      <div className={styles.landingContainer}>
+        <div className={styles.blob1} />
+        <div className={styles.blob2} />
+        <div className={styles.blob3} />
 
-        {/*  Show "Create Again" button if rejected */}
-        {existingRequest.status === "rejected" && !formVisible && (
-          <button
-            className={styles.button}
-            style={{ marginTop: "20px" }}
-            onClick={() => {
-              setFormVisible(true); 
-              setExistingRequest(null); // hide the rejected request
-            }}
-          >
-            🏬 Create Store Again
-          </button>
-        )}
+        <div className={styles.statusCard}>
+          <div className={isPending ? styles.statusIconPending : styles.statusIconRejected}>
+            {isPending ? "⏳" : "❌"}
+          </div>
+
+          <h1 className={styles.statusTitle}>Your Store Request</h1>
+
+          <div className={styles.statusInfoRow}>
+            <span className={styles.statusInfoLabel}>Store Name</span>
+            <span className={styles.statusInfoValue}>{existingRequest.storeName}</span>
+          </div>
+
+          <div className={styles.statusInfoRow}>
+            <span className={styles.statusInfoLabel}>Status</span>
+            <span className={isPending ? styles.badgePending : styles.badgeRejected}>
+              {existingRequest.status}
+            </span>
+          </div>
+
+          <p className={styles.statusMessage}>
+            {isPending
+              ? "Your request is currently under review. We'll notify you once it's approved."
+              : "Unfortunately your store request was rejected. You can submit a new request below."}
+          </p>
+
+          {existingRequest.status === "rejected" && !formVisible && (
+            <button
+              className={styles.heroButton}
+              style={{ marginTop: "1.5rem" }}
+              onClick={() => {
+                setFormVisible(true);
+                setExistingRequest(null);
+              }}
+            >
+              <span>🏬 Create Store Again</span>
+              <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d="M5 12h14M12 5l7 7-7 7" />
+              </svg>
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 
-  //  Show "Create Store" button first
+  // ── Landing hero (before form) ──
   if (!formVisible) {
     return (
-      <div
-        className={styles.container}
-        style={{ textAlign: "center", padding: "50px" }}
-      >
-        <button className={styles.button} onClick={() => setFormVisible(true)}>
-          🏬 Create Your Store
-        </button>
+      <div className={styles.landingContainer}>
+        <div className={styles.blob1} />
+        <div className={styles.blob2} />
+        <div className={styles.blob3} />
+
+        <div className={styles.heroContent}>
+          <p className={styles.eyebrow}>ShopSphere Seller Program</p>
+          <h1 className={styles.heroTitle}>
+            Your Store.<br />Your Empire.
+          </h1>
+          <p className={styles.heroSubtitle}>
+            Join thousands of sellers who turned their passion into profit.
+            Set up your storefront, reach real buyers, and grow a brand
+            that lasts — all in one place.
+          </p>
+
+          <button
+            className={styles.heroButton}
+            onClick={() => setFormVisible(true)}
+          >
+            <span>🏬 Create Your Store</span>
+            <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M5 12h14M12 5l7 7-7 7" />
+            </svg>
+          </button>
+        </div>
+
+        <div className={styles.featureGrid}>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>🚀</span>
+            <h3>Launch Fast</h3>
+            <p>Go live in minutes. Your store, your branding, zero hassle.</p>
+          </div>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>📦</span>
+            <h3>Sell Anything</h3>
+            <p>Fashion, electronics, groceries — any category, any scale.</p>
+          </div>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>📈</span>
+            <h3>Grow Effortlessly</h3>
+            <p>Powerful analytics and tools to scale your business daily.</p>
+          </div>
+          <div className={styles.featureCard}>
+            <span className={styles.featureIcon}>🔒</span>
+            <h3>Secure & Trusted</h3>
+            <p>Verified sellers, secure payments, and buyer trust built in.</p>
+          </div>
+        </div>
       </div>
     );
   }
 
-  // Form
+  // ── Form ──
   return (
-    <div className={styles.container}>
-      <h1 className={styles.title}>Create Store Request</h1>
-      {message && <p className={styles.message}>{message}</p>}
-      <h3 className={styles.formIntro}>
-        Take the first step with ShopSphere and let us help you build your dream
+    <div className={fStyles.container}>
+      <h1 className={fStyles.title}>Create Store Request</h1>
+      {message && <p className={fStyles.message}>{message}</p>}
+      <h3 className={fStyles.formIntro}>
+        Take the first step with SHOPSPHERE and let us help you build your dream
         store, connect with buyers, and grow your brand effortlessly
       </h3>
 
       <form
-        className={styles.form}
+        className={fStyles.form}
         onSubmit={handleSubmit}
         encType="multipart/form-data"
       >
-        {/*  Left Column  */}
-        <div className={styles.leftColumn}>
-          {/* Basic Store Info */}
+        {/* Left Column */}
+        <div className={fStyles.leftColumn}>
           <h3>Basic Store Info</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="storeName"
             placeholder="Store Name"
@@ -204,27 +263,30 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <textarea
-            className={styles.formTextarea}
+            className={fStyles.formTextarea}
             name="description"
             placeholder="Description"
             onChange={handleChange}
           />
           <select
-            className={styles.formSelect}
+            className={fStyles.formSelect}
             name="category"
             onChange={handleChange}
             value={formData.category}
           >
-            <option value="Electronics">Electronics</option>
+            <option value="Fashion">Fashion</option>
             <option value="Clothing">Clothing</option>
+            <option value="Beauty & Health">Beauty & Health</option>
+            <option value="Home & Living">Home & Living</option>
+            <option value="Sports">Sports</option>
+            <option value="Electronics">Electronics</option>
             <option value="Grocery">Grocery</option>
             <option value="Other">Other</option>
           </select>
 
-          {/* Contact Info */}
           <h3>Contact Info</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="email"
             name="email"
             placeholder="Email"
@@ -232,7 +294,7 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="phoneNumber"
             placeholder="Phone Number"
@@ -240,17 +302,16 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
 
-          {/* Verification / Identification */}
           <h3>Verification / Identification</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="cnicNumber"
             placeholder="CNIC Number"
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="file"
             name="cnicImage"
             accept="image/*"
@@ -258,12 +319,11 @@ export default function CreateStoreRequest() {
           />
         </div>
 
-        {/*  Right Column  */}
-        <div className={styles.rightColumn}>
-          {/* Business Info */}
+        {/* Right Column */}
+        <div className={fStyles.rightColumn}>
           <h3>Business Info</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="businessName"
             placeholder="Business Name"
@@ -271,7 +331,7 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="ownerFullName"
             placeholder="Owner Full Name"
@@ -279,10 +339,9 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
 
-          {/* Address */}
           <h3>Address</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="streetAddress"
             placeholder="Street Address"
@@ -290,7 +349,7 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="city"
             placeholder="City"
@@ -298,7 +357,7 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="state"
             placeholder="State"
@@ -306,7 +365,7 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="text"
             name="postalCode"
             placeholder="Postal Code"
@@ -314,17 +373,16 @@ export default function CreateStoreRequest() {
             onChange={handleChange}
           />
 
-          {/* Branding */}
           <h3>Branding (optional)</h3>
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="file"
             name="logo"
             accept="image/*"
             onChange={handleFileChange}
           />
           <input
-            className={styles.formInput}
+            className={fStyles.formInput}
             type="file"
             name="banner"
             accept="image/*"
@@ -332,9 +390,9 @@ export default function CreateStoreRequest() {
           />
         </div>
 
-        {/*  Submit Button  */}
-        <div className={styles.buttonContainer}>
-          <button className={styles.button} type="submit">
+        {/* Submit Button */}
+        <div className={fStyles.buttonContainer}>
+          <button className={fStyles.button} type="submit">
             Submit Request
           </button>
         </div>
