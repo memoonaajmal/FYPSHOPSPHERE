@@ -469,7 +469,6 @@ function HomeContent() {
         </Box>
       )}
 
-<<<<<<< HEAD
       {/* ══ FOOTER ═══════════════════════════════════════════════════════════ */}
       <Box component="footer" sx={{ width: "100%", background: "linear-gradient(150deg,#070f28 0%,#0e1c44 100%)", color: C.white, pt: { xs: "3.5rem", md: "5rem" }, pb: { xs: "2rem", md: "2.5rem" }, px: { xs: "1.5rem", md: "2.5rem" } }}>
         <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "3rem", width: "100%", maxWidth: 1400, mx: "auto" }}>
@@ -478,72 +477,6 @@ function HomeContent() {
               SHOPSPHERE
             </Typography>
             <Typography sx={{ fontSize: "0.88rem", lineHeight: 1.75, color: "rgba(255,255,255,0.48)", maxWidth: 270 }}>
-=======
-
-      
-
-
-
-{/* Why Choose Section */} <section className={styles.whySection}> <h2 className={styles.heading}>Why Choose ShopSphere?</h2> <div className={styles.featuresGrid}> <div className={styles.featureCard}> <ParticleMesh /> <ShoppingBag className={styles.icon} /> <h3 className={styles.featureTitle}>Live Commerce Experience</h3> <p className={styles.featureDesc}> Experience shopping like never before! Watch your favorite sellers go live, explore real-time product demos, interact directly, and purchase instantly — all within one seamless experience. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Bot className={styles.icon} /> <h3 className={styles.featureTitle}>AI Order Assistance</h3> <p className={styles.featureDesc}> Our AI intelligently understands your preferences, recommends the best products, manages your orders, and even predicts your next favorite buy — making shopping faster and smarter. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Globe2 className={styles.icon} /> <h3 className={styles.featureTitle}>Augmented Reality Try-On</h3> <p className={styles.featureDesc}> Bring your products to life with AR! Virtually try furniture, clothing, or accessories in your space using your phone camera — ensuring perfect fits and confident purchases every time. </p> </div> <div className={styles.featureCard}> <ParticleMesh /> <Sparkles className={styles.icon} /> <h3 className={styles.featureTitle}>Shop Latest Trends</h3> <p className={styles.featureDesc}> Stay ahead of the curve with our “Shop Latest Trends” feature — explore what’s trending globally in real time. Discover curated collections, influencer picks, and new arrivals tailored to your taste. </p> </div> </div> </section>
-   
-      {/* fashion Section */}
-<section className={styles.fashionSection}>
-  <div className={styles.textContainer}>
-    <h2 className={styles.fashionTitle}>Elevate Your Style With</h2>
-    <h2 className={styles.fashionHighlight}>Bold Fashion</h2>
-  </div>
-
-  <div className={styles.imageGrid}>
-    <img src="/images/img1.jpg" alt="Fashion 1" className={`${styles.gridItem} ${styles.small}`} />
-    <img src="/images/img7.jpg" alt="Fashion 2" className={`${styles.gridItem} ${styles.medium}`} />
-    <img src="/images/img3.jpg" alt="Fashion 3" className={`${styles.gridItem} ${styles.large}`} />
-    <div className={`${styles.gridItem} ${styles.tall}`} />
-    <img src="/images/img6.jpg" alt="Fashion 5" className={`${styles.gridItem} ${styles.large}`} />
-    <img src="/images/img5.jpg" alt="Fashion 6" className={`${styles.gridItem} ${styles.medium}`} />
-    <img src="/images/img4.jpg" alt="Fashion 7" className={`${styles.gridItem} ${styles.small}`} />
-  </div>
-
-  <div className={styles.centerButtonWrapper}>
-    <Link href="/user/products" className={styles.centerButton}>
-      Explore Products
-    </Link>
-  </div>
-</section>
-    {recentlyViewed.length > 0 && (
-  <section className={styles.recentlyViewedSection}>
-    <h2 className={styles.heading}>Recently Viewed</h2>
-    <div className={styles.productsGrid}>
-{recentlyViewed.map((product, index) => {
-  const canonicalId = product.id ?? product.productId ?? product._id ?? String(index);
-
-  const normalizedProduct = {
-    ...product,
-    id: canonicalId,
-    _id: canonicalId, // override _id so ProductCard link uses the numeric id
-  };
-
-  return (
-    <ProductCard
-      key={canonicalId}
-      product={normalizedProduct}
-    />
-  );
-})}
-
-
-    </div>
-  </section>
-)}
-
-      {/* Footer */}
-      <footer className={styles.footer}>
-        
-        <div className={styles.footerContainer}>
-          
-          <div className={styles.footerBrand}>
-            <h2 className={styles.logo}>ShopSphere</h2>
-            <p className={styles.tagline}>
->>>>>>> 960a9851a9f90e6d86bbd3892ddb887e48a39835
               Redefining shopping through innovation — AI, AR, and Live Commerce.
             </Typography>
           </Box>
