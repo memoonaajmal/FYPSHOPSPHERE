@@ -1,51 +1,69 @@
-/* ======== Page Background Sheen (outside cart) ======== */
+/* ======== Page Wrapper ======== */
 .cartPageWrapper {
   position: relative;
   min-height: 100vh;
-  background: linear-gradient(180deg, var(--blue-light) 0%, var(--blue-soft) 100%);
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
   padding: 3rem 0;
-  overflow-x: auto; /* allow horizontal scroll for small screens */
+  overflow-x: auto;
+
+  /* Deep dark navy background */
+  background: #0d1320;
+  font-family: 'Inter', Arial, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
+/* Glowing mesh blobs remain unchanged */
 .cartPageWrapper::before {
   content: "";
-  position: absolute;
-  top: 0;
-  left: -50%;
-  width: 200%;
-  height: 100%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.06),
-    rgba(39,70,144,0.04),
-    rgba(234,240,251,0.06)
-  );
-  transform: rotate(5deg);
-  opacity: 0.6;
+  position: fixed;
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.35) 0%, transparent 65%);
+  border-radius: 50%;
   pointer-events: none;
-  animation: pageSheen 14s ease-in-out infinite alternate;
+  z-index: 0;
+  filter: blur(40px);
 }
 
-@keyframes pageSheen {
-  0% { transform: rotate(5deg) translateX(-3%); }
-  100% { transform: rotate(5deg) translateX(3%); }
+.cartPageWrapper::after {
+  content: "";
+  position: fixed;
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.28) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
 }
 
-/* ======== Cart Page ======== */
+/* ======== Cart Container ======== */
 .cartPage {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 2rem;
   max-width: 1100px;
-  margin: 3rem auto;
   padding: 2rem;
-  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+
+  /* Rounded corners and subtle shadow */
+  border-radius: 20px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(247, 249, 255, 0.98));
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+
   color: var(--text);
   font-family: "Inter", sans-serif;
+
+  /* sit above background blobs */
+  position: relative;
+  z-index: 1;
 }
 
 .cartLeft {
@@ -345,5 +363,115 @@
 
   .cartTitle {
     font-size: 1.3rem;
+  }
+}
+
+/* ======== Empty Cart Page Background ======== */
+.emptyCartPage {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0d1320;
+  overflow: hidden;
+}
+
+/* Glowing background blobs */
+.emptyCartPage::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(
+    circle at center,
+    rgba(39, 70, 144, 0.35) 0%,
+    transparent 65%
+  );
+  border-radius: 50%;
+  filter: blur(40px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.emptyCartPage::after {
+  content: "";
+  position: fixed;
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(
+    circle at center,
+    rgba(62, 91, 169, 0.28) 0%,
+    transparent 65%
+  );
+  border-radius: 50%;
+  filter: blur(50px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ======== Empty Cart Content (no card) ======== */
+.emptyCart {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #ffffff;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+
+  animation: fadeUp 0.8s ease-out both;
+}
+
+/* Image */
+.emptyCartImage {
+  width: 150px;
+  max-width: 80%;
+  margin-bottom: 0.5rem;
+  opacity: 0.85;
+
+  animation: float 4s ease-in-out infinite;
+}
+
+/* Heading */
+.emptyCart h2 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+/* Description */
+.emptyCart p {
+  font-size: 1rem;
+  max-width: 320px;
+  color: rgba(255, 255, 255, 0.7);
+  line-height: 1.6;
+}
+
+/* ======== Animations ======== */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-8px);
   }
 }

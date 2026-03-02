@@ -1,194 +1,335 @@
-/* ---------- Page Container ---------- */
-.container {
+/* ============================================
+   LANDING PAGE (before form)
+============================================ */
+
+.landingContainer {
   min-height: 100vh;
+  width: 100%;
+  background: #0d1320;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: flex-start;
-  padding: 4rem 2rem;
-  background: linear-gradient(135deg, rgba(39, 70, 144, 0.03) 0%, var(--white) 100%);
+  padding: 0 2rem 5rem;
+  position: relative;
+  overflow: hidden;
+  animation: fadeIn 0.7s ease-in-out;
+}
+
+/* Ambient blobs */
+.blob1 {
+  position: fixed;
+  top: -180px;
+  left: -120px;
+  width: 650px;
+  height: 650px;
+  background: radial-gradient(circle, rgba(39, 70, 144, 0.38), transparent 65%);
+  filter: blur(60px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob2 {
+  position: fixed;
+  bottom: -160px;
+  right: -100px;
+  width: 550px;
+  height: 550px;
+  background: radial-gradient(circle, rgba(62, 91, 169, 0.3), transparent 65%);
+  filter: blur(55px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.blob3 {
+  position: fixed;
+  top: 40%;
+  left: 55%;
+  width: 400px;
+  height: 400px;
+  background: radial-gradient(circle, rgba(39, 70, 144, 0.15), transparent 65%);
+  filter: blur(70px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* ============================================
+   STATUS CARD (pending / rejected)
+============================================ */
+
+.statusCard {
+  position: relative;
+  z-index: 1;
+  margin-top: 8rem;
+  width: 100%;
+  max-width: 520px;
+  background: linear-gradient(
+    160deg,
+    rgba(238, 242, 250, 0.07),
+    rgba(228, 234, 246, 0.04)
+  );
+  border: 1px solid rgba(100, 130, 200, 0.18);
+  border-radius: 24px;
+  padding: 3rem 2.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1.25rem;
+  backdrop-filter: blur(12px);
+  box-shadow: 0 30px 80px rgba(10, 15, 35, 0.5);
   animation: fadeIn 0.6s ease-in-out;
-  width: 100%;
-  max-width: 100%;
 }
 
-/* ---------- Title ---------- */
-.title {
-  font-size: 2rem;
+.statusIconPending,
+.statusIconRejected {
+  font-size: 3rem;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 0.5rem;
+}
+
+.statusIconPending {
+  background: rgba(39, 70, 144, 0.18);
+  border: 1px solid rgba(100, 140, 230, 0.25);
+}
+
+.statusIconRejected {
+  background: rgba(180, 40, 40, 0.15);
+  border: 1px solid rgba(220, 80, 80, 0.25);
+}
+
+.statusTitle {
+  font-size: 1.75rem;
   font-weight: 800;
-  text-align: center;
-  color: var(--blue);
+  color: #e8eef8;
   letter-spacing: -0.5px;
-  padding: 2rem;
-  transform: translateY(-2px);
+  margin: 0;
 }
 
-.title::after {
-  content: "";
-  display: block;
-  margin: 0 auto;
-  height: 6px;
-  width: 160px;
-  margin-top: 8px;
-  border-radius: 8px;
-  background: var(--accent-gradient);
-  opacity: 0.18;
-}
-
-/* ---------- Message ---------- */
-.message {
-  font-size: 1.1rem;
-  font-weight: 500;
-  color: var(--blue);
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-/* ---------- Button ---------- */
-.button {
-  position: relative;
-  overflow: hidden;
-  margin-top: 1.5rem;
-  padding: 0.9rem 1.8rem;
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: var(--blue);
-  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  cursor: pointer;
-  transition: transform 320ms cubic-bezier(.2,.9,.2,1), 
-              box-shadow 320ms, 
-              background 320ms, 
-              border 320ms;
-  box-shadow: var(--card-shadow);
-}
-
-.button::before {
-  content: "";
-  position: absolute;
-  left: -40%;
-  top: -30%;
-  width: 220%;
-  height: 140%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.12),
-    rgba(39,70,144,0.10),
-    rgba(234,240,251,0.10)
-  );
-  transform: rotate(8deg) translateX(-10%);
-  transition: transform 700ms ease, opacity 500ms;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.button:hover::before {
-  transform: rotate(8deg) translateX(0);
-  opacity: 1;
-}
-
-.button:hover:not(:disabled) {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
-  background: linear-gradient(180deg, var(--bg) 96%, var(--blue-soft) 95%);
-  border: 1px solid var(--blue-light);
-}
-
-.button:disabled {
-  background: var(--muted);
-  cursor: not-allowed;
-  box-shadow: none;
-}
-
-/* ---------- Form ---------- */
-.form {
-  position: relative;
-  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
-  color: var(--white);
-  border-radius: 12px;
-  box-shadow: var(--card-shadow);
+.statusInfoRow {
   width: 100%;
-  max-width: 1400px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 2rem;
-  padding: 3rem 3.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.85rem 1.2rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(100, 130, 200, 0.12);
+  border-radius: 12px;
+}
+
+.statusInfoLabel {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: rgba(160, 185, 230, 0.7);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.statusInfoValue {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #e8eef8;
+}
+
+.badgePending {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #93c5fd;
+  background: rgba(39, 70, 144, 0.25);
+  border: 1px solid rgba(100, 140, 230, 0.3);
+  padding: 0.3rem 0.85rem;
+  border-radius: 100px;
+}
+
+.badgeRejected {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #fca5a5;
+  background: rgba(180, 40, 40, 0.2);
+  border: 1px solid rgba(220, 80, 80, 0.3);
+  padding: 0.3rem 0.85rem;
+  border-radius: 100px;
+}
+
+.statusMessage {
+  font-size: 0.95rem;
+  color: rgba(180, 200, 235, 0.7);
+  line-height: 1.7;
+  max-width: 380px;
+  margin: 0;
+}
+
+/* ============================================
+   HERO CONTENT
+============================================ */
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 7rem 1rem 3rem;
+  max-width: 760px;
+}
+
+.eyebrow {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: rgba(130, 160, 220, 0.85);
+  margin-bottom: 1.5rem;
+  border: 1px solid rgba(62, 91, 169, 0.35);
+  padding: 0.4rem 1.1rem;
+  border-radius: 100px;
+  background: rgba(39, 70, 144, 0.12);
+}
+
+.heroTitle {
+  font-size: clamp(2.8rem, 6vw, 4.8rem);
+  font-weight: 900;
+  line-height: 1.08;
+  letter-spacing: -2px;
+  color: #fff;
+  margin-bottom: 1.6rem;
+}
+
+.heroSubtitle {
+  font-size: 1.15rem;
+  font-weight: 400;
+  line-height: 1.75;
+  color: rgba(200, 215, 240, 0.78);
+  max-width: 580px;
+  margin-bottom: 2.8rem;
+}
+
+/* Hero CTA Button */
+.heroButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 1rem 2.2rem;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  color: #fff;
+  background: linear-gradient(135deg, #1e3a8a, #2d4eaa);
+  border: 1px solid rgba(100, 140, 230, 0.3);
+  border-radius: 50px;
+  cursor: pointer;
+  position: relative;
   overflow: hidden;
+  transition: transform 300ms ease, box-shadow 300ms ease, background 300ms ease;
+  box-shadow:
+    0 0 0 1px rgba(100, 140, 230, 0.15),
+    0 20px 50px rgba(15, 23, 60, 0.5);
 }
 
-.form::before {
-  content: "";
-  position: absolute;
-  left: -40%;
-  top: -30%;
-  width: 220%;
-  height: 140%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.12),
-    rgba(39,70,144,0.10),
-    rgba(110,130,184,0.10)
-  );
-  transform: rotate(8deg) translateX(-10%);
-  opacity: 1;
-  pointer-events: none;
-  transition: none;
+.heroButton:hover {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow:
+    0 0 0 1px rgba(100, 140, 230, 0.35),
+    0 28px 65px rgba(15, 23, 60, 0.6);
+  background: linear-gradient(135deg, #2244a8, #3560cc);
 }
 
-/* Stack columns on smaller screens */
-@media (max-width: 1200px) {
-  .form {
-    max-width: 95%;
-    grid-template-columns: 1fr;
-    padding: 2rem 2rem;
+.arrowIcon {
+  width: 18px;
+  height: 18px;
+  transition: transform 300ms ease;
+}
+
+.heroButton:hover .arrowIcon {
+  transform: translateX(4px);
+}
+
+/* ============================================
+   FEATURE CARDS
+============================================ */
+
+.featureGrid {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.25rem;
+  width: 100%;
+  max-width: 1100px;
+  margin-top: 1.5rem;
+}
+
+@media (max-width: 900px) {
+  .featureGrid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* ---------- Inputs & Textarea ---------- */
-.formInput,
-.formSelect,
-.formTextarea {
-  padding: 0.8rem 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255,255,255,0.5);
-  font-size: 1rem;
-  background: rgba(255,255,255,0.95);
-  color: var(--navy);
-  outline: none;
-  transition: all 0.2s ease;
-  width: 100%;
-  box-sizing: border-box;
-  min-height: 42px;
+@media (max-width: 520px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroTitle {
+    letter-spacing: -1px;
+  }
 }
 
-.formTextarea {
-  min-height: 100px;
-  resize: vertical;
-}
-
-.formSelect {
+.featureCard {
+  background: linear-gradient(
+    160deg,
+    rgba(238, 242, 250, 0.055),
+    rgba(228, 234, 246, 0.03)
+  );
+  border: 1px solid rgba(100, 130, 200, 0.14);
+  border-radius: 18px;
+  padding: 2rem 1.6rem;
   display: flex;
-  align-items: center;
+  flex-direction: column;
+  gap: 0.75rem;
+  backdrop-filter: blur(8px);
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
 }
 
-.formInput:focus,
-.formSelect:focus,
-.formTextarea:focus {
-  border-color: var(--blue-light);
-  box-shadow: 0 0 0 3px rgba(39, 70, 144, 0.12);
+.featureCard:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 55px rgba(15, 23, 60, 0.4);
+  border-color: rgba(100, 140, 230, 0.3);
 }
 
-/* ---------- Section Headings ---------- */
-.form h3 {
-  grid-column: 1 / -1;
-  font-size: 1.3rem;
+.featureIcon {
+  font-size: 1.9rem;
+  line-height: 1;
+}
+
+.featureCard h3 {
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--white);
-  margin-top: 1.5rem;
+  color: #e8eef8;
+  margin: 0;
 }
 
-/* ---------- Animations ---------- */
+.featureCard p {
+  font-size: 0.9rem;
+  color: rgba(180, 200, 235, 0.65);
+  line-height: 1.6;
+  margin: 0;
+}
+
+/* ============================================
+   SHARED ANIMATION
+============================================ */
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -197,38 +338,5 @@
   to {
     opacity: 1;
     transform: translateY(0);
-  }
-}
-/* ---------- Columns ---------- */
-.leftColumn,
-.rightColumn {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem; /* space between inputs */
-}
-
-/* ---------- Button Container ---------- */
-.buttonContainer {
-  grid-column: 1 / -1; /* full width under columns */
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-}
-.formIntro {
-  font-size: 1.3rem;       /* slightly larger for readability */
-  font-weight: 600;         /* medium-bold text */
-  color: var(--blue);       /* matches your color scheme */
-  text-align: center;       /* center aligned */
-  line-height: 1.6;         /* spacing between lines */
-  max-width: 780px;         /* prevents text from stretching too wide */
-  margin: 0 auto 2rem auto; /* center horizontally and add space below */
-  letter-spacing: 0.3px;    /* subtle spacing for readability */
-}
-
-/* Responsive adjustments */
-@media (max-width: 768px) {
-  .formIntro {
-    font-size: 1.1rem;
-    line-height: 1.5;
   }
 }

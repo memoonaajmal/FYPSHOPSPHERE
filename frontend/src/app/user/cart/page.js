@@ -30,9 +30,17 @@ export default function CartPage() {
 
   if (cartItems.length === 0) {
     return (
-      <div className={styles.emptyCart}>
-        <h2>Your cart is empty 🛒</h2>
-      </div>
+      <div className={styles.emptyCartPage}>
+  <div className={styles.emptyCart}>
+    <img
+      src="/images/emptycart.png"
+      alt="Empty cart"
+      className={styles.emptyCartImage}
+    />
+    <h2>Empty Cart</h2>
+    <p>Looks like you haven't made your choice yet.</p>
+  </div>
+</div>
     );
   }
 
@@ -48,7 +56,7 @@ export default function CartPage() {
         {/* LEFT SIDE - Items */}
         <div className={styles.cartLeft}>
           <h1 className={styles.cartTitle}>
-            Shopping Cart <span>({cartItems.length} Items)</span>
+            Shopping Cart <span>({cartItems.length} items)</span>
           </h1>
 
           <div className={styles.tableHeader}>

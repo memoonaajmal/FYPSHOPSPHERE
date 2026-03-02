@@ -27,10 +27,14 @@ export default function ForgotPasswordPage() {
   return (
     <div className={styles.container}>
       <div className={styles.formBox}>
-        <div className={styles.decorativeShape}></div>
-        <div className={styles.decorativeShape2}></div>
+        {/* kept in DOM for backward compat, hidden via CSS */}
+        <div className={styles.decorativeShape} />
+        <div className={styles.decorativeShape2} />
 
-        <h2 className={styles.title}>Reset Password</h2>
+        {/* Icon badge */}
+        <div className={styles.iconBadge}>🔑</div>
+
+        <h2 className={styles.title}>Reset your password</h2>
         <p className={styles.subtitle}>
           Enter your email address and we'll send you a link to reset your password.
         </p>
@@ -61,6 +65,10 @@ export default function ForgotPasswordPage() {
           <button type="submit" className={styles.btn}>
             Send Reset Link
           </button>
+
+          <div className={styles.divider}>
+            <span>or</span>
+          </div>
 
           <div className={styles.backLink}>
             <p>

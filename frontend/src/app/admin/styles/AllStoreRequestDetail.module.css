@@ -1,173 +1,389 @@
+/* ============================
+   Page Layout
+   ============================ */
 .dashboard {
-  padding: 2.5rem;
-  background: var(--glass, rgba(255, 255, 255, 0.7));
-  border-radius: 16px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(0, 0, 0, 0.05);
-  max-width: 900px;
-  margin: 40px auto;
-  animation: fadeIn 0.3s ease-in-out;
+  min-height: 100vh;
+  background: var(--blue-soft);
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+
+/* ============================
+   Header Banner
+   ============================ */
+.header {
+  background: #0d1320;
+  padding: 100px 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+
+.header::before {
+  content: "";
+  position: absolute;
+  top: -160px;
+  left: -120px;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.4) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(50px);
+}
+
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -140px;
+  right: -80px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.3) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(55px);
+}
+
+.headerInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.backButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: var(--blue-verylight);
+  font-size: 13px;
+  font-weight: 500;
+  padding: 7px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.18s, color 0.18s;
+  text-decoration: none;
+}
+
+.backButton:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--white);
 }
 
 .title {
-  font-size: 1.8rem;
+  font-size: 30px;
   font-weight: 700;
-  margin-bottom: 1.5rem;
-  color: #1f2937;
+  color: var(--white);
+  margin: 0;
+  letter-spacing: -0.5px;
 }
 
+.storeBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.07);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 5px 12px;
+  font-size: 13px;
+  color: var(--blue-verylight);
+}
+
+/* ============================
+   Content Area
+   ============================ */
+.content {
+  padding: 40px 60px 60px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+/* ============================
+   Two-Column Layout
+   ============================ */
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+.gridFull {
+  grid-column: 1 / -1;
+}
+
+/* ============================
+   Section Cards
+   ============================ */
 .card {
-  background-color: #fff;
-  border-radius: 12px;
-  padding: 2rem;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-  border: 1px solid #eee;
-  animation: slideUp 0.4s ease-in-out;
+  background: var(--white);
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
 }
 
-.card h2 {
-  font-size: 1.5rem;
-  color: #111827;
-  margin-bottom: 0.8rem;
+.cardHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 24px 14px;
+  border-bottom: 1px solid var(--border);
 }
 
-.card p {
-  font-size: 0.95rem;
-  color: #374151;
-  margin: 6px 0;
+.cardIcon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--blue-soft);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  flex-shrink: 0;
 }
 
-.card strong {
-  color: #111827;
+.cardTitle {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--muted);
+  margin: 0;
 }
 
-.card h3 {
-  margin-top: 1.5rem;
-  color: #1f2937;
-  font-size: 1.1rem;
-  border-bottom: 1px solid #e5e7eb;
-  padding-bottom: 4px;
+.cardBody {
+  padding: 20px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* ============================
+   Info Rows
+   ============================ */
+.infoRow {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.infoLabel {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--muted);
+}
+
+.infoValue {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--navy);
+}
+
+/* ============================
+   Store Name Hero Row
+   ============================ */
+.storeHero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+}
+
+.storeAvatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: var(--accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--white);
+  text-transform: uppercase;
+  flex-shrink: 0;
+}
+
+.storeName {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--navy);
+  line-height: 1.2;
+}
+
+.storeSub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 3px;
+}
+
+/* ============================
+   Status Badge
+   ============================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  width: fit-content;
+}
+
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.8;
+  flex-shrink: 0;
+}
+
+.badgePending  { background: #fff4ed; color: var(--warning); border: 1px solid #f5c9b0; }
+.badgeApproved { background: #e6faf5; color: var(--success); border: 1px solid #a3e6d6; }
+.badgeRejected { background: #fdecea; color: var(--danger);  border: 1px solid #f0b0ae; }
+.badgeDefault  { background: var(--blue-soft); color: var(--blue-light); border: 1px solid var(--border); }
+
+.successTag {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #e6faf5;
+  color: var(--success);
+  border: 1px solid #a3e6d6;
+  border-radius: 50px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+/* ============================
+   Images
+   ============================ */
+.imageWrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: 0 24px 24px;
 }
 
 .image {
-  display: block;
-  border-radius: 8px;
-  margin-top: 0.8rem;
-  max-width: 300px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  border-radius: 10px;
+  max-width: 100%;
+  width: 280px;
+  object-fit: cover;
+  border: 1.5px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .imageSmall {
-  display: block;
-  border-radius: 8px;
-  margin-top: 0.8rem;
-  max-width: 150px;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s ease;
+  border-radius: 10px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border: 1.5px solid var(--border);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .image:hover,
 .imageSmall:hover {
   transform: scale(1.03);
+  box-shadow: 0 8px 24px rgba(39, 70, 144, 0.12);
 }
 
-.backButton {
-  background: none;
-  border: none;
-  color: #2563eb;
-  font-weight: 500;
-  cursor: pointer;
-  margin-bottom: 1rem;
-  transition: color 0.2s ease;
+/* ============================
+   Description
+   ============================ */
+.description {
+  font-size: 14px;
+  color: #4a5568;
+  line-height: 1.7;
+  padding: 0 24px 24px;
+  margin: 0;
 }
 
-.backButton:hover {
-  color: #1d4ed8;
-}
-
-.successTag {
-  color: #16a34a;
-  font-weight: bold;
-  margin-left: 10px;
-}
-
+/* ============================
+   Action Buttons
+   ============================ */
 .buttonGroup {
   display: flex;
   gap: 12px;
-  margin-top: 1.5rem;
+  padding: 24px;
+  background: var(--white);
+  border-radius: 16px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--card-shadow);
 }
 
 .button {
+  flex: 1;
   border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  color: #fff;
-  font-weight: 500;
+  border-radius: 10px;
+  padding: 13px 20px;
+  color: var(--white);
+  font-size: 14px;
+  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.18s, box-shadow 0.18s, opacity 0.18s;
 }
 
 .approveButton {
-  background-color: #16a34a;
+  background: linear-gradient(135deg, #00b894, #00a381);
+  box-shadow: 0 4px 14px rgba(0, 184, 148, 0.25);
 }
 
 .rejectButton {
-  background-color: #dc2626;
+  background: linear-gradient(135deg, #d63031, #b52424);
+  box-shadow: 0 4px 14px rgba(214, 48, 49, 0.22);
 }
 
 .approveButton:hover:not(:disabled) {
-  background-color: #15803d;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 184, 148, 0.35);
 }
 
 .rejectButton:hover:not(:disabled) {
-  background-color: #b91c1c;
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(214, 48, 49, 0.32);
 }
 
 .button:disabled {
-  opacity: 0.6;
+  opacity: 0.55;
   cursor: not-allowed;
+  transform: none;
 }
 
+/* ============================
+   Loading / Error
+   ============================ */
 .loading,
 .error {
-  padding: 24px;
+  padding: 80px 24px;
   text-align: center;
+  font-size: 15px;
   font-weight: 500;
-  color: #4b5563;
+  color: var(--muted);
 }
 
-.error {
-  color: #dc2626;
-}
+.error { color: var(--danger); }
 
-@keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(12px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 768px) {
-  .dashboard {
-    padding: 1.5rem;
-  }
-
-  .card {
-    padding: 1.25rem;
-  }
-
-  .buttonGroup {
-    flex-direction: column;
-  }
-
-  .button {
-    width: 100%;
-  }
+/* ============================
+   Responsive
+   ============================ */
+@media (max-width: 800px) {
+  .header  { padding: 60px 24px 36px; }
+  .content { padding: 24px 16px 40px; }
+  .title   { font-size: 22px; }
+  .grid    { grid-template-columns: 1fr; }
+  .buttonGroup { flex-direction: column; }
 }
