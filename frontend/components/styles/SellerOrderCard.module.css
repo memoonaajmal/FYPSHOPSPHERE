@@ -1,165 +1,181 @@
-/* SellerOrderCard.module.css
-   Polished table styling for Seller orders
-   Unified with Admin/User Management color scheme
-*/
-
-/* -------- Wrapper -------- */
-.tableWrapper {
+/* ============================
+   Table Panel
+============================ */
+.tablePanel {
   width: 100%;
-  overflow-x: auto;
-  margin-top: 2rem;
-  border-radius: 14px;
   background: var(--white);
-  box-shadow: 0 4px 16px rgba(39, 70, 144, 0.06);
-  border: 1px solid var(--border);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-}
-
-.tableWrapper:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 22px rgba(39, 70, 144, 0.1);
-}
-
-/* -------- Table -------- */
-.ordersTable {
-  width: 100%;
-  border-collapse: separate; /* allows distinct horizontal lines */
-  border-spacing: 0;
-  min-width: 650px;
-  font-family: "Inter", system-ui, sans-serif;
-  border-radius: 12px;
+  border-radius: 18px;
+  border: 1.5px solid var(--border);
+  box-shadow: var(--card-shadow);
   overflow: hidden;
-  border: 1px solid var(--border-strong, rgba(39,70,144,0.15)); /* outer border only */
 }
 
-/* Header */
-.ordersTable thead {
-  background: var(--accent-gradient);
-  color: var(--white);
+/* ============================
+   Table Header
+============================ */
+.tableHeader {
+  display: grid;
+  grid-template-columns: 
+    0.3fr   /* # Serial */
+    1.5fr   /* Tracking ID */
+    2fr     /* Email */
+    1fr     /* Status */
+    0.5fr;  /* Arrow */
+  align-items: center;
+  padding: 16px 28px;
+  background: #f4f7fc;
+  border-bottom: 1.5px solid var(--border);
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.ordersTable th {
-  padding: 14px 18px;
-  font-weight: 600;
-  font-size: 0.95rem;
-  color: var(--white);
-  border-bottom: 2px solid var(--blue-light);
-  text-align: left;
-}
-
-/* Body */
-.ordersTable td {
-  padding: 14px 18px;
-  font-size: 0.95rem;
-  color: var(--text);
-  border-bottom: 1px solid rgba(39, 70, 144, 0.1); /* ✅ horizontal lines only */
-  background: var(--white);
-  transition: background 0.25s ease, transform 0.25s ease;
-}
-
-/* remove vertical column borders */
-.ordersTable th,
-.ordersTable td {
-  border-right: none;
-}
-
-/* -------- Row Hover -------- */
-.ordersTable tr:hover td {
-  background: var(--blue-soft);
-  transform: scale(1.005);
-}
-
-/* -------- Tracking ID -------- */
-.trackingId {
+  letter-spacing: 0.8px;
   color: var(--muted);
-  font-size: 0.85rem;
 }
 
-/* -------- Status Badge -------- */
-.statusBadge {
-  padding: 0.35rem 0.75rem;
-  border-radius: 999px;
-  font-size: 0.85rem;
-  text-transform: capitalize;
-  font-weight: 600;
-  color: var(--white);
-  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+.tableHeader > div:first-child {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
 }
 
-.statusBadge.paid {
-  background: var(--blue);
-}
-
-.statusBadge.pending {
-  background: var(--blue-verylight);
-}
-
-.statusBadge.returned {
-  background: var(--muted);
-}
-
-.statusBadge.failed {
-  background: var(--danger);
-}
-
-/* -------- View Button -------- */
-.viewBtn {
-  padding: 8px 14px;
-  background: var(--blue);
-  color: var(--white);
-  border: none;
-  border-radius: 8px;
+/* ============================
+   Table Rows
+============================ */
+.tableRow {
+  display: grid;
+  grid-template-columns: 
+    0.3fr   /* # Serial */
+    1.5fr   /* Tracking ID */
+    2fr     /* Email */
+    1fr     /* Status */
+    0.5fr;  /* Arrow */
+  align-items: center;
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
   cursor: pointer;
-  font-size: 0.9rem;
-  font-weight: 500;
-  transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+  position: relative;
+  transition: background 0.18s ease;
 }
 
-.viewBtn:hover {
-  background: var(--blue-light);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+.tableRow:last-child {
+  border-bottom: none;
 }
 
-.viewBtn:focus-visible {
-  outline: 3px solid var(--blue-light);
-  outline-offset: 2px;
+.tableRow:hover {
+  background: #f7f9fe;
 }
 
-/* -------- Animations -------- */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.tableRow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--accent-gradient);
+  opacity: 0;
+  transition: opacity 0.18s ease;
+  border-radius: 0 2px 2px 0;
 }
 
-.ordersTable tr {
-  animation: fadeIn 0.5s ease both;
+.tableRow:hover::before {
+  opacity: 1;
+}
+/* Add a small gap between Serial (#) and Tracking ID */
+.tableHeader,
+.tableRow {
+  column-gap: 12px; /* adjust the value as needed */
 }
 
-/* -------- Responsive -------- */
-@media (max-width: 1024px) {
-  .ordersTable th,
-  .ordersTable td {
-    padding: 0.75rem 1rem;
-  }
+/* ============================
+   Serial Number Cell
+============================ */
+.indexCell {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 38px;
+  height: 38px;
+  min-width: 38px;          /* prevents shrinking in grid */
+  border-radius: 10px;
+  background: var(--accent-gradient);
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  text-align: center;
+  padding: 0;
+  margin: 0 auto;
+  align-self: center;       /* perfect vertical alignment in row */
 }
 
+/* ============================
+   Other Cells
+============================ */
+.trackingId {
+  font-size: 14px;
+  font-weight: 600;
+  color: #1f2a44;
+  word-break: break-all;
+}
+
+.email {
+  font-size: 14px;
+  color: #98a2b3;
+  word-break: break-all;
+}
+
+.arrowCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--border);
+  font-size: 30px;
+  transition: color 0.18s, transform 0.18s;
+}
+
+.tableRow:hover .arrowCell {
+  color: var(--blue-light);
+  transform: translateX(3px);
+}
+
+/* ============================
+   Status Badge
+============================ */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.badge::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+}
+
+.badgePending  { background: #fff4ed; color: var(--warning); border: 1px solid #f5c9b0; }
+.badgeApproved { background: #e6faf5; color: var(--success); border: 1px solid #a3e6d6; }
+.badgeRejected { background: #fdecea; color: var(--danger);  border: 1px solid #f0b0ae; }
+
+/* ============================
+   Responsive
+============================ */
 @media (max-width: 768px) {
-  .ordersTable {
-    min-width: 100%;
+  .tableHeader,
+  .tableRow {
+    grid-template-columns: 2fr 1fr 40px;
+    padding: 16px;
   }
 
-  .viewBtn {
-    padding: 0.45rem 0.85rem;
-    font-size: 0.8rem;
+  .indexCell,
+  .tableHeader > div:first-child {
+    display: none; /* hide serial on mobile */
   }
 }

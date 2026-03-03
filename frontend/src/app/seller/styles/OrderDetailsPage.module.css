@@ -1,17 +1,51 @@
-/* ======== OrderDetailsPage.module.css ======== */
-/* Matches SellerDashboard’s gradient, typography, and animation style */
+/* ======== OrderDetailsPage.module.css (Dark BG + Light Cards) ======== */
 
 .pageWrapper {
-  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
+  position: relative;
   min-height: 100vh;
   padding: 2.5rem 3rem;
-  color: var(--text);
   font-family: "Inter", sans-serif;
+  color: #ffffff;
+  background: #0d1320;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
   animation: fadeIn 0.6s ease;
+  overflow-x: auto;
+  z-index: 1;
+}
+
+/* Glowing mesh blobs */
+.pageWrapper::before {
+  content: "";
+  position: fixed;
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.35) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(40px);
+}
+
+.pageWrapper::after {
+  content: "";
+  position: fixed;
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.28) 0%, transparent 65%);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+  filter: blur(50px);
 }
 
 /* ---------- Header ---------- */
 .header {
+  padding-top: 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -21,51 +55,17 @@
 .header h1 {
   font-size: 1.8rem;
   font-weight: 700;
-  color: var(--blue);
-  letter-spacing: -0.3px;
+  color: var(--blue-soft);
 }
 
-/* ---------- Header Meta (badge + date) ---------- */
+/* ---------- Header Meta ---------- */
 .headerMeta {
   display: flex;
-  align-items: center; /* ✅ aligns bottom edges of badge + text */
+  align-items: center;
   gap: 1rem;
   margin-top: 0.4rem;
   font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.2;
-}
-
-.headerMeta span:last-child {
-  position: relative;
-  top: -1px; /* ✅ subtle nudge for perfect visual balance */
-  font-size: 0.88rem;
-  color: var(--muted);
-}
-
-
-/* ---------- Status Badges ---------- */
-.badge {
-  padding: 0.35rem 0.8rem;
-  border-radius: 6px;
-  color: #fff;
-  font-size: 0.85rem;
-  text-transform: capitalize;
-  font-weight: 600;
-  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
-}
-
-.badge.paid {
-  background: var(--blue);
-}
-
-.badge.pending {
-  background: var(--blue-verylight);
-  color: #fff;
-}
-
-.badge.returned {
-  background: var(--muted);
+  color: rgba(255, 255, 255, 0.6);
 }
 
 /* ---------- Dropdown ---------- */
@@ -75,21 +75,21 @@
 
 .dropdownBtn {
   padding: 8px 14px;
-  background: var(--blue);
-  color: var(--white);
+  background: var(--blue-light);
+  color: #fff;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   font-size: 0.9rem;
   font-weight: 500;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 6px rgba(39, 70, 144, 0.15);
+  box-shadow: 0 2px 6px rgba(62, 91, 169, 0.4);
 }
 
 .dropdownBtn:hover {
   background: var(--blue-light);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(39, 70, 144, 0.2);
+  box-shadow: 0 4px 12px rgba(62, 91, 169, 0.6);
 }
 
 .dropdownBtn:focus-visible {
@@ -101,10 +101,10 @@
   position: absolute;
   top: 2.8rem;
   right: 0;
-  background: var(--white);
-  border: 1px solid var(--border);
+  background: #1a1f33;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 10px;
-  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.3);
   width: 170px;
   display: flex;
   flex-direction: column;
@@ -120,72 +120,82 @@
   border: none;
   font-size: 0.9rem;
   cursor: pointer;
-  color: var(--navy);
+  color: #ffffff;
   transition: all 0.25s ease;
 }
 
 .dropdownMenu button:hover {
-  background: var(--blue-soft);
-  color: var(--blue);
+  background: rgba(62, 91, 169, 0.2);
+  color: var(--blue-light);
 }
 
-/* ---------- Layout ---------- */
+
+/* ---------- Status Badges (unchanged) ---------- */
+.badge {
+  padding: 0.35rem 0.8rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge.paid {
+  background: linear-gradient(135deg, #3e5ba9, #274690);
+  color: #fff;
+}
+
+.badge.pending {
+  background: linear-gradient(135deg, #e6b65c, #c9972b);
+  color: #1a1f33;
+}
+
+.badge.returned {
+  background: linear-gradient(135deg, #d95c5c, #b23a3a);
+  color: #fff;
+}
+
+/* ---------- Layout (UNCHANGED) ---------- */
 .content {
   display: grid;
   grid-template-columns: 2fr 1fr;
   gap: 2rem;
 }
 
-/* ---------- Card Styling ---------- */
+/* ================================================= */
+/* ============ LIGHT ORDER INFO CARDS ============== */
+/* ================================================= */
+
 .card {
   position: relative;
-  background: linear-gradient(180deg, rgba(255,255,255,0.98), rgba(247,249,255,0.98));
-  border-radius: 14px;
-  box-shadow: var(--card-shadow);
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.98),
+    rgba(247, 249, 255, 0.98)
+  );
+  border-radius: 16px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   padding: 1.8rem 1.5rem;
   margin-bottom: 1.5rem;
   border: 1px solid var(--border);
-  overflow: hidden;
-  transition: transform 320ms cubic-bezier(.2,.9,.2,1), box-shadow 320ms, background 320ms, border 320ms;
+  color: var(--navy);
   animation: fadeIn 0.6s ease;
-}
-
-/* ✨ Gradient sheen animation effect (same as TopCustomers) */
-.card::before {
-  content: "";
-  position: absolute;
-  left: -40%;
-  top: -30%;
-  width: 220%;
-  height: 140%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.12),
-    rgba(39,70,144,0.10),
-    rgba(234,240,251,0.10)
-  );
-  transform: rotate(8deg) translateX(-10%);
-  transition: transform 700ms ease, opacity 500ms;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.card:hover::before {
-  transform: rotate(8deg) translateX(0);
-  opacity: 1;
+  transition: transform 300ms ease, box-shadow 300ms ease;
 }
 
 .card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
-  background: linear-gradient(180deg, var(--white) 96%, var(--blue-soft) 95%);
-  border: 1px solid var(--blue-light);
+  transform: translateY(-4px);
+  box-shadow: 0 18px 55px rgba(0, 0, 0, 0.2);
+}
+
+/* remove dark glow overlay */
+.card::before {
+  display: none;
 }
 
 .card h3 {
-  font-size: 1.5rem;
+  font-size: 1.45rem;
   margin-bottom: 1rem;
-  font-weight: 600;
+  font-weight: 700;
   color: var(--blue);
 }
 
@@ -204,34 +214,22 @@
   height: 150px;
   border-radius: 10px;
   object-fit: cover;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .itemName {
-  font-weight: 800;
+  font-weight: 700;
   color: var(--navy);
 }
 
 .itemMeta {
-  font-size: 1.02 rem;
+  font-size: 1rem;
   color: var(--muted);
 }
 
 .itemPrice {
   color: var(--blue);
-  font-weight: 700;
-}
-
-/* ---------- Message States ---------- */
-.message {
-  text-align: center;
-  margin-top: 3rem;
-  color: var(--muted);
-  font-size: 1rem;
-}
-
-.error {
-  color: var(--danger);
+  font-weight: 600;
 }
 
 /* ---------- Info Sections ---------- */
@@ -241,8 +239,8 @@
 
 .infoSection h3 {
   margin-bottom: 0.6rem;
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 1.3rem;
+  font-weight: 700;
   color: var(--blue);
 }
 
@@ -250,6 +248,17 @@
   height: 1px;
   background: var(--border);
   margin: 1rem 0;
+}
+
+/* ---------- Message States ---------- */
+.message {
+  text-align: center;
+  margin-top: 3rem;
+  color: rgba(255,255,255,0.6);
+}
+
+.error {
+  color: #ff4d4f;
 }
 
 /* ---------- Animation ---------- */
@@ -264,14 +273,16 @@
   }
 }
 
-/* ---------- Responsive ---------- */
+/* ---------- Responsive (UNCHANGED) ---------- */
 @media (max-width: 1024px) {
   .pageWrapper {
     padding: 1.5rem;
   }
+
   .content {
     grid-template-columns: 1fr;
   }
+
   .header {
     flex-direction: column;
     align-items: flex-start;
