@@ -198,7 +198,7 @@ export default function AboutPage() {
             Join thousands of satisfied customers who have already discovered 
             the ShopSphere difference.
           </p>
-          <Link href="/products" className={styles.heroButton}>
+          <Link href="/user/products" className={styles.heroButton}>
             <span>Start Shopping Now</span>
             <span className={styles.buttonArrow}>→</span>
           </Link>
