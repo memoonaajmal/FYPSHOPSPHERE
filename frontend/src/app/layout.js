@@ -4,7 +4,6 @@ import Navbar from "../../components/Navbar";
 import styles from "../styles/RootLayout.module.css";
 import { ReduxProvider } from "./ReduxProvider"; 
 import { AuthProvider } from "../context/AuthContext";
-import ChatbotWrapper from "../../components/ChatbotWrapper";
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -30,8 +29,7 @@ export default function RootLayout({ children }) {
             <div className={styles.layoutContainer}>
               <main className={styles.main}>{children}</main>
             </div>
-            {/*  Chatbot on all pages */}
-            <ChatbotWrapper />
+           
           </AuthProvider>
         </ReduxProvider>
       </body>

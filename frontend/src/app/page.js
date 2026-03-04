@@ -10,6 +10,7 @@ import ProductCard from "../../components/ProductCard";
 import { auth } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import Recommendations from "../../components/Recommendations";
+import ChatbotWrapper from "../../components/ChatbotWrapper";
 
 import {
   Box, Typography, Grid, Chip, Button, IconButton, Divider, CircularProgress,
@@ -524,6 +525,7 @@ export default function HomePage() {
   return (
     <ProtectedRoute role="user">
       <HomeContent />
+      <ChatbotWrapper/>
     </ProtectedRoute>
   );
 }
