@@ -89,13 +89,17 @@ export default function StoreRequestDetail() {
 
       {/* ── Header ── */}
       <div className={styles.header}>
-        <div className={styles.headerInner}>
-          <button onClick={() => router.back()} className={styles.backButton}>
-            ← Back
-          </button>
-          <h1 className={styles.title}>Store Request Details</h1>
-         
-        </div>
+      <div className={styles.headerInner}>
+  <h1 className={styles.titleWithArrow}>
+    <span
+      className={styles.backArrow}
+      onClick={() => router.back()}
+    >
+      ←
+    </span>
+    Store Request Details
+  </h1>
+</div>
       </div>
 
       {/* ── Content ── */}
