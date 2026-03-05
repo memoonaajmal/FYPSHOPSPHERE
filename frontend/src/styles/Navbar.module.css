@@ -5,6 +5,7 @@
   padding: 1rem 2rem;
   background-color: #111;
   color: #fff;
+   position: relative;
 }
 
 .navLeft .logo {
