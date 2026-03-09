@@ -15,15 +15,11 @@ export default function UserOrderDetailsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
-  //  Fetch user’s order details
   useEffect(() => {
     if (!id) return;
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
-      if (!user) {
-        router.push("/login");
-        return;
-      }
+      if (!user) { router.push("/login"); return; }
 
       try {
         setLoading(true);
@@ -44,7 +40,6 @@ export default function UserOrderDetailsPage() {
         const data = await res.json();
         setOrder(data);
       } catch (err) {
-        console.error(" Error fetching order:", err);
         setError("Failed to load order.");
       } finally {
         setLoading(false);
@@ -55,76 +50,133 @@ export default function UserOrderDetailsPage() {
   }, [id, router, BASE_URL]);
 
   if (loading) return <p className={styles.message}>Loading order details...</p>;
-  if (error) return <p className={`${styles.message} ${styles.error}`}>{error}</p>;
-  if (!order) return <p className={styles.message}>Order not found.</p>;
+  if (error)   return <p className={`${styles.message} ${styles.error}`}>{error}</p>;
+  if (!order)  return <p className={styles.message}>Order not found.</p>;
+
+  const status = order.paymentStatus?.toLowerCase();
 
   return (
-    <div className={styles.pageWrapper}>
-      {/* Header Section */}
+    <div className={styles.dashboard}>
+
+      {/* HEADER */}
       <div className={styles.header}>
-        <div>
-          <h1>Order #{order._id.slice(-4)}</h1>
-          <div className={styles.headerMeta}>
-            <span className={`${styles.badge} ${styles[order.paymentStatus?.toLowerCase()]}`}>
-              {order.paymentStatus}
-            </span>
-            <span>{new Date(order.createdAt).toLocaleString()}</span>
+        <div className={styles.headerInner}>
+
+          {/* Left: title + tracking */}
+          <div className={styles.headerLeft}>
+            <h1 className={styles.titleWithArrow}>
+              <span className={styles.backArrow} onClick={() => router.back()}>←</span>
+              Order Details
+            </h1>
+            <div className={styles.orderNumber}>{order.trackingId}</div>
           </div>
+
         </div>
       </div>
 
-      {/* Content Section */}
+      {/* CONTENT */}
       <div className={styles.content}>
-        {/* LEFT COLUMN */}
-        <div className={styles.leftColumn}>
-          <div className={styles.card}>
-            <h3>Your Items</h3>
-            {order.items.map((item, i) => (
-              <div key={i} className={styles.itemCard}>
-                <img src={item.image} alt={item.name} />
-                <div>
-                  <p className={styles.itemName}>{item.name}</p>
-                  <p className={styles.itemMeta}>Qty: {item.quantity}</p>
-                  <p className={styles.itemPrice}>PKR {item.price}</p>
+        <div className={styles.grid}>
+
+          {/* ORDER HERO */}
+          <div className={`${styles.card} ${styles.gridFull}`}>
+            <div className={styles.storeHero}>
+              <div>
+                <div className={styles.storeName}>Order #{order._id.slice(-4)}</div>
+                <div className={styles.storeSub}>
+                  {new Date(order.createdAt).toLocaleString()}
                 </div>
               </div>
-            ))}
+              <span className={`${styles.badge} ${styles[status]}`}>
+                {order.paymentStatus}
+              </span>
+            </div>
           </div>
 
+          {/* ORDER ITEMS */}
           <div className={styles.card}>
-            <h3>Payment Summary</h3>
-            <p>Subtotal: PKR {order.itemsTotal}</p>
-            <p>Delivery: PKR {order.shippingFee}</p>
-            <div className={styles.divider}></div>
-            <p><strong>Total: PKR {order.grandTotal}</strong></p>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardIcon}>📦</div>
+              <h3 className={styles.cardTitle}>Order Items</h3>
+            </div>
+            <div className={styles.cardBody}>
+              {order.items.map((item, i) => (
+                <div key={i} className={styles.itemCard}>
+                  <img src={item.image} alt={item.name} />
+                  <div>
+                    <p className={styles.itemName}>{item.name}</p>
+                    <p className={styles.itemMeta}>Qty: {item.quantity}</p>
+                    <p className={styles.itemPrice}>PKR {item.price}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
 
-        {/* RIGHT COLUMN */}
-        <div className={styles.rightColumn}>
+          {/* PAYMENT SUMMARY */}
           <div className={styles.card}>
-            {/*  New Tracking ID section */}
-            <div className={styles.infoSection}>
-              <h3>Tracking ID</h3>
-              <p><strong>{order.trackingId}</strong></p>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardIcon}>💳</div>
+              <h3 className={styles.cardTitle}>Payment Summary</h3>
             </div>
-
-            <div className={styles.divider}></div>
-
-            <div className={styles.infoSection}>
-              <h3>Customer</h3>
-              <p>Name: {order.firstName} {order.lastName}</p>
-              <p>Email: {order.email}</p>
-              <p>Contact #: {order.phone}</p>
-            </div>
-
-            <div className={styles.divider}></div>
-
-            <div className={styles.infoSection}>
-              <h3>Shipping Address</h3>
-              <p>{order.houseAddress}</p>
+            <div className={styles.cardBody}>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Subtotal</span>
+                <span className={styles.infoValue}>PKR {order.itemsTotal}</span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Delivery</span>
+                <span className={styles.infoValue}>PKR {order.shippingFee}</span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Total</span>
+                <span className={styles.infoValue}>PKR {order.grandTotal}</span>
+              </div>
             </div>
           </div>
+
+          {/* CUSTOMER INFO */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardIcon}>👤</div>
+              <h3 className={styles.cardTitle}>Customer</h3>
+            </div>
+            <div className={styles.cardBody}>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Name</span>
+                <span className={styles.infoValue}>
+                  {order.firstName} {order.lastName}
+                </span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Email</span>
+                <span className={styles.infoValue}>{order.email}</span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Phone</span>
+                <span className={styles.infoValue}>{order.phone}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* SHIPPING ADDRESS */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <div className={styles.cardIcon}>📍</div>
+              <h3 className={styles.cardTitle}>Shipping Address</h3>
+            </div>
+            <div className={styles.cardBody}>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Address</span>
+                <span className={styles.infoValue}>{order.houseAddress}</span>
+              </div>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Tracking ID</span>
+                <span className={styles.infoValue}>{order.trackingId}</span>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
