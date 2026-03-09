@@ -114,14 +114,14 @@ export default function AuthPage() {
 
   return (
     <div
-      style={{
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        minHeight: "100vh",
-        background: "white",
-        padding: "20px",
-      }}
+     style={{
+  display: "flex",
+  justifyContent: "center",
+  alignItems: "center",
+  minHeight: "100vh",
+  background: "linear-gradient(135deg, #eaf0fb 0%, #6e82b8 100%)",
+  padding: "20px",
+}}
     >
       <div className={`${styles.container} ${isSignup ? styles.active : ""}`}>
         <div className={styles.curvedShape}></div>

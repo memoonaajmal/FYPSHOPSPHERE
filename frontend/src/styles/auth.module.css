@@ -1,16 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap');
 
+/* ── Container ── */
 .container {
   position: relative;
-  width: 750px;
-  height: 550px;
-  border: 2px solid rgba(255, 255, 255, 0.2);
-  box-shadow: 0 0 25px rgba(39, 70, 144, 0.3);
+  width: 780px;
+  height: 560px;
+  border-radius: 20px;
   overflow: hidden;
+  box-shadow: 0 24px 60px rgba(30, 42, 64, 0.45);
+  font-family: 'DM Sans', sans-serif;
   background: var(--navy);
-  border-radius: 10px;
 }
 
+/* ── Sliding overlay panel ── */
+.curvedShape {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(160deg, #2a3f72 0%, #3e5ba9 60%, #4e6bbf 100%);
+  z-index: 50;
+  transition: left 1s cubic-bezier(0.68, -0.05, 0.27, 1.05),
+              border-radius 1s cubic-bezier(0.68, -0.05, 0.27, 1.05);
+  border-radius: 0 20px 20px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  will-change: left;
+}
+
+.container.active .curvedShape {
+  left: 0;
+  border-radius: 20px 0 0 20px;
+}
+
+/* Hide the second shape — we only need one panel now */
+.curvedShape2 {
+  display: none;
+}
+
+/* ── Form boxes ── */
 .container .form-box {
   position: absolute;
   top: 0;
@@ -19,12 +49,12 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  padding: 0 44px;
 }
 
-/* LOGIN FORM STATES */
+/* LOGIN */
 .form-box.Login {
   left: 0;
-  padding: 0 40px;
   z-index: 100;
   pointer-events: auto;
   visibility: visible;
@@ -38,23 +68,22 @@
 
 .form-box.Login .animation {
   transform: translateX(0%);
-  transition: 0.7s ease;
   opacity: 1;
   filter: blur(0);
-  transition-delay: calc(0.1s * var(--S));
+  transition: transform 0.55s ease, opacity 0.55s ease, filter 0.55s ease;
+  transition-delay: calc(0.06s * var(--S));
 }
 
 .container.active .form-box.Login .animation {
-  transform: translateX(-120%);
+  transform: translateX(-50px);
   opacity: 0;
-  filter: blur(10px);
-  transition-delay: calc(0.1s * var(--D));
+  filter: blur(4px);
+  transition-delay: calc(0.04s * var(--D));
 }
 
-/* REGISTER FORM STATES */
+/* REGISTER */
 .form-box.Register {
   right: 0;
-  padding: 0 40px;
   z-index: 1;
   pointer-events: none;
   visibility: hidden;
@@ -67,32 +96,36 @@
 }
 
 .form-box.Register .animation {
-  transform: translateX(120%);
-  transition: 0.7s ease;
+  transform: translateX(50px);
   opacity: 0;
-  filter: blur(10px);
-  transition-delay: calc(0.1s * var(--S));
+  filter: blur(4px);
+  transition: transform 0.55s ease, opacity 0.55s ease, filter 0.55s ease;
+  transition-delay: calc(0.04s * var(--S));
 }
 
 .container.active .form-box.Register .animation {
   transform: translateX(0%);
   opacity: 1;
-  filter: blur(0px);
-  transition-delay: calc(0.1s * var(--li));
+  filter: blur(0);
+  transition-delay: calc(0.06s * var(--li));
 }
 
+/* ── Typography ── */
 .form-box h2 {
-  font-size: 32px;
-  text-align: center;
-  color: #ffffff;
-  font-weight: 600;
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--white);
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
 }
 
+/* ── Input fields ── */
 .form-box .inputBox {
   position: relative;
   width: 100%;
   height: 50px;
-  margin-top: 25px;
+  margin-top: 22px;
 }
 
 .inputBox input {
@@ -101,17 +134,18 @@
   background: transparent;
   border: none;
   outline: none;
-  font-size: 16px;
-  color: #ffffff;
-  font-weight: 600;
-  border-bottom: 2px solid rgba(255, 255, 255, 0.3);
-  padding-right: 23px;
-  transition: 0.5s;
+  font-size: 15px;
+  color: var(--white);
+  font-weight: 500;
+  font-family: 'DM Sans', sans-serif;
+  border-bottom: 1.5px solid rgba(255, 255, 255, 0.25);
+  padding-right: 20px;
+  transition: border-color 0.3s ease;
 }
 
 .inputBox input:focus,
 .inputBox input:valid {
-  border-bottom: 2px solid #ffffff;
+  border-bottom: 1.5px solid var(--white);
 }
 
 .inputBox label {
@@ -119,31 +153,39 @@
   top: 50%;
   left: 0;
   transform: translateY(-50%);
-  font-size: 16px;
-  color: rgba(255, 255, 255, 0.7);
-  transition: 0.5s;
+  font-size: 15px;
+  color: rgba(255, 255, 255, 0.55);
+  transition: 0.35s ease;
   pointer-events: none;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .inputBox input:focus ~ label,
 .inputBox input:valid ~ label {
-  top: -5px;
-  color: #ffffff;
+  top: -4px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--blue-soft);
 }
 
+/* ── Button ── */
 .btn {
   position: relative;
   width: 100%;
-  height: 45px;
+  height: 46px;
   background: transparent;
   border-radius: 40px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
-  border: 2px solid #ffffff;
+  font-family: 'DM Sans', sans-serif;
+  border: 1.5px solid rgba(255, 255, 255, 0.7);
   overflow: hidden;
   z-index: 1;
-  color: #ffffff;
+  color: var(--white);
+  letter-spacing: 0.03em;
+  transition: color 0.4s ease, border-color 0.4s ease;
 }
 
 .btn::before {
@@ -151,11 +193,11 @@
   position: absolute;
   height: 100%;
   width: 100%;
-  background: #ffffff;
+  background: var(--white);
   top: 100%;
   left: 0;
   z-index: -1;
-  transition: 0.5s;
+  transition: top 0.4s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 .btn:hover::before {
@@ -164,44 +206,48 @@
 
 .btn:hover {
   color: var(--navy);
+  border-color: var(--white);
 }
 
+/* ── Links ── */
 .regiLink {
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
-  margin: 20px 0 10px;
+  margin: 18px 0 6px;
 }
 
 .regiLink p {
-  color: #ffffff;
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .link {
   text-decoration: none;
-  color: #ffffff;
+  color: var(--white);
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: color 0.25s ease;
 }
 
 .link:hover {
-  text-decoration: underline;
   color: var(--blue-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
 .regiLink .link {
   text-decoration: none;
-  color: #ffffff;
+  color: var(--white);
   font-weight: 600;
   cursor: pointer;
 }
 
 .regiLink .link:hover {
-  text-decoration: underline;
   color: var(--blue-soft);
+  text-decoration: underline;
+  text-underline-offset: 3px;
 }
 
-/* INFO CONTENT SECTIONS */
+/* ── Info content ── */
 .info-content {
   position: absolute;
   top: 0;
@@ -210,145 +256,111 @@
   display: flex;
   justify-content: center;
   flex-direction: column;
+  z-index: 60;
+  pointer-events: none;
 }
 
 .info-content.Login {
   right: 0;
   text-align: right;
-  padding: 0 40px 60px 150px;
-  z-index: 90;
+  padding: 0 44px 60px 80px;
   visibility: visible;
 }
 
 .container.active .info-content.Login {
-  z-index: 1;
   visibility: hidden;
 }
 
 .info-content.Login .animation {
   transform: translateX(0);
-  transition: 0.7s ease;
-  transition-delay: calc(0.1s * var(--S));
   opacity: 1;
-  filter: blur(0px);
+  filter: blur(0);
+  transition: transform 0.55s ease, opacity 0.55s ease, filter 0.55s ease;
+  transition-delay: calc(0.06s * var(--S));
 }
 
 .container.active .info-content.Login .animation {
-  transform: translateX(120%);
+  transform: translateX(40px);
   opacity: 0;
-  filter: blur(10px);
-  transition-delay: calc(0.1s * var(--D));
+  filter: blur(4px);
+  transition-delay: calc(0.04s * var(--D));
 }
 
 .info-content.Register {
   left: 0;
   text-align: left;
-  padding: 0 150px 60px 40px;
-  pointer-events: none;
-  z-index: 1;
+  padding: 0 80px 60px 44px;
   visibility: hidden;
 }
 
 .container.active .info-content.Register {
-  z-index: 90;
   visibility: visible;
 }
 
 .info-content.Register .animation {
-  transform: translateX(-120%);
-  transition: 0.7s ease;
+  transform: translateX(-40px);
   opacity: 0;
-  filter: blur(10px);
-  transition-delay: calc(0.1s * var(--S));
+  filter: blur(4px);
+  transition: transform 0.55s ease, opacity 0.55s ease, filter 0.55s ease;
+  transition-delay: calc(0.04s * var(--S));
 }
 
 .container.active .info-content.Register .animation {
-  transform: translateX(0%);
+  transform: translateX(0);
   opacity: 1;
   filter: blur(0);
-  transition-delay: calc(0.1s * var(--li));
+  transition-delay: calc(0.06s * var(--li));
 }
 
 .info-content h2 {
-  text-transform: uppercase;
-  font-size: 36px;
-  line-height: 1.3;
-  color: #ffffff;
-  font-weight: 700;
+  font-family: 'Syne', sans-serif;
+  font-size: 30px;
+  line-height: 1.25;
+  color: var(--white);
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  margin-bottom: 12px;
 }
 
 .info-content p {
-  font-size: 16px;
-  color: #ffffff;
-  opacity: 0.9;
+  font-size: 14px;
+  line-height: 1.65;
+  color: rgba(255, 255, 255, 0.82);
+  font-family: 'DM Sans', sans-serif;
 }
 
-/* CURVED DIAGONAL SHAPES */
-.container .curvedShape {
-  position: absolute;
-  right: 50%;
-  top: -300px;
-  height: 900px;
-  width: 900px;
-  background: #ffffff;
-  transform: rotate(10deg) skewY(40deg);
-  transform-origin: bottom right;
-  transition: 1.5s ease;
-  transition-delay: 1.6s;
-  z-index: 50;
-}
-
-.container.active .curvedShape {
-  transform: rotate(0deg) skewY(0deg);
-  right: 100%;
-  transition-delay: 0.5s;
-}
-
-.container .curvedShape2 {
-  position: absolute;
-  left: 0;
-  top: -5px;
-  height: 600px;
-  width: 850px;
-  background: var(--blue-light);
-  transform: rotate(0deg) skewY(0deg);
-  transform-origin: bottom left;
-  transition: 1.5s ease;
-  transition-delay: 0.5s;
-  z-index: 50;
-}
-
-.container.active .curvedShape2 {
-  transform: rotate(-11deg) skewY(-41deg);
-  transition-delay: 1.2s;
-}
-
+/* ── Error ── */
 .error {
   color: var(--warning);
-  font-size: 14px;
+  font-size: 13px;
   text-align: center;
   margin: 10px 0;
+  font-family: 'DM Sans', sans-serif;
 }
 
+/* ── Select ── */
 .selectBox {
   width: 100%;
-  height: 50px;
-  background: transparent;
-  border: 2px solid rgba(255, 255, 255, 0.3);
+  height: 46px;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.25);
   border-radius: 40px;
-  font-size: 16px;
-  color: #ffffff;
+  font-size: 14px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--white);
   padding: 0 20px;
   outline: none;
   cursor: pointer;
-  transition: 0.3s;
+  transition: border-color 0.3s ease;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .selectBox option {
   background: var(--navy);
-  color: #ffffff;
+  color: var(--white);
 }
 
 .selectBox:focus {
-  border-color: #ffffff;
+  border-color: var(--white);
 }

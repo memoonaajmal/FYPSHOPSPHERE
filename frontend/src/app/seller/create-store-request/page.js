@@ -4,6 +4,17 @@ import { useAuth } from "../../../context/AuthContext";
 import { useRouter } from "next/navigation";
 import styles from "../styles/CreateStoreRequest.module.css";
 import fStyles from "../styles/Storerequestform.module.css";
+import {
+  Rocket,
+  Package,
+  TrendingUp,
+  ShieldCheck,
+  Store,
+  Hourglass,
+  XCircle,
+  CheckCircle,
+  AlertCircle,
+} from "lucide-react";
 
 export default function CreateStoreRequest() {
   const { user } = useAuth();
@@ -75,7 +86,10 @@ export default function CreateStoreRequest() {
     e.preventDefault();
 
     if (!user || !user._id) {
-      setMessage("❌ User session expired. Please login again.");
+      setMessage({
+        type: "error",
+        text: "User session expired. Please login again.",
+      });
       return;
     }
 
@@ -109,19 +123,24 @@ export default function CreateStoreRequest() {
         );
       }
 
-      setMessage(
-        "✅ Your store request has been sent successfully. Waiting for admin approval.",
-      );
+      setMessage({
+        type: "success",
+        text: "Your store request has been sent successfully. Waiting for admin approval.",
+      });
       setExistingRequest(result.request);
       setFormVisible(false);
     } catch (err) {
       console.error(" Error submitting store request:", err);
-      setMessage(err.message);
+      setMessage({ type: "error", text: err.message });
     }
   };
 
   if (loading)
-    return <p style={{ padding: "20px", textAlign: "center", color: "#fff" }}>Loading...</p>;
+    return (
+      <p style={{ padding: "20px", textAlign: "center", color: "#fff" }}>
+        Loading...
+      </p>
+    );
 
   // ── Status card (pending / rejected) ──
   if (existingRequest) {
@@ -136,20 +155,27 @@ export default function CreateStoreRequest() {
         <div className={styles.blob3} />
 
         <div className={styles.statusCard}>
-          <div className={isPending ? styles.statusIconPending : styles.statusIconRejected}>
-            {isPending ? "⏳" : "❌"}
-          </div>
+          <div
+            className={
+              isPending ? styles.statusIconPending : styles.statusIconRejected
+            }
+          >
+{isPending ? <Hourglass size={32} color="white" /> : <XCircle size={32} color="white" />}          </div>
 
           <h1 className={styles.statusTitle}>Your Store Request</h1>
 
           <div className={styles.statusInfoRow}>
             <span className={styles.statusInfoLabel}>Store Name</span>
-            <span className={styles.statusInfoValue}>{existingRequest.storeName}</span>
+            <span className={styles.statusInfoValue}>
+              {existingRequest.storeName}
+            </span>
           </div>
 
           <div className={styles.statusInfoRow}>
             <span className={styles.statusInfoLabel}>Status</span>
-            <span className={isPending ? styles.badgePending : styles.badgeRejected}>
+            <span
+              className={isPending ? styles.badgePending : styles.badgeRejected}
+            >
               {existingRequest.status}
             </span>
           </div>
@@ -169,8 +195,19 @@ export default function CreateStoreRequest() {
                 setExistingRequest(null);
               }}
             >
-              <span>🏬 Create Store Again</span>
-              <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <span
+                style={{ display: "flex", alignItems: "center", gap: "8px" }}
+              >
+                <Store size={20} />
+                Create Store Again
+              </span>
+              <svg
+                className={styles.arrowIcon}
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
                 <path d="M5 12h14M12 5l7 7-7 7" />
               </svg>
             </button>
@@ -191,20 +228,31 @@ export default function CreateStoreRequest() {
         <div className={styles.heroContent}>
           <p className={styles.eyebrow}>ShopSphere Seller Program</p>
           <h1 className={styles.heroTitle}>
-            Your Store.<br />Your Empire.
+            Your Store.
+            <br />
+            Your Empire.
           </h1>
           <p className={styles.heroSubtitle}>
-            Join thousands of sellers who turned their passion into profit.
-            Set up your storefront, reach real buyers, and grow a brand
-            that lasts — all in one place.
+            Join thousands of sellers who turned their passion into profit. Set
+            up your storefront, reach real buyers, and grow a brand that lasts —
+            all in one place.
           </p>
 
           <button
             className={styles.heroButton}
             onClick={() => setFormVisible(true)}
           >
-            <span>🏬 Create Your Store</span>
-            <svg className={styles.arrowIcon} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <span style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+              <Store size={20} />
+              Create Your Store
+            </span>
+            <svg
+              className={styles.arrowIcon}
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </button>
@@ -212,22 +260,30 @@ export default function CreateStoreRequest() {
 
         <div className={styles.featureGrid}>
           <div className={styles.featureCard}>
-            <span className={styles.featureIcon}>🚀</span>
+            <span className={styles.featureIcon}>
+              <Rocket size={28} />
+            </span>
             <h3>Launch Fast</h3>
             <p>Go live in minutes. Your store, your branding, zero hassle.</p>
           </div>
           <div className={styles.featureCard}>
-            <span className={styles.featureIcon}>📦</span>
+            <span className={styles.featureIcon}>
+              <Package size={28} />
+            </span>
             <h3>Sell Anything</h3>
             <p>Fashion, electronics, groceries — any category, any scale.</p>
           </div>
           <div className={styles.featureCard}>
-            <span className={styles.featureIcon}>📈</span>
+            <span className={styles.featureIcon}>
+              <TrendingUp size={28} />
+            </span>
             <h3>Grow Effortlessly</h3>
             <p>Powerful analytics and tools to scale your business daily.</p>
           </div>
           <div className={styles.featureCard}>
-            <span className={styles.featureIcon}>🔒</span>
+            <span className={styles.featureIcon}>
+              <ShieldCheck size={28} />
+            </span>
             <h3>Secure & Trusted</h3>
             <p>Verified sellers, secure payments, and buyer trust built in.</p>
           </div>
@@ -240,7 +296,18 @@ export default function CreateStoreRequest() {
   return (
     <div className={fStyles.container}>
       <h1 className={fStyles.title}>Create Store Request</h1>
-      {message && <p className={fStyles.message}>{message}</p>}
+      {message && (
+        <p
+          className={`${fStyles.message} ${message.type === "success" ? fStyles.messageSuccess : fStyles.messageError}`}
+        >
+          {message.type === "success" ? (
+            <CheckCircle size={16} />
+          ) : (
+            <AlertCircle size={16} />
+          )}
+          {message.text}
+        </p>
+      )}
       <h3 className={fStyles.formIntro}>
         Take the first step with SHOPSPHERE and let us help you build your dream
         store, connect with buyers, and grow your brand effortlessly

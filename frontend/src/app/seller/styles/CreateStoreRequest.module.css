@@ -269,6 +269,27 @@
   margin-top: 1.5rem;
 }
 
+.featureIcon {
+  color: #3e5ba9; /* --blue-light */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.messageSuccess {
+  color: #00b894; /* --success */
+}
+
+.messageError {
+  color: #d63031; /* --danger */
+}
+
 @media (max-width: 900px) {
   .featureGrid {
     grid-template-columns: repeat(2, 1fr);
