@@ -37,7 +37,6 @@ async function fetchProduct(productId) {
   return res.json();
 }
 
-// AR Banner Illustration — inline SVG, no external deps
 function ARBannerIllustration({ onClick }) {
   return (
     <Box
@@ -45,41 +44,41 @@ function ARBannerIllustration({ onClick }) {
       sx={{
         position: "relative",
         width: "100%",
-        borderRadius: 3,
+        borderRadius: "14px",
         overflow: "hidden",
-        background: "linear-gradient(135deg, #0f2027 0%, #203a43 50%, #2c5364 100%)",
-        py: 3,
+        background: "var(--accent-gradient)",
+        py: 2.5,
         px: 3,
         display: "flex",
         alignItems: "center",
         gap: 2,
-        boxShadow: "0 8px 32px rgba(0,200,255,0.15)",
-        border: "1.5px solid rgba(0,200,255,0.18)",
+        boxShadow: "0 4px 24px rgba(30,42,64,0.18)",
+        border: "1.5px solid var(--blue-light)",
         cursor: "pointer",
-        transition: "all 0.25s ease",
+        transition: "all 0.22s cubic-bezier(.4,0,.2,1)",
         "&:hover": {
-          boxShadow: "0 6px 36px rgba(0,200,255,0.35)",
-          borderColor: "rgba(0,200,255,0.45)",
+          boxShadow: "0 8px 36px rgba(62,91,169,0.28)",
           transform: "translateY(-2px)",
+          filter: "brightness(1.07)",
         },
         "&:active": {
           transform: "translateY(0px)",
         },
       }}
     >
-      {/* Animated corner brackets */}
+      {/* Corner brackets */}
       {[
-        { top: 10, left: 10, borderTop: "3px solid #00c8ff", borderLeft: "3px solid #00c8ff" },
-        { top: 10, right: 10, borderTop: "3px solid #00c8ff", borderRight: "3px solid #00c8ff" },
-        { bottom: 10, left: 10, borderBottom: "3px solid #00c8ff", borderLeft: "3px solid #00c8ff" },
-        { bottom: 10, right: 10, borderBottom: "3px solid #00c8ff", borderRight: "3px solid #00c8ff" },
+        { top: 10, left: 10, borderTop: "2px solid rgba(255,255,255,0.55)", borderLeft: "2px solid rgba(255,255,255,0.55)" },
+        { top: 10, right: 10, borderTop: "2px solid rgba(255,255,255,0.55)", borderRight: "2px solid rgba(255,255,255,0.55)" },
+        { bottom: 10, left: 10, borderBottom: "2px solid rgba(255,255,255,0.55)", borderLeft: "2px solid rgba(255,255,255,0.55)" },
+        { bottom: 10, right: 10, borderBottom: "2px solid rgba(255,255,255,0.55)", borderRight: "2px solid rgba(255,255,255,0.55)" },
       ].map((style, i) => (
         <Box
           key={i}
           sx={{
             position: "absolute",
-            width: 18,
-            height: 18,
+            width: 16,
+            height: 16,
             ...style,
             borderRadius: "2px",
           }}
@@ -99,61 +98,61 @@ function ARBannerIllustration({ onClick }) {
         <Box
           sx={{
             position: "absolute",
-            width: 64,
-            height: 64,
+            width: 60,
+            height: 60,
             borderRadius: "50%",
-            bgcolor: "rgba(0,200,255,0.12)",
+            bgcolor: "rgba(255,255,255,0.13)",
             animation: "arPulse 2s ease-in-out infinite",
             "@keyframes arPulse": {
               "0%, 100%": { transform: "scale(1)", opacity: 0.7 },
-              "50%": { transform: "scale(1.4)", opacity: 0.2 },
+              "50%": { transform: "scale(1.45)", opacity: 0.15 },
             },
           }}
         />
-        <ViewInArIcon sx={{ fontSize: 42, color: "#00c8ff", position: "relative", zIndex: 1 }} />
+        <ViewInArIcon sx={{ fontSize: 38, color: "#fff", position: "relative", zIndex: 1 }} />
       </Box>
 
       {/* Text */}
       <Box>
         <Typography
           sx={{
-            color: "#00c8ff",
+            color: "#fff",
             fontWeight: 800,
-            fontSize: "1rem",
-            letterSpacing: 2,
+            fontSize: "0.95rem",
+            letterSpacing: 1.5,
             textTransform: "uppercase",
             lineHeight: 1.2,
           }}
         >
-          Augmented Reality Try-On
+          Augmented Reality Try‑On
         </Typography>
-        <Typography sx={{ color: "rgba(255,255,255,0.65)", fontSize: "0.78rem", mt: 0.4 }}>
+        <Typography sx={{ color: "rgba(255,255,255,0.72)", fontSize: "0.77rem", mt: 0.4 }}>
           See how it looks on you — before you buy
         </Typography>
       </Box>
 
-      {/* TRY ON label — right side */}
+      {/* TRY ON pill — right */}
       <Box
         sx={{
           ml: "auto",
           flexShrink: 0,
           display: "flex",
           alignItems: "center",
-          gap: 1,
-          bgcolor: "rgba(0,200,255,0.12)",
-          border: "1px solid rgba(0,200,255,0.4)",
-          borderRadius: 2,
+          gap: 0.75,
+          bgcolor: "rgba(255,255,255,0.15)",
+          border: "1px solid rgba(255,255,255,0.35)",
+          borderRadius: "30px",
           px: 2,
-          py: 1,
+          py: 0.75,
         }}
       >
-        <ViewInArIcon sx={{ fontSize: 20, color: "#00c8ff" }} />
+        <ViewInArIcon sx={{ fontSize: 18, color: "#fff" }} />
         <Typography
           sx={{
-            color: "#00c8ff",
-            fontWeight: 800,
-            fontSize: "0.85rem",
-            letterSpacing: 1.5,
+            color: "#fff",
+            fontWeight: 700,
+            fontSize: "0.8rem",
+            letterSpacing: 1.2,
             textTransform: "uppercase",
           }}
         >
@@ -161,11 +160,11 @@ function ARBannerIllustration({ onClick }) {
         </Typography>
       </Box>
 
-      {/* Floating dots decoration */}
+      {/* Floating dots */}
       {[
-        { width: 6, height: 6, top: "20%", right: "42%", animDelay: "0s" },
-        { width: 4, height: 4, top: "65%", right: "38%", animDelay: "0.6s" },
-        { width: 8, height: 8, top: "35%", right: "48%", animDelay: "1.2s" },
+        { width: 5, height: 5, top: "22%", right: "43%", animDelay: "0s" },
+        { width: 3, height: 3, top: "66%", right: "39%", animDelay: "0.65s" },
+        { width: 7, height: 7, top: "38%", right: "49%", animDelay: "1.3s" },
       ].map((dot, i) => (
         <Box
           key={i}
@@ -174,10 +173,9 @@ function ARBannerIllustration({ onClick }) {
             width: dot.width,
             height: dot.height,
             borderRadius: "50%",
-            bgcolor: "#00c8ff",
+            bgcolor: "rgba(255,255,255,0.55)",
             top: dot.top,
             right: dot.right,
-            opacity: 0.3,
             animation: `floatDot 3s ease-in-out infinite`,
             animationDelay: dot.animDelay,
             "@keyframes floatDot": {
@@ -193,7 +191,6 @@ function ARBannerIllustration({ onClick }) {
 
 export default function ProductDetailsPage({ params }) {
   const { id } = use(params);
-
   const dispatch = useDispatch();
   const [product, setProduct] = useState(null);
   const [miniCartVisible, setMiniCartVisible] = useState(false);
@@ -251,8 +248,15 @@ export default function ProductDetailsPage({ params }) {
 
   if (!product) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "60vh" }}>
-        <CircularProgress />
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          minHeight: "60vh",
+        }}
+      >
+        <CircularProgress sx={{ color: "var(--blue-light)" }} />
       </Box>
     );
   }
@@ -260,7 +264,12 @@ export default function ProductDetailsPage({ params }) {
   const imageSrc = `${BASE_URL.replace(/\/$/, "")}/images/${product.imageFilename}`;
 
   const metaChips = [
-    product.gender && { label: product.gender, icon: product.gender === "Women" ? <WomanIcon fontSize="small" /> : <ManIcon fontSize="small" /> },
+    product.gender && {
+      label: product.gender,
+      icon: product.gender === "Women"
+        ? <WomanIcon fontSize="small" />
+        : <ManIcon fontSize="small" />,
+    },
     product.usage && { label: product.usage, icon: <StyleIcon fontSize="small" /> },
     product.season && { label: product.season, icon: <LocalOfferIcon fontSize="small" /> },
     product.masterCategory && { label: product.masterCategory, icon: <CategoryIcon fontSize="small" /> },
@@ -272,113 +281,180 @@ export default function ProductDetailsPage({ params }) {
       sx={{
         display: "flex",
         flexDirection: { xs: "column", md: "row" },
-        gap: 4,
-        maxWidth: 1100,
+        gap: { xs: 3, md: 5 },
+        maxWidth: 1120,
         mx: "auto",
         px: { xs: 2, md: 4 },
-        py: 4,
+        py: { xs: 3, md: 5 },
       }}
     >
-      {/* === PRODUCT IMAGE === */}
+      {/* ── IMAGE PANEL ── */}
       <Box
         sx={{
           flex: "0 0 auto",
           display: "flex",
           justifyContent: "center",
           alignItems: "flex-start",
-          borderRadius: 2,
+          borderRadius: "18px",
           overflow: "hidden",
-          boxShadow: 3,
-          bgcolor: "#f9f9f9",
+          background: "white",
+          border: "1.5px solid var(--border)",
+          boxShadow: "var(--card-shadow)",
+          p: 1,
         }}
       >
         <NextImage
           src={imageSrc}
           alt={product.productDisplayName}
-          width={500}
-          height={500}
-          style={{ display: "block", objectFit: "contain" }}
+          width={480}
+          height={480}
+          style={{ display: "block", objectFit: "contain", borderRadius: "12px" }}
         />
       </Box>
 
-      {/* === PRODUCT DETAILS === */}
-      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2 }}>
+      {/* ── DETAIL PANEL ── */}
+      <Box sx={{ flex: 1, display: "flex", flexDirection: "column", gap: 2.5 }}>
 
-        {/* Category breadcrumb */}
+        {/* Breadcrumb */}
         {product.masterCategory && product.subCategory && (
-          <Typography variant="caption" sx={{ color: "text.secondary", letterSpacing: 1, textTransform: "uppercase" }}>
+          <Typography
+            variant="caption"
+            sx={{
+              color: "var(--muted)",
+              letterSpacing: 1.2,
+              textTransform: "uppercase",
+              fontWeight: 500,
+              fontSize: "0.72rem",
+            }}
+          >
             {product.masterCategory} › {product.subCategory}
           </Typography>
         )}
 
-        <Typography variant="h4" fontWeight={700}>
+        {/* Product name */}
+        <Typography
+          variant="h4"
+          sx={{
+            fontWeight: 800,
+            color: "var(--navy)",
+            lineHeight: 1.22,
+            letterSpacing: "-0.5px",
+          }}
+        >
           {product.productDisplayName}
         </Typography>
 
-        <Typography variant="h5" sx={{ color: "primary.main", fontWeight: 600 }}>
+        {/* Price */}
+        <Typography
+          variant="h5"
+          sx={{
+            fontWeight: 700,
+            color: "var(--blue-light)",
+            letterSpacing: "-0.2px",
+          }}
+        >
           {product.price
             ? `PKR ${product.price.toLocaleString()}`
             : "Price not available"}
         </Typography>
 
-        {/* Meta chips row */}
+        {/* Meta chips */}
         {metaChips.length > 0 && (
           <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
             {metaChips.map((chip, i) => (
               <Chip
                 key={i}
-                icon={chip.icon}
+                icon={React.cloneElement(chip.icon, {
+                  style: { color: "var(--blue-light)" },
+                })}
                 label={chip.label}
                 size="small"
-                variant="outlined"
-                sx={{ fontWeight: 500, fontSize: "0.78rem" }}
+                sx={{
+                  fontWeight: 600,
+                  fontSize: "0.76rem",
+                  bgcolor: "var(--blue-soft)",
+                  border: "1px solid var(--border)",
+                  color: "var(--navy)",
+                  "& .MuiChip-icon": { color: "var(--blue-light)" },
+                  borderRadius: "8px",
+                }}
               />
             ))}
           </Box>
         )}
 
-        <Divider />
+        <Divider sx={{ borderColor: "var(--border)" }} />
 
-        {/* Product attributes */}
-        <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
-          <Typography variant="body1">
-            <Box component="span" fontWeight={600}>Color: </Box>
-            {product.baseColour}
-          </Typography>
-          <Typography variant="body1">
-            <Box component="span" fontWeight={600}>Type: </Box>
-            {product.articleType}
-          </Typography>
-          {product.gender && (
-            <Typography variant="body1">
-              <Box component="span" fontWeight={600}>For: </Box>
-              {product.gender}
-            </Typography>
-          )}
-          {product.usage && (
-            <Typography variant="body1">
-              <Box component="span" fontWeight={600}>Usage: </Box>
-              {product.usage}
-            </Typography>
-          )}
+        {/* Attributes */}
+        <Box
+          sx={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: 1.5,
+            bgcolor: "var(--section-bg)",
+            borderRadius: "12px",
+            p: 2,
+            border: "1px solid var(--border)",
+          }}
+        >
+          {[
+            { label: "Color", value: product.baseColour },
+            { label: "Type", value: product.articleType },
+            product.gender && { label: "For", value: product.gender },
+            product.usage && { label: "Usage", value: product.usage },
+          ]
+            .filter(Boolean)
+            .map((attr, i) => (
+              <Box key={i}>
+                <Typography
+                  sx={{
+                    fontSize: "0.7rem",
+                    fontWeight: 700,
+                    color: "var(--muted)",
+                    textTransform: "uppercase",
+                    letterSpacing: 1,
+                    mb: 0.25,
+                  }}
+                >
+                  {attr.label}
+                </Typography>
+                <Typography
+                  sx={{
+                    fontSize: "0.92rem",
+                    fontWeight: 600,
+                    color: "var(--navy)",
+                  }}
+                >
+                  {attr.value}
+                </Typography>
+              </Box>
+            ))}
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: "var(--border)" }} />
 
-        {/* === ACTION BUTTONS === */}
-        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+        {/* Action buttons */}
+        <Box sx={{ display: "flex", gap: 1.5, flexWrap: "wrap" }}>
           <Button
             variant="contained"
-            color="primary"
             startIcon={<ShoppingCartOutlinedIcon />}
             onClick={handleAddToCart}
             sx={{
-              px: 3,
-              py: 1.25,
-              borderRadius: 2,
+              px: 3.5,
+              py: 1.35,
+              borderRadius: "10px",
               textTransform: "none",
-              fontWeight: 600,
-              fontSize: "1rem",
+              fontWeight: 700,
+              fontSize: "0.95rem",
+              background: "var(--navy)",
+              color: "var(--white)",
+              boxShadow: "0 4px 16px rgba(30,42,64,0.18)",
+              letterSpacing: 0.2,
+              "&:hover": {
+                background: "var(--accent-gradient)",
+                filter: "brightness(1.1)",
+                boxShadow: "0 6px 22px rgba(62,91,169,0.28)",
+              },
             }}
           >
             Add to Cart
@@ -386,23 +462,30 @@ export default function ProductDetailsPage({ params }) {
 
           <Button
             variant="outlined"
-            color="secondary"
             startIcon={<FavoriteBorderIcon />}
             onClick={handleAddToWishlist}
             sx={{
-              px: 3,
-              py: 1.25,
-              borderRadius: 2,
+              px: 3.5,
+              py: 1.35,
+              borderRadius: "10px",
               textTransform: "none",
-              fontWeight: 600,
-              fontSize: "1rem",
+              fontWeight: 700,
+              fontSize: "0.95rem",
+              color: "var(--blue-light)",
+              borderColor: "var(--blue-light)",
+              letterSpacing: 0.2,
+              "&:hover": {
+                bgcolor: "var(--blue-soft)",
+                borderColor: "var(--blue)",
+                color: "var(--blue)",
+              },
             }}
           >
             Wishlist
           </Button>
         </Box>
 
-        {/* === AR SECTION — clickable banner === */}
+        {/* AR Banner */}
         <ARBannerIllustration
           onClick={() => {
             setShowAR(true);
