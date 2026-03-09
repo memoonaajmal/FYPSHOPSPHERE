@@ -17,5 +17,5 @@
 .main {
   flex: 2; /* 2 parts of ratio */
   padding: 1rem;
-  margin-top: 60px;
+  /* margin-top: 60px; */
 }
