@@ -82,7 +82,7 @@ export default function ProductCard({ product }) {
                 sx={{
                   fontSize: "0.7rem",
                   height: 22,
-                  bgcolor: "primary.50",
+                  bgcolor: "white",
                   color: "primary.main",
                   fontWeight: 600,
                   border: "1px solid",
