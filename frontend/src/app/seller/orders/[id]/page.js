@@ -107,51 +107,78 @@ export default function OrderDetailsPage() {
   if (!order) return <p className={styles.message}>Order not found.</p>;
 
   return (
-    <div className={styles.pageWrapper}>
-      <div className={styles.header}>
-        <div>
-          <h1>Order #{order._id.slice(-4)}</h1>
-          <div className={styles.headerMeta}>
-            <span className={`${styles.badge} ${styles[status?.toLowerCase()]}`}>
-              {status}
-            </span>
-            <span>{new Date(order.createdAt).toLocaleString()}</span>
+  <div className={styles.dashboard}>
+    
+    {/* HEADER */}
+<div className={styles.header}>
+  <div className={styles.headerInner}>
+
+    {/* Left: title + order number */}
+    <div className={styles.headerLeft}>
+      <h1 className={styles.titleWithArrow}>
+        <span className={styles.backArrow} onClick={() => router.back()}>←</span>
+        Order Details
+      </h1>
+      <div className={styles.orderNumber}>{order.trackingId}</div>
+    </div>
+
+    {/* Right: Update Status button */}
+    {status === "pending" && (
+      <div className={styles.actions}>
+        <div className={styles.dropdown}>
+          <button
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            className={styles.dropdownBtn}
+            disabled={statusLoading}
+          >
+            {statusLoading ? "Updating..." : "Update Status"}
+          </button>
+          {dropdownOpen && (
+            <div className={styles.dropdownMenu}>
+              <button onClick={() => handleStatusUpdate("paid")}>Mark as Paid</button>
+              <button onClick={() => handleStatusUpdate("returned")}>Mark as Returned</button>
+            </div>
+          )}
+        </div>
+      </div>
+    )}
+
+  </div>
+</div>
+
+    {/* CONTENT */}
+    <div className={styles.content}>
+      <div className={styles.grid}>
+
+        {/* ORDER HERO */}
+        <div className={`${styles.card} ${styles.gridFull}`}>
+          <div className={styles.storeHero}>
+            
+
+            <div>
+              <div className={styles.storeName}>
+                Order #{order._id.slice(-4)}
+              </div>
+              <div className={styles.storeSub}>
+                {new Date(order.createdAt).toLocaleString()}
+              </div>
+            </div>
+            <span className={`${styles.badge} ${styles[status]}`}>
+    {status}
+  </span>
+
           </div>
         </div>
 
-        {/*  Only show dropdown when payment is pending */}
-        {status === "pending" && (
-          <div className={styles.actions}>
-            <div className={styles.dropdown}>
-              <button
-                onClick={() => setDropdownOpen(!dropdownOpen)}
-                className={styles.dropdownBtn}
-                disabled={statusLoading}
-              >
-                {statusLoading ? "Updating..." : "Update Status"}
-              </button>
-              {dropdownOpen && (
-                <div className={styles.dropdownMenu}>
-                  <button onClick={() => handleStatusUpdate("paid")}>Mark as Paid</button>
-                  <button onClick={() => handleStatusUpdate("returned")}>Mark as Returned</button>
-                </div>
-              )}
-            </div>
-          </div>
-        )}
-      </div>
 
-      <div className={styles.content}>
-        {/* LEFT COLUMN */}
-        <div className={styles.leftColumn}>
-          <div className={styles.card}>
-            <h3>
-              {status === "paid"
-                ? "Fulfilled"
-                : status === "returned"
-                ? "Returned"
-                : "Unfulfilled"}
-            </h3>
+        {/* ORDER ITEMS */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardIcon}>📦</div>
+            <h3 className={styles.cardTitle}>Order Items</h3>
+          </div>
+
+          <div className={styles.cardBody}>
             {order.items.map((item, i) => (
               <div key={i} className={styles.itemCard}>
                 <img src={item.image} alt={item.name} />
@@ -163,43 +190,89 @@ export default function OrderDetailsPage() {
               </div>
             ))}
           </div>
+        </div>
 
-          <div className={styles.card}>
-            <h3>Payment Summary</h3>
-            <p>Subtotal: PKR {order.itemsTotal}</p>
-            <p>Delivery: PKR {order.shippingFee}</p>
-            <div className={styles.divider}></div>
-            <p><strong>Total: PKR {order.grandTotal}</strong></p>
+
+        {/* PAYMENT SUMMARY */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardIcon}>💳</div>
+            <h3 className={styles.cardTitle}>Payment Summary</h3>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Subtotal</span>
+              <span className={styles.infoValue}>PKR {order.itemsTotal}</span>
+            </div>
+
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Delivery</span>
+              <span className={styles.infoValue}>PKR {order.shippingFee}</span>
+            </div>
+
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Total</span>
+              <span className={styles.infoValue}>PKR {order.grandTotal}</span>
+            </div>
           </div>
         </div>
 
-        {/* RIGHT COLUMN */}
-        <div className={styles.rightColumn}>
-          <div className={styles.card}>
-            {/*  New Tracking ID section */}
-            <div className={styles.infoSection}>
-              <h3>Tracking ID</h3>
-              <p><strong>{order.trackingId}</strong></p>
+
+        {/* CUSTOMER INFO */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardIcon}>👤</div>
+            <h3 className={styles.cardTitle}>Customer</h3>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Name</span>
+              <span className={styles.infoValue}>
+                {order.firstName} {order.lastName}
+              </span>
             </div>
 
-            <div className={styles.divider}></div>
-
-            <div className={styles.infoSection}>
-              <h3>Customer</h3>
-              <p>Name: {order.firstName} {order.lastName}</p>
-              <p>Email: {order.email}</p>
-              <p>Contact #: {order.phone}</p>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Email</span>
+              <span className={styles.infoValue}>{order.email}</span>
             </div>
 
-            <div className={styles.divider}></div>
-
-            <div className={styles.infoSection}>
-              <h3>Shipping Address</h3>
-              <p>{order.houseAddress}</p>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Phone</span>
+              <span className={styles.infoValue}>{order.phone}</span>
             </div>
           </div>
         </div>
+
+
+        {/* SHIPPING ADDRESS */}
+        <div className={styles.card}>
+          <div className={styles.cardHeader}>
+            <div className={styles.cardIcon}>📍</div>
+            <h3 className={styles.cardTitle}>Shipping Address</h3>
+          </div>
+
+          <div className={styles.cardBody}>
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Address</span>
+              <span className={styles.infoValue}>
+                {order.houseAddress}
+              </span>
+            </div>
+
+            <div className={styles.infoRow}>
+              <span className={styles.infoLabel}>Tracking ID</span>
+              <span className={styles.infoValue}>
+                {order.trackingId}
+              </span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
-  );
+  </div>
+);
 }
