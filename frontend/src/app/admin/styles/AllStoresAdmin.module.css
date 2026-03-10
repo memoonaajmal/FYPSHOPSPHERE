@@ -1,176 +1,151 @@
+/* ===== AllStoresAdmin.module.css ===== */
 
-.wrapper {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+/* ===== Layout ===== */
+.dashboard {
   min-height: 100vh;
-  padding: 3rem 1.5rem;
-  background: var(--white); /* soft blue bg */
-  overflow-y: auto;
-  scroll-behavior: smooth;
+  background: var(--white);
+  font-family: "DM Sans", "Segoe UI", sans-serif;
 }
 
-.mainHeading {
-  font-size: 2.5rem;
+/* ===== Header Banner ===== */
+.header {
+  background: #0d1320;
+  padding: 96px 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  top: -160px;
+  left: -120px;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(39, 70, 144, 0.4), transparent 65%);
+  filter: blur(50px);
+}
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -140px;
+  right: -80px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(62, 91, 169, 0.3), transparent 65%);
+  filter: blur(55px);
+}
+.title {
+  font-size: 34px;
   font-weight: 700;
-  color: var(--blue);
-  margin-bottom: 1.5rem;
-  text-align: center;
-  letter-spacing: 0.5px;
-  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-}
-
-.subHeading {
-  font-size: 1.8rem;
-  font-weight: 600;
-  color: var(--blue-light);
-  margin-bottom: 2rem;
-  text-align: center;
-}
-
-.loading,
-.error,
-.empty {
-  font-size: 1.1rem;
   color: var(--white);
-  text-align: center;
-  opacity: 0.85;
+  margin: 0 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--blue-verylight, rgba(255,255,255,0.55));
+  margin: 0;
+  position: relative;
+  z-index: 1;
 }
 
+/* ===== Content Area ===== */
+.content {
+  padding: 36px 60px 60px;
+  background: var(--blue-soft, #f0f3fb);
+  min-height: calc(100vh - 200px);
+}
+
+/* ===== Store Grid ===== */
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 2.5rem;
-  margin-top: 2rem;
-  margin-left: 2rem;
+  gap: 20px;
   width: 100%;
-  max-width: 1200px;
+  max-width: 1300px;
+  margin: 0 auto;
 }
 
-/* 🟦 Store Card */
+/* ===== Store Card ===== */
 .storeCard {
-  background: var(--blue-light);
+  display: block;
+  text-decoration: none;
+  background: #ffffff;
   border-radius: 16px;
-  padding: 1.5rem;
-  width: 500px;
-  box-shadow: var(--card-shadow);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, background 0.3s;
+  padding: 20px;
+  border: 1px solid var(--border, #e8eaf0);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+  cursor: pointer;
 }
-
 .storeCard:hover {
   transform: translateY(-4px);
-  box-shadow: 0 8px 24px rgba(39, 70, 144, 0.3);
-  background: var(--blue-soft);
-  color: var(--blue-light);
+  box-shadow: 0 12px 32px rgba(39, 70, 144, 0.13);
+  border-color: rgba(62, 91, 169, 0.3);
 }
 
-.storeName {
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--blue-soft);
-  margin-bottom: 0.5rem;
-}
-.storeName:hover{
-  text-decoration: underline;
-  color: var(--blue);
-}
-
-
-.statsContainer {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.2rem;
-  margin-top: 0.8rem;
-}
-
-.miniGraph {
+/* ===== Stat Pills ===== */
+.statPill {
   flex: 1;
-  height: 130px;
-  background: var(--white);
-  border-radius: 12px;
-  padding: 0.5rem;
-  box-shadow: inset 0 0 8px rgba(39, 70, 144, 0.1);
-}
-
-.stats {
-  flex: 0 0 35%;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
-  background: var(--blue-soft);
-  color: var(--blue-soft);
-  border-radius: 12px;
-  padding: 0.8rem;
-  color: var(--white);
-  box-shadow: var(--card-shadow);
-}
-
-.stats p {
-  font-size: 0.9rem;
-  color: var(--blue);
-  margin: 0.2rem 0;
-}
-
-.categories {
-  margin-top: 0.8rem;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-.categoryBadge,
-.moreBadge {
-  background: var(--blue-soft);
-  border-radius: 12px;
-  padding: 0.3rem 0.7rem;
-  font-size: 0.8rem;
-  color: var(--blue);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-}
-
-
-.pagination {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  margin-top: 2rem;
-  color: var(--blue);
-  gap: 1rem;
+  gap: 2px;
+  padding: 8px 12px;
+  background: #f7f8fc;
+  border-radius: 10px;
+  border: 1px solid var(--border, #e8eaf0);
+}
+.statLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted, #6b7280);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.statValue {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--navy, #0d1320);
 }
 
-.pageButton {
-  background: var(--blue);
-  color: var(--blue);
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.2s ease;
+/* ===== Empty State ===== */
+.emptyState {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted, #6b7280);
+}
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+.emptyState p {
+  font-size: 15px;
+  color: var(--muted, #6b7280);
 }
 
-.pageButton:hover {
-  background: var(--blue-light);
-}
-
-.pageButton:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.pageInfo {
-  font-weight: 500;
-  color: var(--blue);
-}
-
-@media (max-width: 600px) {
-  .statsContainer {
-    flex-direction: column;
-    align-items: stretch;
+/* ===== Responsive ===== */
+@media (max-width: 1024px) {
+  .content {
+    padding: 28px 32px 48px;
   }
-
-  .stats {
-    flex: unset;
-    text-align: center;
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+@media (max-width: 700px) {
+  .header {
+    padding: 52px 24px 32px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .content {
+    padding: 20px 16px 40px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
   }
 }

@@ -1,17 +1,15 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams, useSearchParams } from "next/navigation";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import styles from "../../../styles/AdminOrderDetailPage.module.css";
 import AdminOrderCard from "../../../../../../components/AdminOrderCard";
-import OrderPagination from "../../../../../../components/OrderPagination"; 
+import OrderPagination from "../../../../../../components/OrderPagination";
 
 export default function AdminOrderDetailPage() {
   const { id: userId } = useParams();
   const params = useSearchParams();
   const currentPage = parseInt(params.get("page") || "1", 10);
-
   const [firebaseUser, setFirebaseUser] = useState(null);
   const [orders, setOrders] = useState([]);
   const [loadingOrders, setLoadingOrders] = useState(true);
@@ -41,17 +39,14 @@ export default function AdminOrderDetailPage() {
 
   useEffect(() => {
     if (!userId || !firebaseUser) return;
-
     const fetchOrders = async () => {
       try {
         setLoadingOrders(true);
-
         const res = await fetchWithAuth(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/admin/orders?sellerId=${userId}&page=${currentPage}&limit=4`
         );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
-
         setOrders(Array.isArray(data.orders) ? data.orders : []);
         setTotalPages(data.totalPages || 1);
       } catch (err) {
@@ -60,30 +55,41 @@ export default function AdminOrderDetailPage() {
         setLoadingOrders(false);
       }
     };
-
     fetchOrders();
   }, [userId, firebaseUser, currentPage]);
 
- return (
-   <div className={styles.container}>
-  <h2 className={styles.sectionTitle}>Orders for Store</h2>
+  return (
+    <div className={styles.pageWrapper}>
 
-  {loadingOrders ? (
-    <p>Loading...</p>
-  ) : orders.length > 0 ? (
-    <>
-      <div className={styles.ordersGrid}>
-        {orders.map((order) => (
-          <AdminOrderCard key={order._id} order={order} />
-        ))}
+      {/* ===== Header ===== */}
+      <div className={styles.header}>
+        <div>
+          <h1 className={styles.pageTitle}>Store Orders</h1>
+          <p className={styles.pageSub}>Viewing all orders placed in this store</p>
+        </div>
+        {!loadingOrders && (
+          <span className={styles.countBadge}>{orders.length} Orders</span>
+        )}
       </div>
 
-      <OrderPagination totalPages={totalPages} />
-    </>
-  ) : (
-    <p>No orders found</p>
-  )}
-</div>
-
+      {/* ===== Body ===== */}
+      {loadingOrders ? (
+        <p className={styles.message}>Loading orders…</p>
+      ) : orders.length === 0 ? (
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>🛒</div>
+          <p>No orders found for this store.</p>
+        </div>
+      ) : (
+        <>
+          <div className={styles.ordersGrid}>
+            {orders.map((order) => (
+              <AdminOrderCard key={order._id} order={order} />
+            ))}
+          </div>
+          {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
+        </>
+      )}
+    </div>
   );
 }

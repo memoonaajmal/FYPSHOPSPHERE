@@ -1,0 +1,210 @@
+/* ===== Layout ===== */
+.dashboard {
+  min-height: 100vh;
+  background: var(--white);
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+
+/* ===== Header Banner ===== */
+.header {
+  background: #0d1320;
+  padding: 96px 60px 48px;
+  position: relative;
+  overflow: hidden;
+}
+.header::before {
+  content: "";
+  position: absolute;
+  top: -160px;
+  left: -120px;
+  width: 560px;
+  height: 560px;
+  background: radial-gradient(circle, rgba(39, 70, 144, 0.4), transparent 65%);
+  filter: blur(50px);
+}
+.header::after {
+  content: "";
+  position: absolute;
+  bottom: -140px;
+  right: -80px;
+  width: 480px;
+  height: 480px;
+  background: radial-gradient(circle, rgba(62, 91, 169, 0.3), transparent 65%);
+  filter: blur(55px);
+}
+.title {
+  font-size: 34px;
+  font-weight: 700;
+  color: var(--white);
+  margin: 0 0 8px;
+  position: relative;
+  z-index: 1;
+}
+.subtitle {
+  font-size: 14px;
+  color: var(--blue-verylight);
+  margin: 0;
+  position: relative;
+  z-index: 1;
+}
+
+/* ===== Content Area ===== */
+.content {
+  padding: 36px 60px 60px;
+  background: var(--blue-soft);
+  min-height: calc(100vh - 160px);
+}
+
+/* ===== Table wrapper ===== */
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+}
+
+/* Head */
+.table thead tr {
+  background: #f7f8fc;
+  border-bottom: 1.5px solid var(--border);
+}
+.table th {
+  padding: 13px 18px;
+  text-align: left;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+/* Body rows */
+.table tbody tr {
+  border-bottom: 1px solid var(--border);
+  transition: background 0.15s ease;
+}
+.table tbody tr:last-child {
+  border-bottom: none;
+}
+.table tbody tr:hover {
+  background: #f7f8fc;
+}
+.table td {
+  padding: 14px 18px;
+  vertical-align: middle;
+}
+
+/* ===== Name cell ===== */
+.nameCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.avatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--white);
+  flex-shrink: 0;
+}
+.avatarUser {
+  background: var(--blue-light);
+}
+.avatarSeller {
+  background: var(--warning);
+}
+.userName {
+  font-weight: 600;
+  color: var(--navy);
+}
+
+/* ===== Email ===== */
+.emailText {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+/* ===== Role badges ===== */
+.rolesCell {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.roleBadge {
+  padding: 3px 10px;
+  border-radius: 50px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: capitalize;
+  border: 1.5px solid transparent;
+}
+.roleUser {
+  background: rgba(62, 91, 169, 0.08);
+  color: var(--blue-light);
+  border-color: rgba(62, 91, 169, 0.2);
+}
+.roleSeller {
+  background: rgba(234, 139, 0, 0.1);
+  color: var(--warning);
+  border-color: rgba(234, 139, 0, 0.25);
+}
+
+/* ===== View button ===== */
+.viewBtn {
+  padding: 7px 16px;
+  border-radius: 8px;
+  border: none;
+  font-family: "DM Sans", "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  background: var(--blue-light);
+  color: var(--white);
+  cursor: pointer;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+.viewBtn:hover {
+  opacity: 0.88;
+  transform: translateY(-1px);
+}
+.viewBtnSeller {
+  background: var(--warning);
+}
+
+/* ===== Empty state ===== */
+.emptyState {
+  padding: 80px 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.4;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 700px) {
+  .header {
+    padding: 52px 24px 32px;
+  }
+  .content {
+    padding: 20px 16px 40px;
+  }
+  .title {
+    font-size: 24px;
+  }
+  .table th,
+  .table td {
+    padding: 11px 12px;
+  }
+}
