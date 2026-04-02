@@ -270,3 +270,95 @@ background: rgba(234, 240, 251, 0.65);
     transform: translateY(0);
   }
 }
+/* ── AR Toggle ── */
+.arToggleWrapper {
+  grid-column: 1 / -1;
+  width: 100%;
+  margin-top: 8px;
+}
+
+.arToggleCard {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 16px 20px;
+  border-radius: 12px;
+  border: 1.5px dashed #cbd5e0;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+  user-select: none;
+}
+
+.arToggleCard:hover {
+  border-color: #3e5ba9;
+  background: #eef2fb;
+}
+
+.arToggleCardActive {
+  border: 1.5px solid #3e5ba9;
+  background: #eef2fb;
+  box-shadow: 0 2px 12px rgba(62, 91, 169, 0.1);
+}
+
+.arCheckboxHidden {
+  display: none;
+}
+
+.arToggleLeft {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  flex: 1;
+}
+
+.arToggleIcon {
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.arToggleTitle {
+  font-weight: 700;
+  font-size: 0.92rem;
+  color: #1e2a40;
+  margin: 0 0 4px 0;
+}
+
+.arToggleHint {
+  font-size: 0.76rem;
+  color: #64748b;
+  margin: 0;
+  line-height: 1.5;
+}
+
+/* Pill toggle */
+.arPill {
+  flex-shrink: 0;
+  width: 44px;
+  height: 24px;
+  border-radius: 999px;
+  background: #cbd5e0;
+  position: relative;
+  transition: background 0.22s;
+}
+
+.arPillOn {
+  background: #3e5ba9;
+}
+
+.arPillThumb {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.18);
+  transition: transform 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.arPillOn .arPillThumb {
+  transform: translateX(20px);
+}

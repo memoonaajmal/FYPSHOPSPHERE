@@ -503,12 +503,49 @@ const handleAddToCart = async () => {              // ✅ make async
         </Box>
 
         {/* AR Banner */}
-        <ARBannerIllustration
-          onClick={() => {
-            setShowAR(true);
-            setAnalyzeMode(true);
-          }}
-        />
+     {/* AR Banner */}
+{product.isAREnabled ? (
+  <ARBannerIllustration
+    onClick={() => {
+      setShowAR(true);
+      setAnalyzeMode(true);
+    }}
+  />
+) : (
+  <Box
+    sx={{
+      width: "100%",
+      borderRadius: "14px",
+      background: "var(--section-bg)",
+      border: "1.5px dashed var(--border)",
+      py: 2.5,
+      px: 3,
+      display: "flex",
+      alignItems: "center",
+      gap: 2,
+      opacity: 0.6,
+      cursor: "not-allowed",
+    }}
+  >
+    <ViewInArIcon sx={{ fontSize: 34, color: "var(--muted)" }} />
+    <Box>
+      <Typography
+        sx={{
+          fontWeight: 700,
+          fontSize: "0.9rem",
+          color: "var(--muted)",
+          textTransform: "uppercase",
+          letterSpacing: 1.2,
+        }}
+      >
+        AR Try‑On Unavailable
+      </Typography>
+      <Typography sx={{ fontSize: "0.76rem", color: "var(--muted)", mt: 0.3 }}>
+        This product requires a white-background front-pose image for AR.
+      </Typography>
+    </Box>
+  </Box>
+)}
       </Box>
 
       {/* Mini Cart / Wishlist */}
