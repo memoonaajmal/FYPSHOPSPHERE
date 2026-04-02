@@ -9,7 +9,7 @@ import { addToWishlist } from "../../../../../redux/WishlistSlice";
 import MiniCart from "../../../../../components/MiniCart";
 import MiniWishlist from "../../../../../components/MiniWishlist";
 import ARViewer from "../../../../../components/ARViewer";
-
+import { auth } from "../../../../../firebase/config";
 import {
   Box,
   Typography,
@@ -222,17 +222,34 @@ export default function ProductDetailsPage({ params }) {
     localStorage.setItem("recentlyViewed", JSON.stringify(filtered.slice(0, 5)));
   }, [product]);
 
-  const handleAddToCart = () => {
-    dispatch(addItemToCart({
-      id: product._id,
-      name: product.productDisplayName,
-      price: product.price,
-      image: `${BASE_URL}/images/${product.imageFilename}`,
-      storeId: product.storeId,
-    }));
-    setMiniCartVisible(true);
-    setTimeout(() => setMiniCartVisible(false), 3000);
+const handleAddToCart = async () => {              // ✅ make async
+  const item = {
+    id:      product._id,
+    name:    product.productDisplayName,
+    price:   product.price,
+    image:   `${BASE_URL}/images/${product.imageFilename}`,
+    storeId: product.storeId,
   };
+
+  dispatch(addItemToCart(item));                   // optimistic update (unchanged)
+
+  // ✅ NEW: if logged in, also persist to DB
+  const user = auth.currentUser;
+  if (user) {
+    const token = await user.getIdToken();
+    await fetch(`${BASE_URL}/api/cart`, {
+      method:  "POST",
+      headers: {
+        "Content-Type":  "application/json",
+        Authorization:   `Bearer ${token}`,
+      },
+      body: JSON.stringify(item),
+    });
+  }
+
+  setMiniCartVisible(true);
+  setTimeout(() => setMiniCartVisible(false), 3000);
+};
 
   const handleAddToWishlist = () => {
     dispatch(addToWishlist({

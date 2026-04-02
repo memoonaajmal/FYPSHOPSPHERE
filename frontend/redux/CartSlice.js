@@ -1,3 +1,4 @@
+"use client";
 import { createSlice } from "@reduxjs/toolkit";
 
 const storedCart =
@@ -14,7 +15,6 @@ const cartSlice = createSlice({
   initialState,
   reducers: {
     addItemToCart: (state, action) => {
-      // 🔹 action.payload should now include product.storeId
       const existing = state.items.find((item) => item.id === action.payload.id);
       if (existing) {
         existing.qty += action.payload.qty || 1;
@@ -22,7 +22,7 @@ const cartSlice = createSlice({
         state.items.push({
           ...action.payload,
           qty: action.payload.qty || 1,
-          storeId: action.payload.storeId, // ✅ ensure storeId is saved
+          storeId: action.payload.storeId,
         });
       }
       localStorage.setItem("cart", JSON.stringify(state.items));
@@ -49,6 +49,20 @@ const cartSlice = createSlice({
       state.items = [];
       localStorage.removeItem("cart");
     },
+
+    // ✅ NEW: replace entire cart (used when loading from DB)
+    setCart: (state, action) => {
+      // DB items use `productId`, redux uses `id` — normalize here
+      state.items = action.payload.map((item) => ({
+        id:      item.productId ?? item.id,
+        storeId: item.storeId,
+        name:    item.name,
+        price:   item.price,
+        image:   item.image,
+        qty:     item.qty,
+      }));
+      localStorage.setItem("cart", JSON.stringify(state.items));
+    },
   },
 });
 
@@ -58,6 +72,7 @@ export const {
   increaseQty,
   decreaseQty,
   clearCart,
+  setCart,        // ✅ NEW export
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

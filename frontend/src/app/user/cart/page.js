@@ -2,6 +2,8 @@
 import styles from "../../../styles/Cart.module.css";
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+// ✅ ADDED: auth import for DB sync
+import { auth } from "../../../../firebase/config";
 import {
   removeItemFromCart,
   clearCart,
@@ -12,6 +14,29 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
 
+// ✅ ADDED: base URL for API calls
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+// ✅ ADDED: helper that silently syncs cart actions to DB for logged-in users
+// Guest users are ignored (auth.currentUser will be null)
+const syncWithDB = async (method, path, body) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const token = await user.getIdToken();
+    await fetch(`${BASE_URL}/api/cart${path}`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    console.error("Cart DB sync failed:", err);
+  }
+};
+
 export default function CartPage() {
   const cartItems = useSelector((state) => state.cart.items);
   const [hasMounted, setHasMounted] = useState(false);
@@ -20,7 +45,6 @@ export default function CartPage() {
 
   useEffect(() => setHasMounted(true), []);
 
- 
   const total = cartItems.reduce(
     (acc, item) => acc + ((item.price || 0) * (item.qty || 1)),
     0
@@ -31,22 +55,24 @@ export default function CartPage() {
   if (cartItems.length === 0) {
     return (
       <div className={styles.emptyCartPage}>
-  <div className={styles.emptyCart}>
-    <img
-      src="/images/emptycart.png"
-      alt="Empty cart"
-      className={styles.emptyCartImage}
-    />
-    <h2>Empty Cart</h2>
-    <p>Looks like you haven't made your choice yet.</p>
-  </div>
-</div>
+        <div className={styles.emptyCart}>
+          <img
+            src="/images/emptycart.png"
+            alt="Empty cart"
+            className={styles.emptyCartImage}
+          />
+          <h2>Empty Cart</h2>
+          <p>Looks like you haven't made your choice yet.</p>
+        </div>
+      </div>
     );
   }
 
-  const handleClearCart = () => {
+  // ✅ UPDATED: also clears DB cart for logged-in users
+  const handleClearCart = async () => {
     if (window.confirm("Are you sure you want to clear your entire cart?")) {
       dispatch(clearCart());
+      await syncWithDB("DELETE", ""); // DELETE /api/cart
     }
   };
 
@@ -83,12 +109,32 @@ export default function CartPage() {
                 </div>
 
                 <div className={styles.qtyControls}>
-                  <button onClick={() => dispatch(decreaseQty(item.id))}>−</button>
+                  {/* ✅ UPDATED: decrease also syncs to DB */}
+                  <button
+                    onClick={() => {
+                      dispatch(decreaseQty(item.id));
+                      // only sync if qty will still be >= 1 after decrease
+                      if (item.qty > 1) {
+                        syncWithDB("PUT", `/${item.id}`, { qty: item.qty - 1 });
+                      }
+                    }}
+                  >
+                    −
+                  </button>
+
                   <span>{item.qty}</span>
-                  <button onClick={() => dispatch(increaseQty(item.id))}>+</button>
+
+                  {/* ✅ UPDATED: increase also syncs to DB */}
+                  <button
+                    onClick={() => {
+                      dispatch(increaseQty(item.id));
+                      syncWithDB("PUT", `/${item.id}`, { qty: item.qty + 1 });
+                    }}
+                  >
+                    +
+                  </button>
                 </div>
 
-               
                 <p className={styles.itemPrice}>
                   PKR {(item.price || 0).toFixed(2)}
                 </p>
@@ -96,9 +142,13 @@ export default function CartPage() {
                   PKR {((item.price || 0) * (item.qty || 1)).toFixed(2)}
                 </p>
 
+                {/* ✅ UPDATED: remove also syncs to DB */}
                 <button
                   className={styles.removeIcon}
-                  onClick={() => dispatch(removeItemFromCart(item.id))}
+                  onClick={() => {
+                    dispatch(removeItemFromCart(item.id));
+                    syncWithDB("DELETE", `/${item.id}`); // DELETE /api/cart/:productId
+                  }}
                 >
                   <X size={16} />
                 </button>
@@ -119,7 +169,7 @@ export default function CartPage() {
               className={styles.clearCartContainer}
               onClick={handleClearCart}
             >
-              <span> 🗑️ Clear Cart</span>
+              <span>🗑️ Clear Cart</span>
             </div>
           </div>
         </div>
