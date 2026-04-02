@@ -41,6 +41,7 @@ exports.addProduct = async (req, res) => {
       year,
       usage,
       imageFilename,
+      isAREnabled,
       price,
     } = req.body;
 
@@ -60,6 +61,7 @@ exports.addProduct = async (req, res) => {
       year,
       usage,
       imageFilename,
+       isAREnabled: isAREnabled ?? false,
       embedding, 
     });
 

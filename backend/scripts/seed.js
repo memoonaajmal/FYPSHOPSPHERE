@@ -13,6 +13,23 @@ const dryRun = args.includes('--dry-run');
 const limitIndex = args.indexOf('--limit');
 const limit = limitIndex !== -1 ? Number(args[limitIndex + 1]) : 0;
 
+function resolveAREnabled(row) {
+  const article = (row.articleType || '').toLowerCase();
+  const master  = (row.masterCategory || '').toLowerCase();
+  const sub     = (row.subCategory || '').toLowerCase();
+
+  if (article.includes('watch') || article.includes('watches'))   return true;
+  if (article.includes('glasses') || article.includes('eyewear')) return true;
+  if (sub.includes('watches'))                                     return true;
+  if (sub.includes('eyewear') || sub.includes('sunglasses'))      return true;
+
+  if (master.includes('jewellery') || master.includes('jewelry')) return false;
+  if (master.includes('bags') || master.includes('handbags'))     return false;
+  if (sub.includes('bags') || sub.includes('jewellery'))          return false;
+
+  return false;
+}
+
 async function run() {
   const MONGO_URL = process.env.MONGO_URL;
   const DB_NAME = process.env.DB_NAME;
@@ -28,7 +45,7 @@ async function run() {
     console.log('Dropped products collection');
   }
 
-  const csvPath = path.resolve(process.env.CSV_PATH || './dataset/styles.csv');
+  const csvPath  = path.resolve(process.env.CSV_PATH   || './dataset/styles.csv');
   const imagesDir = path.resolve(process.env.IMAGES_DIR || './public/images');
 
   let inserted = 0, missingImage = 0, invalid = 0;
@@ -43,30 +60,31 @@ async function run() {
     if (!id) { invalid++; continue; }
 
     const imageFilename = id + '.jpg';
-    const imagePath = path.join(imagesDir, imageFilename);
-    const hasImage = fs.existsSync(imagePath);
+    const imagePath     = path.join(imagesDir, imageFilename);
+    const hasImage      = fs.existsSync(imagePath);
     if (!hasImage) missingImage++;
 
     const doc = {
-      productId: id,
-      gender: row.gender || undefined,
-      masterCategory: row.masterCategory || undefined,
-      subCategory: row.subCategory || undefined,
-      articleType: row.articleType || undefined,
-      baseColour: row.baseColour || undefined,
-      season: row.season || undefined,
-      year: row.year ? Number(row.year) : undefined,
-      usage: row.usage || undefined,
+      productId:          id,
+      gender:             row.gender             || undefined,
+      masterCategory:     row.masterCategory     || undefined,
+      subCategory:        row.subCategory        || undefined,
+      articleType:        row.articleType        || undefined,
+      baseColour:         row.baseColour         || undefined,
+      season:             row.season             || undefined,
+      year:               row.year ? Number(row.year) : undefined,
+      usage:              row.usage              || undefined,
       productDisplayName: row.productDisplayName || undefined,
-      imageFilename: hasImage ? imageFilename : undefined
+      imageFilename:      hasImage ? imageFilename : undefined,  // ← comma fixed
+      isAREnabled:        resolveAREnabled(row),
     };
 
     batch.push({
       updateOne: {
         filter: { productId: doc.productId },
         update: { $setOnInsert: doc },
-        upsert: true
-      }
+        upsert: true,
+      },
     });
 
     if (batch.length >= BATCH_SIZE) {

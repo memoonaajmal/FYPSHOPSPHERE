@@ -12,7 +12,8 @@ const ProductSchema = new mongoose.Schema({
   usage: { type: String, index: true },
   productDisplayName: { type: String },
   imageFilename: { type: String },
-  
+    isAREnabled: { type: Boolean, default: false, index: true },
+
   embedding: { type: [Number], default: undefined, index: false }
 
 }, { timestamps: true });
