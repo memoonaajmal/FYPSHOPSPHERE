@@ -31,6 +31,7 @@ const chatRoutes = require("./routes/chat.routes");
 const recommendationRoutes = require("./routes/recommendation.routes");
 
 const cartRouter = require ("./routes/cart.routes");
+const wishlistRoutes = require("./routes/wishlist.routes");
 
 
 const app = express();
@@ -113,9 +114,11 @@ app.use('/api/streams', streamRoutes);
 app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/recommendation", recommendationRoutes);
+app.use("/api/wishlist", wishlistRoutes); 
 
 
-app.use("/api/cart", cartRouter);      
+app.use("/api/cart", cartRouter); 
+     
 
 // Swagger docs (optional)
 try {

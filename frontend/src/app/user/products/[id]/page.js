@@ -251,17 +251,34 @@ const handleAddToCart = async () => {              // ✅ make async
   setTimeout(() => setMiniCartVisible(false), 3000);
 };
 
-  const handleAddToWishlist = () => {
-    dispatch(addToWishlist({
-      id: product._id,
-      name: product.productDisplayName,
-      price: product.price,
-      image: `${BASE_URL}/images/${product.imageFilename}`,
-      storeId: product.storeId,
-    }));
-    setMiniWishlistVisible(true);
-    setTimeout(() => setMiniWishlistVisible(false), 3000);
+const handleAddToWishlist = async () => {        // make async
+  const item = {
+    id:      product._id,
+    name:    product.productDisplayName,
+    price:   product.price,
+    image:   `${BASE_URL}/images/${product.imageFilename}`,
+    storeId: product.storeId,
   };
+ 
+  dispatch(addToWishlist(item));                 // optimistic update (unchanged)
+ 
+  // ✅ NEW: if logged in, also persist to DB
+  const user = auth.currentUser;
+  if (user) {
+    const token = await user.getIdToken();
+    await fetch(`${BASE_URL}/api/wishlist`, {
+      method:  "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization:  `Bearer ${token}`,
+      },
+      body: JSON.stringify(item),
+    });
+  }
+ 
+  setMiniWishlistVisible(true);
+  setTimeout(() => setMiniWishlistVisible(false), 3000);
+};
 
   if (!product) {
     return (

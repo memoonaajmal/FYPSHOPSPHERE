@@ -7,12 +7,51 @@ import { addItemToCart } from "../../../../redux/CartSlice";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { X } from "lucide-react";
-import MiniCart from "../../../../components/MiniCart"; // import your mini cart
+import MiniCart from "../../../../components/MiniCart";
+import { auth } from "../../../../firebase/config";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
+const syncWishlistWithDB = async (method, path, body) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const token = await user.getIdToken();
+    await fetch(`${BASE_URL}/api/wishlist${path}`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    console.error("Wishlist DB sync failed:", err);
+  }
+};
+
+const syncCartWithDB = async (method, path, body) => {
+  const user = auth.currentUser;
+  if (!user) return;
+  try {
+    const token = await user.getIdToken();
+    await fetch(`${BASE_URL}/api/cart${path}`, {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: body ? JSON.stringify(body) : undefined,
+    });
+  } catch (err) {
+    console.error("Cart DB sync failed:", err);
+  }
+};
 
 export default function WishlistPage() {
   const wishlistItems = useSelector((state) => state.wishlist.items);
   const [hasMounted, setHasMounted] = useState(false);
-  const [miniCartVisible, setMiniCartVisible] = useState(false); // state to toggle mini cart
+  const [miniCartVisible, setMiniCartVisible] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -22,38 +61,57 @@ export default function WishlistPage() {
   if (wishlistItems.length === 0) {
     return (
       <div className={styles.emptyCartPage}>
-  <div className={styles.emptyCart}>
-    <img
-      src="/images/emptywishlist.png"
-      alt="Empty wishlist"
-      className={styles.emptyCartImage}
-    />
-    <h2>Your wishlist is empty!</h2>
-    <p>Explore more and shortlist some items.</p>
-  </div>
-</div>
+        <div className={styles.emptyCart}>
+          <img
+            src="/images/emptywishlist.png"
+            alt="Empty wishlist"
+            className={styles.emptyCartImage}
+          />
+          <h2>Your wishlist is empty!</h2>
+          <p>Explore more and shortlist some items.</p>
+        </div>
+      </div>
     );
   }
 
-  const handleAddToCart = (item) => {
+  //UPDATED: also syncs to cart DB + removes from wishlist DB
+  const handleAddToCart = async (item) => {
     dispatch(
       addItemToCart({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        image: item.image,
+        id:      item.id,
+        name:    item.name,
+        price:   item.price,
+        image:   item.image,
+        storeId: item.storeId,
       })
     );
 
-    //  Show mini cart briefly (or toggle)
+    // Sync add to cart DB
+    await syncCartWithDB("POST", "", {
+      id:      item.id,
+      storeId: item.storeId,
+      name:    item.name,
+      price:   item.price,
+      image:   item.image,
+      qty:     1,
+    });
+
     setMiniCartVisible(true);
-    setTimeout(() => setMiniCartVisible(false), 3000); // hide after 3s
+    setTimeout(() => setMiniCartVisible(false), 3000);
+  };
+
+  //UPDATED: also clears wishlist DB
+  const handleClearWishlist = async () => {
+    if (window.confirm("Are you sure you want to clear your entire wishlist?")) {
+      dispatch(clearWishlist());
+      await syncWishlistWithDB("DELETE", ""); // DELETE /api/wishlist
+    }
   };
 
   return (
     <div className={styles.cartPageWrapper}>
       <div className={styles.cartPage}>
-        {/*  Wishlist (Full Width)  */}
+        {/* Wishlist (Full Width) */}
         <div className={styles.cartLeft} style={{ flex: "1 1 100%" }}>
           <h2 className={styles.cartTitle}>
             Your Wishlist <span>({wishlistItems.length} items)</span>
@@ -95,9 +153,14 @@ export default function WishlistPage() {
                 >
                   Add to Cart
                 </button>
+
+                {/* ✅ UPDATED: remove also syncs to DB */}
                 <button
                   className={styles.removeIcon}
-                  onClick={() => dispatch(removeFromWishlist(item.id))}
+                  onClick={() => {
+                    dispatch(removeFromWishlist(item.id));
+                    syncWishlistWithDB("DELETE", `/${item.id}`); // DELETE /api/wishlist/:productId
+                  }}
                   title="Remove from Wishlist"
                 >
                   <X size={16} />
@@ -115,9 +178,10 @@ export default function WishlistPage() {
               ← Continue Shopping
             </button>
 
+            {/* ✅ UPDATED: uses handleClearWishlist for DB sync */}
             <div
               className={styles.clearCartContainer}
-              onClick={() => dispatch(clearWishlist())}
+              onClick={handleClearWishlist}
             >
               <span className={styles.trashIcon}>🗑️</span> Clear Wishlist
             </div>
