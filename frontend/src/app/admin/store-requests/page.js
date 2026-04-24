@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import styles from "../styles/AllStoreRequest.module.css";
+import OrderPagination from "../../../../components/OrderPagination";
+import { useSearchParams } from "next/navigation";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -20,18 +22,32 @@ function getInitials(name = "") {
 }
 
 export default function StoreRequests() {
+  const params = useSearchParams();
+  const page = parseInt(params.get("page") || "1", 10);
+
   const [requests, setRequests] = useState([]);
   const [loading, setLoading]   = useState(true);
+  const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
     const fetchRequests = async () => {
+      setLoading(true);
       try {
-        const res = await fetch(`${BASE_URL}/api/admin/store-requests`, {
-          credentials: "include",
-        });
+        const res = await fetch(
+          `${BASE_URL}/api/admin/store-requests?page=${page}`,
+          { credentials: "include" }
+        );
         if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
-        setRequests(Array.isArray(data) ? data : []);
+
+        // Support both { requests, totalPages } shape and plain array
+        if (Array.isArray(data)) {
+          setRequests(data);
+          setTotalPages(1);
+        } else {
+          setRequests(Array.isArray(data.requests) ? data.requests : []);
+          setTotalPages(data.totalPages || 1);
+        }
       } catch (err) {
         console.error("Error fetching store requests:", err);
         setRequests([]);
@@ -40,7 +56,7 @@ export default function StoreRequests() {
       }
     };
     fetchRequests();
-  }, []);
+  }, [page]);   // 👈 re-fetches whenever the page param changes
 
   const counts = requests.reduce(
     (acc, r) => {
@@ -141,11 +157,8 @@ export default function StoreRequests() {
                   href={`/admin/store-requests/${req._id}`}
                   className={styles.tableRow}
                 >
-                  {/* Store + avatar */}
                   <div className={styles.storeCell}>
-                    <div className={styles.storeAvatar}>
-                      {getInitials(storeName)}
-                    </div>
+                    <div className={styles.storeAvatar}>{getInitials(storeName)}</div>
                     <div>
                       <div className={styles.storeName}>{storeName}</div>
                       {business && (
@@ -153,37 +166,21 @@ export default function StoreRequests() {
                       )}
                     </div>
                   </div>
-
-                  {/* Seller */}
-                  <div className={`${styles.sellerName} ${styles.colSeller}`}>
-                    {ownerName || "—"}
-                  </div>
-
-                  {/* Email */}
-                  <div className={`${styles.emailText} ${styles.colEmail}`}>
-                    {email || "—"}
-                  </div>
-
-                  {/* Status badge */}
+                  <div className={`${styles.sellerName} ${styles.colSeller}`}>{ownerName || "—"}</div>
+                  <div className={`${styles.emailText} ${styles.colEmail}`}>{email || "—"}</div>
                   <div>
-                    <span className={`${styles.badge} ${getBadgeClass(status)}`}>
-                      {status}
-                    </span>
+                    <span className={`${styles.badge} ${getBadgeClass(status)}`}>{status}</span>
                   </div>
-
-                  {/* Submitted date */}
-                  <div className={`${styles.dateText} ${styles.colBusiness}`}>
-                    {submitted}
-                  </div>
-
-                  {/* Arrow */}
+                  <div className={`${styles.dateText} ${styles.colBusiness}`}>{submitted}</div>
                   <div className={styles.arrowCell}>›</div>
                 </Link>
               );
             })}
-
           </div>
         )}
+
+        {/* ── Pagination (same component as seller orders) ── */}
+        {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
       </div>
     </div>
   );

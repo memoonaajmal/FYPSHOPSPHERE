@@ -92,10 +92,25 @@ exports.getOrdersByEmail = async (req, res) => {
 
 exports.getAllStoreRequests = async (req, res) => {
   try {
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10; // requests per page
+    const skip = (page - 1) * limit;
+
+    const totalCount = await StoreRequest.countDocuments({ status: "pending" });
+    const totalPages = Math.ceil(totalCount / limit);
+
     const requests = await StoreRequest.find({ status: "pending" })
       .populate("sellerId", "email name")
-      .sort({ createdAt: -1 });
-    res.status(200).json(requests);
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    res.status(200).json({
+      requests,
+      totalPages,
+      currentPage: page,
+      totalCount,
+    });
   } catch (err) {
     console.error("Error fetching store requests:", err);
     res.status(500).json({ message: "Server error", error: err.message });
