@@ -200,4 +200,47 @@
 .tryonBtn:hover {
   background: #095fb3;
 }
+/* Loading overlay */
+.arLoading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  background: #0d0d0d;
+  color: #fff;
+  font-size: 0.9rem;
+  z-index: 10;
+  border-radius: 16px;
+}
 
+.arSpinner {
+  width: 42px;
+  height: 42px;
+  border: 3px solid rgba(255, 255, 255, 0.15);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Error overlay */
+.arError {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a0a0a;
+  color: #ff6b6b;
+  font-size: 0.9rem;
+  text-align: center;
+  padding: 24px;
+  border-radius: 16px;
+  z-index: 10;
+}
