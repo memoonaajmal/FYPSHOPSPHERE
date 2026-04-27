@@ -42,12 +42,13 @@ function ARBannerIllustration({ onClick }) {
     <Box
       onClick={onClick}
       sx={{
+        
         position: "relative",
         width: "100%",
         borderRadius: "14px",
         overflow: "hidden",
         background: "var(--accent-gradient)",
-        py: 2.5,
+        py: 5,
         px: 3,
         display: "flex",
         alignItems: "center",
@@ -319,7 +320,9 @@ const handleAddToWishlist = async () => {        // make async
         maxWidth: 1120,
         mx: "auto",
         px: { xs: 2, md: 4 },
-        py: { xs: 3, md: 5 },
+    
+      pt: { xs: 6, md: 10 },
+      pb: { xs: 3, md: 5 },
       }}
     >
       {/* ── IMAGE PANEL ── */}

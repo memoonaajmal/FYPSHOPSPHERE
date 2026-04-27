@@ -3,7 +3,7 @@
 /* ---------- Container ---------- */
 .container {
   max-width: 100%;
-  padding: 2rem;
+padding: 5rem 2rem 2rem;
   font-family: 'Inter', sans-serif;
   color: var(--text);
   background: var(--bg);
