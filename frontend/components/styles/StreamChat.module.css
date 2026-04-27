@@ -1,0 +1,181 @@
+/* ======== StreamChat: fills the right panel entirely ======== */
+.streamChat {
+  display: flex;
+  flex-direction: column;
+  height: 100%;  /* ensures it fills chatPanel height */
+  min-height: 0;
+  background: transparent;
+}
+
+/* ======== Chat Header ======== */
+.chatHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 1.1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.chatTitle {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: rgba(255, 255, 255, 0.85);
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+/* Update chatLivePill to match the new live chip style */
+.chatLivePill {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #ff5060;
+  background: rgba(255, 45, 65, 0.12);
+  border: 0.5px solid rgba(255, 45, 65, 0.3);
+  padding: 3px 9px 3px 7px;
+  border-radius: 8px;
+}
+
+/* Add a red dot inside the pill — add this span in your JSX too */
+.chatLiveDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #ff3545;
+  display: inline-block;
+  animation: rdp 1.4s ease-in-out infinite;
+}
+
+/* ======== Pinned Message ======== */
+.pinnedMessage {
+  margin: 0.6rem 0.9rem;
+  padding: 0.6rem 0.85rem;
+  background: linear-gradient(135deg, rgba(39, 70, 144, 0.3), rgba(62, 91, 169, 0.2));
+  border: 1px solid rgba(62, 91, 169, 0.35);
+  border-radius: 8px;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.85);
+  flex-shrink: 0;
+}
+
+.pinnedMessage strong {
+  color: #93b4ff;
+  font-weight: 600;
+}
+
+/* ======== Messages Scroll Area ======== */
+.messageList {
+  flex: 1;              /* takes all remaining space */
+  overflow-y: auto;
+  padding: 0.75rem 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  min-height: 0;        /* allows flex shrinking inside parent */
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.08) transparent;
+}
+
+.messageList::-webkit-scrollbar {
+  width: 4px;
+}
+
+.messageList::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messageList::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: 4px;
+}
+
+.emptyState {
+  color: rgba(255, 255, 255, 0.2);
+  font-size: 0.82rem;
+  font-style: italic;
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.messageRow {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.messageRow strong {
+  font-size: 0.75rem;
+  color: #93b4ff;
+  font-weight: 600;
+}
+
+.messageRow span {
+  font-size: 0.83rem;
+  color: rgba(255, 255, 255, 0.75);
+  line-height: 1.45;
+}
+
+/* ======== Input Row ======== */
+.inputRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  padding: 0.85rem 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.chatInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-right: none;
+  border-radius: 8px 0 0 8px;
+  padding: 0.65rem 0.9rem;
+  color: #ffffff;
+  font-size: 0.85rem;
+  outline: none;
+  transition: background 0.2s ease, border-color 0.2s ease;
+  box-sizing: border-box;
+}
+
+.chatInput::placeholder {
+  color: rgba(255, 255, 255, 0.25);
+}
+
+.chatInput:focus {
+  background: rgba(255, 255, 255, 0.08);
+  border-color: rgba(62, 91, 169, 0.5);
+}
+
+.sendBtn {
+  background: linear-gradient(135deg, #2746a0, #3e5ba9);
+  color: #ffffff;
+  border: none;
+  border-radius: 0 8px 8px 0;
+  padding: 0.65rem 1.1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.2s ease;
+  letter-spacing: 0.3px;
+}
+
+.sendBtn:hover {
+  opacity: 0.88;
+}
+
+.sendBtn:active {
+  opacity: 0.75;
+}
+
+.sendBtn.seller {
+  background: linear-gradient(135deg, #2746a0, #3e5ba9);
+}

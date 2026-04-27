@@ -5,6 +5,8 @@ import { auth } from "../../../../firebase/config";
 import { getSocket } from "../../../../lib/socket";
 import StreamPublisher from "../../../../components/StreamPublisher";
 import StreamChat from "../../../../components/StreamChat";
+import styles from "../styles/GoLive.module.css";
+
 
 export default function GoLivePage() {
   const [title, setTitle] = useState("");
@@ -109,47 +111,67 @@ export default function GoLivePage() {
   };
 
   if (stream) {
-    return (
-      <div className="p-6 flex flex-col items-center">
-        <h1 className="text-xl font-semibold mb-3">{stream.title}</h1>
+  return (
+  <div className={styles.liveStreamPage}>
+    <div className={styles.publisherContainer}>
+
+      {/* LEFT: Video + controls */}
+      <div className={styles.videoPanel}>
         <StreamPublisher
           ref={publisherRef}
           streamId={stream._id}
           isStreamActive={!!stream}
           socket={socketRef.current}
-        />
-        <StreamChat
-  streamId={stream._id}
-  username={sellerName}
-  userType="seller"
-  socket={socketRef.current}
-/>
-
-        <button
-          onClick={endStream}
-          className="mt-5 bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
+          streamTitle={stream.title}
+          storeName={sellerName}
         >
-          End Stream
-        </button>
+          {/* Pass End Stream button as children */}
+          <button onClick={endStream} className={styles.endStreamBtn}>
+            End Stream
+          </button>
+        </StreamPublisher>
       </div>
-    );
-  }
+
+      {/* RIGHT: Chat */}
+      <div className={styles.chatPanel}>
+        <StreamChat
+          streamId={stream._id}
+          username={sellerName}
+          userType="seller"
+          socket={socketRef.current}
+        />
+      </div>
+
+    </div>
+  </div>
+);
+}
 
   return (
-    <div className="p-6 max-w-md mx-auto">
-      <h1 className="text-2xl font-semibold mb-4">Start Live Stream</h1>
+    <div className={styles.liveStreamPage}>
+  <div className={styles.liveStream}>
+    <img
+      src="/images/livestream.png"
+      alt="Live Stream"
+      className={styles.liveStreamImage}
+    />
+    <h1>Ready to Broadcast?</h1>
+    <p>Begin streaming and engage with your audience. Showcase products and answer questions live.</p>
+    <div className={styles.liveStreamControls}>
       <input
         value={title}
         onChange={(e) => setTitle(e.target.value)}
-        className="w-full border rounded p-2 mb-3"
+        className={styles.liveStreamInput}
         placeholder="Enter stream title"
       />
       <button
         onClick={startStream}
-        className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        className={styles.liveStreamBtn}
       >
         Go Live
       </button>
     </div>
+  </div>
+</div>
   );
 }

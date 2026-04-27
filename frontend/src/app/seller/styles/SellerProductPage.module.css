@@ -1,194 +1,94 @@
-/* store.module.css */
-
-/* ---------- Container ---------- */
 .container {
-  max-width: 100%;
+  background: linear-gradient(to right, #eef2f7, #e6ecf5);
+  min-height: 100vh;
   padding: 2rem;
-  font-family: 'Inter', sans-serif;
-  color: var(--text);
-  background: var(--bg);
-  overflow-x: hidden; /* prevent horizontal scroll */
 }
 
-/* ---------- Hero Banner ---------- */
-.heroBanner {
-  position: relative;
-  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
-  color: var(--white);
-  padding: 4rem 2rem;
-  border-radius: 12px;
-  text-align: center;
-  margin-bottom: 3rem;
-  box-shadow: var(--card-shadow);
-  overflow: hidden;
-  transition: none; /* disable hover animation */
-}
-
-/* Remove the pseudo-element hover effect */
-.heroBanner::before {
-  content: "";
-  position: absolute;
-  left: -40%;
-  top: -30%;
-  width: 220%;
-  height: 140%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.12),
-    rgba(39,70,144,0.10),
-    rgba(110,130,184,0.10)
-  );
-  transform: rotate(8deg) translateX(-10%);
-  opacity: 1; /* make it always visible if needed, or remove */
-  pointer-events: none;
-  transition: none; /* disable hover animation */
-}
-
-/* Remove hover styles completely */
-.heroBanner:hover {
-  transform: none;
-  box-shadow: var(--card-shadow);
-  background: linear-gradient(135deg, var(--blue), var(--blue-light), var(--blue-verylight));
-}
-
-
-.heroContent {
-  max-width: 800px;
-  margin: 0 auto;
-}
-
-.storeTitle {
-  font-size: 2.5rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-}
-
-.storeSubtitle {
-  font-size: 1.2rem;
-  opacity: 0.9;
-  color: var(--white);
-}
-
-/* ---------- Main Content: Filter + Products ---------- */
+/* This creates the soft panel look like your screenshot */
 .storeContent {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap; /* wrap on smaller screens */
+  background: #dfe6ef; /* THIS is the bluish layer */
+  padding: 1.5rem;
+  border-radius: 1rem;
 }
 
-.searchFilterBar {
-  flex: 0 0 250px; /* fixed width for desktop */
+/* LEFT SIDEBAR */
+.filterBar {
+  width: 260px;
+  flex-shrink: 0;
 }
 
+/* RIGHT CONTENT */
 .productsSection {
-  flex: 1; /* take remaining space */
-  background: var(--section-bg);
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: var(--card-shadow);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* ---------- Products Section ---------- */
-.productsHeading {
-  font-size: 1.8rem;
-  margin-bottom: 1.5rem;
-  font-weight: 600;
-  color: var(--text);
+/* TOP BAR (replaces hero) */
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
 }
 
-.productsGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* responsive grid */
-  gap: 1.5rem;
+.pageTitle {
+  font-size: 2rem;
+  font-weight: 700;
 }
 
-.emptyState {
-  font-size: 1.2rem;
-  color: var(--muted);
-  text-align: center;
-  margin-top: 2rem;
-}
-
-/* ---------- Add Product Button ---------- */
+/* BUTTON */
 .addProductBtn {
-  position: relative;
-  overflow: hidden;
-  margin-top: 1.5rem;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
+  padding: 0.7rem 1.4rem;
+  border-radius: 2rem;
+  border: none;
+  background: #222;
+  color: #fff;
   font-weight: 600;
-  color: var(--navy);
-  background: linear-gradient(180deg, var(--bg) 0%, var(--blue-soft) 100%);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
   cursor: pointer;
-  transition: transform 320ms cubic-bezier(.2,.9,.2,1), 
-              box-shadow 320ms, 
-              background 320ms, 
-              border 320ms;
-  box-shadow: var(--card-shadow);
-}
-
-.addProductBtn::before {
-  content: "";
-  position: absolute;
-  left: -40%;
-  top: -30%;
-  width: 220%;
-  height: 140%;
-  background: conic-gradient(
-    from 120deg,
-    rgba(62,91,169,0.12),
-    rgba(39,70,144,0.10),
-    rgba(234,240,251,0.10)
-  );
-  transform: rotate(8deg) translateX(-10%);
-  transition: transform 700ms ease, opacity 500ms;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.addProductBtn:hover::before {
-  transform: rotate(8deg) translateX(0);
-  opacity: 1;
+  transition: 0.2s;
 }
 
 .addProductBtn:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 20px 60px rgba(39,70,144,0.16);
-  background: linear-gradient(180deg, var(--bg) 96%, var(--blue-soft) 95%);
-  border: 1px solid var(--blue-light);
+  background: #000;
 }
 
-.addProductBtn h3,
-.addProductBtn p {
-  color: var(--blue);
+/* GRID SAME AS USER */
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1.5rem;
 }
 
-/* ---------- Responsive Adjustments ---------- */
-@media (max-width: 1024px) {
+/* EMPTY STATE */
+.noProducts {
+  text-align: center;
+  color: #777;
+  font-size: 1.1rem;
+}
+
+/* PAGINATION */
+.paginationWrapper {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: center;
+}
+
+/* RESPONSIVE */
+@media (max-width: 900px) {
   .storeContent {
     flex-direction: column;
   }
 
-  .searchFilterBar,
-  .productsSection {
-    flex: 1 1 100%; /* full width on tablet */
-  }
-}
-
-@media (max-width: 640px) {
-  .heroBanner {
-    padding: 2.5rem 1rem;
-  }
-  .storeTitle {
-    font-size: 2rem;
-  }
-  .storeSubtitle {
-    font-size: 1rem;
+  .filterBar {
+    width: 100%;
   }
 
-  .productsGrid {
-    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* smaller cards on mobile */
+  .topBar {
+    flex-direction: column;
+    gap: 1rem;
+    align-items: flex-start;
   }
 }

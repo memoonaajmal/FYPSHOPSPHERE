@@ -1,0 +1,284 @@
+/* ======== Video Panel ======== */
+.videoPanel {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0.85rem;
+}
+
+/* ======== Video Wrap ======== */
+.videoWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  max-height: 62vh;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #0e1525;
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+
+.videoFeed {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  background: #000;
+}
+
+/* ======== Video Overlays ======== */
+.vidOverlayTop {
+  position: absolute;
+  top: 14px; left: 14px; right: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+.vidOverlayBottom {
+  position: absolute;
+  bottom: 14px; left: 14px; right: 14px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  z-index: 2;
+}
+
+/* ======== Live Chip ======== */
+.liveChip {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(6, 9, 18, 0.8);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #ff5060;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.reddot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #ff3545;
+  display: inline-block;
+  animation: rdp 1.4s ease-in-out infinite;
+}
+
+@keyframes rdp {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.25; }
+}
+
+/* ======== Viewer Button ======== */
+.viewerButton {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  background: rgba(6, 9, 18, 0.8);
+  border: 0.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 5px 10px;
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.5);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.viewerButton:hover {
+  background: rgba(6, 9, 18, 0.95);
+}
+
+/* ======== Seller Chip ======== */
+.sellerChip {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  background: rgba(6, 9, 18, 0.82);
+  border: 0.5px solid rgba(255, 255, 255, 0.09);
+  border-radius: 12px;
+  padding: 8px 13px;
+}
+
+.sellerAvatar {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: #142038;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: #6aa0ff;
+  position: relative;
+  flex-shrink: 0;
+}
+
+.avatarRing {
+  position: absolute;
+  inset: -2px;
+  border-radius: 50%;
+  border: 1.5px solid #3d7eff;
+  opacity: 0.55;
+}
+
+.sellerName {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #fff;
+}
+
+.sellerSub {
+  font-size: 0.62rem;
+  color: rgba(255, 255, 255, 0.3);
+  margin-top: 1px;
+}
+
+/* ======== Info Bar ======== */
+.infoBar {
+  background: rgba(255, 255, 255, 0.025);
+  border: 0.5px solid rgba(255, 255, 255, 0.06);
+  border-radius: 13px;
+  padding: 0.8rem 1.1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.streamTitle {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #fff;
+  margin: 0 0 3px 0;
+}
+
+.streamSub {
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.28);
+}
+
+/* ======== Viewer List Popup (unchanged) ======== */
+.viewerListBackdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.viewerListPopup {
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 400px;
+  background: rgba(20, 25, 40, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.5rem;
+  z-index: 1000;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7);
+  animation: popupSlideIn 0.3s ease-out;
+}
+
+.viewerListHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.viewerListTitle {
+  font-size: 1rem;
+  font-weight: 700;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin: 0;
+}
+
+.viewerListCount {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.6);
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.2rem 0.6rem;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.viewerEmpty {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.3);
+  font-style: italic;
+  margin: 1rem 0;
+  text-align: center;
+}
+
+.viewerNames {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.viewerNames li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  padding: 0.5rem 0.75rem;
+  border-radius: 8px;
+}
+
+.viewerNames li::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: #3e5ba9;
+  flex-shrink: 0;
+}
+
+.closePopupButton {
+  width: 100%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  padding: 0.7rem;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.closePopupButton:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ======== Animations ======== */
+@keyframes fadeIn {
+  from { opacity: 0; } to { opacity: 1; }
+}
+
+@keyframes popupSlideIn {
+  from { opacity: 0; transform: translate(-50%, -48%); }
+  to   { opacity: 1; transform: translate(-50%, -50%); }
+}
