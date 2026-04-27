@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import styles from "./styles/StreamChat.module.css";
 
 export default function StreamChat({ streamId, username, userType, socket }) {
   const [messages, setMessages] = useState([]);
@@ -52,55 +53,46 @@ export default function StreamChat({ streamId, username, userType, socket }) {
   };
 
   return (
-    <div className="w-full max-w-md border rounded-lg p-3 mt-4 bg-white shadow">
-      <h3 className="font-semibold mb-2">Live Chat</h3>
+    <div className={styles.streamChat}>
+  <div className={styles.chatHeader}>
+    <h3 className={styles.chatTitle}>Live Chat</h3>
+<span className={styles.chatLivePill}>
+  <span className={styles.chatLiveDot} />
+  Live
+</span>  </div>
 
-      {/* 📌 PINNED SELLER MESSAGE */}
-      {pinnedMessage && (
-        <div className="bg-gradient-to-r from-pink-100 to-purple-100 p-2 rounded-lg mb-2 shadow-sm">
-          <strong className="text-pink-600">
-            {pinnedMessage.user}
-          </strong>
-          : {pinnedMessage.text}
-        </div>
-      )}
-
-      {/* Viewer messages only */}
-      <div className="h-64 overflow-y-auto border rounded p-2 mb-2 bg-gray-50">
-        {messages.length === 0 && (
-          <p className="text-gray-500 text-sm italic">
-            No messages yet...
-          </p>
-        )}
-        {messages.map((m, i) => (
-          <p key={msgKey(m) + i}>
-            <strong>{m.user}:</strong> {m.text}
-          </p>
-        ))}
-      </div>
-
-      <div className="flex gap-2">
-        <input
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          className="flex-grow border rounded p-2"
-          placeholder={
-            userType === "seller"
-              ? "Type a message to pin..."
-              : "Type a message..."
-          }
-        />
-        <button
-          onClick={sendMessage}
-          className={`rounded px-3 py-1 ${
-            userType === "seller"
-              ? "bg-pink-600 text-white"
-              : "bg-blue-600 text-white"
-          }`}
-        >
-          Send
-        </button>
-      </div>
+  {pinnedMessage && (
+    <div className={styles.pinnedMessage}>
+      <strong>{pinnedMessage.user}</strong>: {pinnedMessage.text}
     </div>
+  )}
+
+  <div className={styles.messageList}>
+    {messages.length === 0 && (
+      <p className={styles.emptyState}>No messages yet...</p>
+    )}
+    {messages.map((m, i) => (
+      <div key={msgKey(m) + i} className={styles.messageRow}>
+        <strong>{m.user}</strong>
+        <span>{m.text}</span>
+      </div>
+    ))}
+  </div>
+
+  <div className={styles.inputRow}>
+    <input
+      value={text}
+      onChange={(e) => setText(e.target.value)}
+      className={styles.chatInput}
+      placeholder={userType === "seller" ? "Type a message to pin..." : "Type a message..."}
+    />
+    <button
+      onClick={sendMessage}
+      className={`${styles.sendBtn} ${userType === "seller" ? styles.seller : ""}`}
+    >
+      Send
+    </button>
+  </div>
+</div>
   );
 }

@@ -7,15 +7,18 @@ import {
   forwardRef,
   useState,
 } from "react";
+import styles from "./styles/StreamPublisher.module.css";
+
 
 const StreamPublisher = forwardRef(
-  ({ streamId, isStreamActive = true, socket }, ref) => {
+  ({ streamId, isStreamActive = true, socket, streamTitle, storeName, children }, ref) => {
     const videoRef = useRef();
     const peers = useRef({});
     const streamRef = useRef(null);
 
     const [viewerCount, setViewerCount] = useState(0);
     const [viewers, setViewers] = useState([]); // ✅ viewer names
+    const [showViewerList, setShowViewerList] = useState(false);
 
     useEffect(() => {
       if (!socket) return;
@@ -131,37 +134,90 @@ const StreamPublisher = forwardRef(
     }, [isStreamActive]);
 
     return (
-      <div className="flex flex-col items-center">
-        <h2 className="text-xl font-semibold mb-1">🎥 You are Live!</h2>
+      <div className={styles.videoPanel}>
+  {/* Video wrap with overlays */}
+  <div className={styles.videoWrap}>
+    <video
+      ref={videoRef}
+      autoPlay
+      muted
+      playsInline
+      className={styles.videoFeed}
+    />
 
-        <p className="text-sm text-gray-600 mb-2">
-          Viewers: {viewerCount}
-        </p>
-
-        {/* ✅ VIEWER NAMES */}
-        <div className="w-full max-w-md mb-2">
-          <p className="text-sm font-semibold">Joined users:</p>
-          {viewers.length === 0 ? (
-            <p className="text-xs text-gray-500 italic">
-              No viewers yet
-            </p>
-          ) : (
-            <ul className="text-sm">
-              {viewers.map((name, i) => (
-                <li key={i}>👤 {name}</li>
-              ))}
-            </ul>
-          )}
-        </div>
-
-        <video
-          ref={videoRef}
-          autoPlay
-          muted
-          playsInline
-          className="rounded-lg border w-full max-w-md"
-        />
+    {/* Top overlay: live chip ONLY */}
+    <div className={styles.vidOverlayTop}>
+      <div className={styles.liveChip}>
+        <span className={styles.reddot} />
+        Live
       </div>
+    </div>
+
+    {/* Bottom overlay: stream identity + end stream */}
+    <div className={styles.vidOverlayBottom}>
+      <div className={styles.sellerChip}>
+        <div className={styles.sellerAvatar}>
+          {storeName?.charAt(0).toUpperCase()}
+          <span className={styles.avatarRing} />
+        </div>
+        <div>
+          <div className={styles.sellerName}>{storeName}</div>
+          <div className={styles.sellerSub}>ShopSphere Seller</div>
+        </div>
+      </div>
+      {children}
+    </div>
+  </div>
+
+  {/* Info bar below video */}
+  <div className={styles.infoBar}>
+    <div>
+      <div className={styles.streamTitle}>{streamTitle}</div>
+      <div className={styles.streamSub}>Live shopping · viewers can buy instantly</div>
+    </div>
+    <button
+      className={styles.viewerButton}
+      onClick={() => setShowViewerList(!showViewerList)}
+    >
+      <svg width="12" height="12" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="6" r="2.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4"/>
+        <path d="M2 13c0-2.8 2.7-4.5 6-4.5s6 1.7 6 4.5" stroke="rgba(255,255,255,0.45)" strokeWidth="1.4" strokeLinecap="round"/>
+      </svg>
+      {viewerCount} watching
+    </button>
+  </div>
+
+  {/* Viewer List Popup */}
+  {showViewerList && (
+    <>
+      <div
+        className={styles.viewerListBackdrop}
+        onClick={() => setShowViewerList(false)}
+      />
+      <div className={styles.viewerListPopup}>
+        <div className={styles.viewerListHeader}>
+          <h3 className={styles.viewerListTitle}>Viewers</h3>
+          <span className={styles.viewerListCount}>{viewerCount}</span>
+        </div>
+        {viewers.length === 0 ? (
+          <p className={styles.viewerEmpty}>No viewers yet</p>
+        ) : (
+          <ul className={styles.viewerNames}>
+            {viewers.map((viewer, index) => (
+              <li key={index}>{viewer}</li>
+            ))}
+          </ul>
+        )}
+        <button
+          className={styles.closePopupButton}
+          onClick={() => setShowViewerList(false)}
+        >
+          Close
+        </button>
+      </div>
+    </>
+  )}
+</div>
     );
   }
 );

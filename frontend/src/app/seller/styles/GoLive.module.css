@@ -1,0 +1,197 @@
+/* ======== Live Stream Page Background ======== */
+.liveStreamPage {
+  position: relative;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #0d1320;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+
+.liveStreamPage::before,
+.liveStreamPage::after {
+  content: "";
+  position: fixed;
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.liveStreamPage::before {
+  top: -200px;
+  left: -100px;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle at center, rgba(39, 70, 144, 0.35) 0%, transparent 65%);
+  filter: blur(40px);
+}
+
+.liveStreamPage::after {
+  bottom: -150px;
+  right: -100px;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle at center, rgba(62, 91, 169, 0.28) 0%, transparent 65%);
+  filter: blur(50px);
+}
+
+/* ======== Live Stream Landing Content ======== */
+.liveStream {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  animation: fadeUp 0.8s ease-out both;
+}
+
+.liveStreamImage {
+  width: 140px;
+  max-width: 80%;
+  opacity: 0.85;
+  animation: float 4s ease-in-out infinite;
+}
+
+.liveStream h1 {
+  font-size: 1.9rem;
+  font-weight: 600;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.liveStream p {
+  font-size: 0.97rem;
+  max-width: 360px;
+  color: rgba(255, 255, 255, 0.55);
+  line-height: 1.65;
+  margin: 0;
+}
+
+/* ======== Input + Button ======== */
+.liveStreamControls {
+  display: flex;
+  width: 100%;
+  max-width: 420px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  margin-top: 0.5rem;
+}
+
+.liveStreamInput {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 0.75rem 1rem;
+  color: #fff;
+  font-size: 0.93rem;
+  outline: none;
+}
+
+.liveStreamInput::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.liveStreamBtn {
+  background: linear-gradient(135deg, #2746a0, #3e5ba9);
+  color: #fff;
+  border: none;
+  padding: 0.75rem 1.4rem;
+  font-size: 0.93rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+}
+
+.liveStreamBtn:hover {
+  opacity: 0.88;
+}
+
+.liveStreamBtn:active {
+  opacity: 0.75;
+}
+
+/* ======== Publisher Container ======== */
+.publisherContainer {
+  display: flex;
+  gap: 0;
+  width: 100%;
+  max-width: 1200px;
+  margin-top: 5rem;
+  z-index: 1;
+  animation: fadeUp 0.8s ease-out both;
+  align-items: flex-start;
+  /* remove height and max-height entirely */
+}
+
+.videoPanel {
+  flex: 1 1 68%;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  padding: 1.25rem 1rem 1.25rem 0;
+  gap: 0.85rem;
+}
+
+.chatPanel {
+  flex: 0 0 300px;
+  display: flex;
+  flex-direction: column;
+  background: #07090f;
+  border-left: 0.5px solid rgba(255, 255, 255, 0.05);
+  min-width: 0;
+  align-self: stretch; /* stretches to match sibling height naturally */
+}
+
+/* ======== End Stream Button ======== */
+.endStreamBtn {
+  background: rgba(180, 30, 45, 0.15);
+  border: 0.5px solid rgba(200, 40, 55, 0.35);
+  color: #ff5565;
+  border-radius: 9px;
+  padding: 7px 15px;
+  font-size: 0.73rem;
+  font-weight: 500;
+  cursor: pointer;
+  letter-spacing: 0.3px;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.endStreamBtn:hover {
+  background: rgba(200, 35, 50, 0.25);
+  transform: translateY(-1px);
+}
+
+.endStreamBtn:active {
+  transform: translateY(0);
+}
+
+/* ======== Animations ======== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ======== Responsive ======== */
+@media (max-width: 768px) {
+  .publisherContainer {
+    flex-direction: column;
+    margin-top: 4rem;
+  }
+  .videoPanel {
+    padding: 1rem;
+  }
+  .chatPanel {
+    flex: 0 0 auto;
+    height: 360px;
+    border-left: none;
+    border-top: 0.5px solid rgba(255, 255, 255, 0.05);
+    width: 100%;
+  }
+}

@@ -1,11 +1,11 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import styles from "./styles/StreamPublisher.module.css";
 
-export default function StreamViewer({ streamId, socket }) {
+export default function StreamViewer({ streamId, socket, setViewerCount }) {
   const videoRef = useRef();
   const peerRef = useRef(null);
-  const [viewerCount, setViewerCount] = useState(0);
 
   useEffect(() => {
     if (!socket || !streamId) return;
@@ -22,9 +22,9 @@ export default function StreamViewer({ streamId, socket }) {
     socket.off("ice-candidate");
     socket.off("viewer-count");
 
-    // Viewer count updates
+    // Viewer count updates — use parent setter
     socket.on("viewer-count", ({ count }) => {
-      setViewerCount(count);
+      setViewerCount(count); // <-- update parent state
     });
 
     // Create WebRTC peer
@@ -83,14 +83,11 @@ export default function StreamViewer({ streamId, socket }) {
   }, [socket, streamId]);
 
   return (
-    <div className="flex flex-col items-center gap-1">
-      <p className="text-sm text-gray-600">👀 {viewerCount} watching</p>
-      <video
-        ref={videoRef}
-        autoPlay
-        playsInline
-        className="rounded-lg border w-full max-w-md"
-      />
-    </div>
+    <video
+  ref={videoRef}
+  autoPlay
+  playsInline
+  className={styles.videoFeed}
+/>
   );
 }

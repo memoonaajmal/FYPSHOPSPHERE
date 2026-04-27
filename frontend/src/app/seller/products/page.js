@@ -131,14 +131,20 @@ export default function SellerProductsPage() {
   if (loading) return <p>Loading your products...</p>;
 
   return (
-    <div className={styles.container}>
-      {/* Hero Banner (like Admin style) */}
-      <section className={styles.heroBanner}>
-        <div className={styles.heroContent}>
-          <h1 className={styles.storeTitle}>My Products</h1>
-          <p className={styles.storeSubtitle}>
-            Manage, filter, and add your products easily.
-          </p>
+  <div className={styles.container}>
+    <div className={styles.storeContent}>
+      
+      {/* Sidebar filter (LEFT like user page) */}
+      <div className={styles.filterBar}>
+        <SearchFilterBar onFilterChange={handleFilterChange} />
+      </div>
+
+      {/* Products section (RIGHT like user page) */}
+      <div className={styles.productsSection}>
+        
+        {/* Top bar instead of hero */}
+        <div className={styles.topBar}>
+          <h1 className={styles.pageTitle}>My Products</h1>
           <button
             className={styles.addProductBtn}
             onClick={() => router.push("/seller/products/add")}
@@ -146,31 +152,23 @@ export default function SellerProductsPage() {
             + Add New Product
           </button>
         </div>
-      </section>
 
-      {/* Store Content */}
-      <div className={styles.storeContent}>
-        {/* Filter Bar */}
-        <SearchFilterBar onFilterChange={handleFilterChange} />
+        <div className={styles.productsGrid}>
+          {currentProducts.length > 0 ? (
+            currentProducts.map((product) => (
+              <SellerProductCard
+                key={product.productId || product._id}
+                product={product}
+                onDelete={handleDeleteProduct}
+              />
+            ))
+          ) : (
+            <p className={styles.noProducts}>No products found.</p>
+          )}
+        </div>
 
-        {/* Products Section */}
-        <section className={styles.productsSection}>
-          <h2 className={styles.productsHeading}>Products</h2>
-          <div className={styles.productsGrid}>
-            {currentProducts.length > 0 ? (
-              currentProducts.map((product) => (
-                <SellerProductCard
-                  key={product.productId || product._id}
-                  product={product}
-                  onDelete={handleDeleteProduct}
-                />
-              ))
-            ) : (
-              <p className={styles.emptyState}>No products found.</p>
-            )}
-          </div>
-
-          {/* Pagination */}
+        {/* Pagination */}
+        <div className={styles.paginationWrapper}>
           {totalPages > 1 && (
             <StorePagination
               page={currentPage}
@@ -178,8 +176,9 @@ export default function SellerProductsPage() {
               onPageChange={setCurrentPage}
             />
           )}
-        </section>
+        </div>
       </div>
     </div>
-  );
+  </div>
+);
 }
