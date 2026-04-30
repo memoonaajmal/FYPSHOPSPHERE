@@ -1,7 +1,3 @@
-/* ============================================
-   LANDING PAGE (before form)
-============================================ */
-
 .landingContainer {
   min-height: 100vh;
   width: 100%;
@@ -16,7 +12,6 @@
   animation: fadeIn 0.7s ease-in-out;
 }
 
-/* Ambient blobs */
 .blob1 {
   position: fixed;
   top: -180px;
@@ -52,10 +47,6 @@
   pointer-events: none;
   z-index: 0;
 }
-
-/* ============================================
-   STATUS CARD (pending / rejected)
-============================================ */
 
 .statusCard {
   position: relative;
@@ -168,10 +159,6 @@
   margin: 0;
 }
 
-/* ============================================
-   HERO CONTENT
-============================================ */
-
 .heroContent {
   position: relative;
   z-index: 1;
@@ -214,7 +201,6 @@
   margin-bottom: 2.8rem;
 }
 
-/* Hero CTA Button */
 .heroButton {
   display: inline-flex;
   align-items: center;
@@ -254,10 +240,6 @@
   transform: translateX(4px);
 }
 
-/* ============================================
-   FEATURE CARDS
-============================================ */
-
 .featureGrid {
   position: relative;
   z-index: 1;
@@ -283,27 +265,11 @@
 }
 
 .messageSuccess {
-  color: #00b894; /* --success */
+  color: #00b894; 
 }
 
 .messageError {
-  color: #d63031; /* --danger */
-}
-
-@media (max-width: 900px) {
-  .featureGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 520px) {
-  .featureGrid {
-    grid-template-columns: 1fr;
-  }
-
-  .heroTitle {
-    letter-spacing: -1px;
-  }
+  color: #d63031; 
 }
 
 .featureCard {
@@ -347,9 +313,6 @@
   margin: 0;
 }
 
-/* ============================================
-   SHARED ANIMATION
-============================================ */
 
 @keyframes fadeIn {
   from {
@@ -359,5 +322,57 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) {
+  .featureGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .featureGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .heroTitle {
+    letter-spacing: -1px;
+  }
+}
+
+@media (max-width: 768px) {
+  .heroContent {
+    padding: 5rem 1rem 2rem;
+  }
+
+  .heroSubtitle {
+    font-size: 1rem;
+  }
+
+  .statusCard {
+    margin-top: 5rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .statusTitle {
+    font-size: 1.4rem;
+  }
+
+  .statusInfoRow {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.4rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .heroButton {
+    padding: 0.85rem 1.6rem;
+    font-size: 0.95rem;
+  }
+
+  .statusCard {
+    padding: 1.75rem 1.1rem;
   }
 }

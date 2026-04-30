@@ -4,9 +4,6 @@
   font-family: "DM Sans", "Segoe UI", sans-serif;
 }
 
-/* ============================
-   Header Banner
-   ============================ */
 .header {
   background: #0d1320;
   padding: 100px 60px 48px;
@@ -58,18 +55,12 @@
   margin: 0;
 }
 
-/* ============================
-   Content Area
-   ============================ */
 .content {
   padding: 36px 60px 60px;
   background: var(--blue-soft);
   min-height: calc(100vh - 160px);
 }
 
-/* ============================
-   Stats Bar
-   ============================ */
 .statsBar {
   display: flex;
   gap: 12px;
@@ -103,9 +94,6 @@
 .dotRejected { background: var(--danger); }
 .dotAll      { background: var(--blue-light); }
 
-/* ============================
-   Table Panel
-   ============================ */
 .tablePanel {
   background: var(--white);
   border-radius: 18px;
@@ -114,9 +102,6 @@
   overflow: hidden;
 }
 
-/* ============================
-   Table Header Row
-   ============================ */
 .tableHeader {
   display: grid;
   grid-template-columns: 2fr 1.6fr 2fr 1.2fr 1.4fr 40px;
@@ -135,9 +120,6 @@
   color: var(--muted);
 }
 
-/* ============================
-   Table Row (used as <Link> wrapper)
-   ============================ */
 .tableRow {
   display: grid;
   grid-template-columns: 2fr 1.6fr 2fr 1.2fr 1.4fr 40px;
@@ -176,9 +158,6 @@
   opacity: 1;
 }
 
-/* ============================
-   Row Cells
-   ============================ */
 .storeCell {
   display: flex;
   align-items: center;
@@ -244,9 +223,6 @@
   transform: translateX(3px);
 }
 
-/* ============================
-   Status Badge
-   ============================ */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -274,9 +250,6 @@
 .badgeRejected { background: #fdecea; color: var(--danger);  border: 1px solid #f0b0ae; }
 .badgeDefault  { background: var(--blue-soft); color: var(--blue-light); border: 1px solid var(--border); }
 
-/* ============================
-   Empty / Loading
-   ============================ */
 .emptyState {
   display: flex;
   flex-direction: column;
@@ -291,9 +264,6 @@
 .emptyText { font-size: 16px; font-weight: 500; }
 .loadingText { padding: 60px; color: var(--muted); font-size: 15px; }
 
-/* ============================
-   Responsive
-   ============================ */
 @media (max-width: 1000px) {
   .tableHeader,
   .tableRow {

@@ -1,15 +1,9 @@
-/* ============================
-   Page Layout
-   ============================ */
 .dashboard {
   min-height: 100vh;
   background: var(--blue-soft);
   font-family: "DM Sans", "Segoe UI", sans-serif;
 }
 
-/* ============================
-   Header Banner
-   ============================ */
 .header {
   background: #0d1320;
   padding: 100px 60px 48px;
@@ -102,18 +96,12 @@
   color: var(--blue-verylight);
 }
 
-/* ============================
-   Content Area
-   ============================ */
 .content {
   padding: 40px 60px 60px;
   max-width: 1100px;
   margin: 0 auto;
 }
 
-/* ============================
-   Two-Column Layout
-   ============================ */
 .grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -124,9 +112,6 @@
   grid-column: 1 / -1;
 }
 
-/* ============================
-   Section Cards
-   ============================ */
 .card {
   background: var(--white);
   border-radius: 16px;
@@ -171,9 +156,6 @@
   gap: 14px;
 }
 
-/* ============================
-   Info Rows
-   ============================ */
 .infoRow {
   display: flex;
   flex-direction: column;
@@ -194,9 +176,6 @@
   color: var(--navy);
 }
 
-/* ============================
-   Store Name Hero Row
-   ============================ */
 .storeHero {
   display: flex;
   align-items: center;
@@ -232,9 +211,6 @@
   margin-top: 3px;
 }
 
-/* ============================
-   Status Badge
-   ============================ */
 .badge {
   display: inline-flex;
   align-items: center;
@@ -276,9 +252,6 @@
   margin-left: 8px;
 }
 
-/* ============================
-   Images
-   ============================ */
 .imageWrapper {
   display: flex;
   flex-wrap: wrap;
@@ -310,9 +283,6 @@
   box-shadow: 0 8px 24px rgba(39, 70, 144, 0.12);
 }
 
-/* ============================
-   Description
-   ============================ */
 .description {
   font-size: 14px;
   color: #4a5568;
@@ -321,9 +291,6 @@
   margin: 0;
 }
 
-/* ============================
-   Action Buttons
-   ============================ */
 .buttonGroup {
   display: flex;
   gap: 12px;
@@ -372,9 +339,6 @@
   transform: none;
 }
 
-/* ============================
-   Loading / Error
-   ============================ */
 .loading,
 .error {
   padding: 80px 24px;
@@ -386,13 +350,21 @@
 
 .error { color: var(--danger); }
 
-/* ============================
-   Responsive
-   ============================ */
 @media (max-width: 800px) {
   .header  { padding: 60px 24px 36px; }
   .content { padding: 24px 16px 40px; }
   .title   { font-size: 22px; }
   .grid    { grid-template-columns: 1fr; }
   .buttonGroup { flex-direction: column; }
+}
+
+@media (max-width: 600px) {
+  .storeHero {
+    flex-wrap: wrap;
+  }
+
+  .titleWithArrow {
+    font-size: 20px;
+    gap: 10px;
+  }
 }

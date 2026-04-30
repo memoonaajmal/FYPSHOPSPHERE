@@ -39,10 +39,14 @@ export default function AuthPage() {
     e.preventDefault();
     setError("");
     try {
-      const userCred = await createUserWithEmailAndPassword(auth, email, password);
+      const userCred = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password,
+      );
       await updateProfile(userCred.user, { displayName: name });
       const idToken = await userCred.user.getIdToken(true); // force refresh
-       await new Promise((resolve) => setTimeout(resolve, 500));
+      await new Promise((resolve) => setTimeout(resolve, 500));
       const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
@@ -55,7 +59,7 @@ export default function AuthPage() {
       const data = await response.json();
       setUser(data.user);
       await signOut(auth);
-      
+
       setIsSignup(false);
       setError("");
       alert("Signup successful! Please login to continue.");
@@ -71,7 +75,7 @@ export default function AuthPage() {
     try {
       const userCred = await signInWithEmailAndPassword(auth, email, password);
       const token = await userCred.user.getIdToken(true);
-      
+
       const response = await fetch(`${BASE_URL}/api/auth/sync`, {
         method: "POST",
         headers: {
@@ -80,12 +84,12 @@ export default function AuthPage() {
         },
         body: JSON.stringify({}),
       });
-      
+
       const data = await response.json();
       if (!response.ok) throw new Error(data.error || "Login failed");
-      
+
       setUser(data.user);
-      
+
       const userRoles = data.user.roles || [];
 
       if (userRoles.includes("admin")) {
@@ -98,7 +102,7 @@ export default function AuthPage() {
         router.push(
           checkData.hasStore
             ? "/seller/dashboard"
-            : "/seller/create-store-request"
+            : "/seller/create-store-request",
         );
       } else {
         if (redirect) {
@@ -114,14 +118,15 @@ export default function AuthPage() {
 
   return (
     <div
-     style={{
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-  minHeight: "100vh",
-  background: "linear-gradient(135deg, #eaf0fb 0%, #6e82b8 100%)",
-  padding: "20px",
-}}
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        minHeight: "100vh",
+        background: "linear-gradient(135deg, #eaf0fb 0%, #6e82b8 100%)",
+        padding: "20px",
+        boxSizing: "border-box",
+      }}
     >
       <div className={`${styles.container} ${isSignup ? styles.active : ""}`}>
         <div className={styles.curvedShape}></div>
@@ -129,11 +134,14 @@ export default function AuthPage() {
 
         {/* LOGIN FORM */}
         <div className={`${styles["form-box"]} ${styles.Login}`}>
-          <h2 className={styles.animation} style={{ '--D': 0, '--S': 20 }}>
+          <h2 className={styles.animation} style={{ "--D": 0, "--S": 20 }}>
             Login
           </h2>
           <form onSubmit={handleLogin}>
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--D': 0, '--S': 20 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--D": 0, "--S": 20 }}
+            >
               <input
                 type="email"
                 required
@@ -143,7 +151,10 @@ export default function AuthPage() {
               <label>Email</label>
             </div>
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--D': 0, '--S': 20 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--D": 0, "--S": 20 }}
+            >
               <input
                 type="password"
                 required
@@ -154,27 +165,40 @@ export default function AuthPage() {
             </div>
 
             {/* Forgot Password Link */}
-            <div className={`${styles.animation}`} style={{ '--D': 0, '--S': 20, textAlign: 'right', marginTop: '10px', marginBottom: '20px' }}>
-              <a 
-                onClick={() => router.push("/authentication/forgot-password")} 
+            <div
+              className={`${styles.animation}`}
+              style={{
+                "--D": 0,
+                "--S": 20,
+                textAlign: "right",
+                marginTop: "10px",
+                marginBottom: "20px",
+              }}
+            >
+              <a
+                onClick={() => router.push("/authentication/forgot-password")}
                 className={styles.link}
-                style={{ fontSize: '14px', cursor: 'pointer' }}
+                style={{ fontSize: "14px", cursor: "pointer" }}
               >
                 Forgot Password?
               </a>
             </div>
 
-            {error && !isSignup && (
-              <div className={styles.error}>{error}</div>
-            )}
+            {error && !isSignup && <div className={styles.error}>{error}</div>}
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--D': 0, '--S': 20 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--D": 0, "--S": 20 }}
+            >
               <button type="submit" className={styles.btn}>
                 Login
               </button>
             </div>
 
-            <div className={`${styles.regiLink} ${styles.animation}`} style={{ '--D': 0, '--S': 20 }}>
+            <div
+              className={`${styles.regiLink} ${styles.animation}`}
+              style={{ "--D": 0, "--S": 20 }}
+            >
               <p>
                 Don't have an account?{" "}
                 <a onClick={toggleForm} className={styles.link}>
@@ -187,21 +211,25 @@ export default function AuthPage() {
 
         {/* LOGIN INFO */}
         <div className={`${styles["info-content"]} ${styles.Login}`}>
-          <h2 className={styles.animation} style={{ '--D': 0, '--S': 20 }}>
+          <h2 className={styles.animation} style={{ "--D": 0, "--S": 20 }}>
             WELCOME BACK!
           </h2>
-          <p className={styles.animation} style={{ '--D': 1, '--S': 21 }}>
-            We are happy to have you with us again. If you need anything, we are here to help.
+          <p className={styles.animation} style={{ "--D": 1, "--S": 21 }}>
+            We are happy to have you with us again. If you need anything, we are
+            here to help.
           </p>
         </div>
 
         {/* SIGNUP FORM */}
         <div className={`${styles["form-box"]} ${styles.Register}`}>
-          <h2 className={styles.animation} style={{ '--li': 17, '--S': 0 }}>
+          <h2 className={styles.animation} style={{ "--li": 17, "--S": 0 }}>
             Register
           </h2>
           <form onSubmit={handleSignup}>
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <input
                 type="text"
                 required
@@ -211,7 +239,10 @@ export default function AuthPage() {
               <label>Full Name</label>
             </div>
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <input
                 type="email"
                 required
@@ -221,7 +252,10 @@ export default function AuthPage() {
               <label>Email</label>
             </div>
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <input
                 type="password"
                 required
@@ -231,7 +265,10 @@ export default function AuthPage() {
               <label>Password</label>
             </div>
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <select
                 value={role}
                 onChange={(e) => setRole(e.target.value)}
@@ -243,17 +280,21 @@ export default function AuthPage() {
               </select>
             </div>
 
-            {error && isSignup && (
-              <div className={styles.error}>{error}</div>
-            )}
+            {error && isSignup && <div className={styles.error}>{error}</div>}
 
-            <div className={`${styles.inputBox} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.inputBox} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <button type="submit" className={styles.btn}>
                 Register
               </button>
             </div>
 
-            <div className={`${styles.regiLink} ${styles.animation}`} style={{ '--li': 17, '--S': 0 }}>
+            <div
+              className={`${styles.regiLink} ${styles.animation}`}
+              style={{ "--li": 17, "--S": 0 }}
+            >
               <p>
                 Already have an account?{" "}
                 <a onClick={toggleForm} className={styles.link}>
@@ -266,11 +307,12 @@ export default function AuthPage() {
 
         {/* SIGNUP INFO */}
         <div className={`${styles["info-content"]} ${styles.Register}`}>
-          <h2 className={styles.animation} style={{ '--li': 17, '--S': 0 }}>
+          <h2 className={styles.animation} style={{ "--li": 17, "--S": 0 }}>
             WELCOME!
           </h2>
-          <p className={styles.animation} style={{ '--li': 18, '--S': 1 }}>
-            We're delighted to have you here. If you need any assistance, feel free to reach out.
+          <p className={styles.animation} style={{ "--li": 18, "--S": 1 }}>
+            We're delighted to have you here. If you need any assistance, feel
+            free to reach out.
           </p>
         </div>
       </div>

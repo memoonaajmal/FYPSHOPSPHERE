@@ -477,4 +477,20 @@
   .buttonGroup button {
     width: 100%;
   }
+
+  .label {
+    min-width: unset;
+    align-self: flex-start;
+  }
+}
+
+@media (max-width: 380px) {
+  .profileContainer h1 {
+    font-size: 1.2rem;
+  }
+
+  .passwordSection {
+    padding-left: 0.9rem !important;
+    padding-right: 0.9rem !important;
+  }
 }

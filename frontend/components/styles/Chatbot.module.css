@@ -404,3 +404,16 @@
     bottom: 16px;
   }
 }
+
+@media (max-width: 380px) {
+  .inputArea {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .micBtn,
+  .inputArea button {
+    width: 38px;
+    height: 38px;
+  }
+}

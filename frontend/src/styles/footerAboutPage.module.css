@@ -371,3 +371,9 @@
   .text { font-size: 1rem; }
   .heroButton { padding: 14px 32px; font-size: 0.95rem; }
 }
+
+@media (max-width: 768px) {
+  .featuresSection { padding: 60px 20px; }
+  .techSection { padding: 0 20px 60px; }
+  .ctaSection { padding: 70px 20px 90px; }
+}

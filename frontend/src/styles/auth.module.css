@@ -364,3 +364,97 @@
 .selectBox:focus {
   border-color: var(--white);
 }
+
+@media (max-width: 780px) and (min-width: 601px) {
+  .container {
+    width: 95vw;
+    height: auto;
+    min-height: 560px;
+  }
+}
+
+@media (max-width: 600px) {
+  .container {
+    width: 100%;
+    max-width: 420px;
+    height: auto;
+    min-height: 520px;
+    border-radius: 16px;
+  }
+
+  .curvedShape {
+    display: none;
+  }
+
+  .container .form-box {
+    width: 100%;
+    position: relative;
+    padding: 40px 28px 32px;
+  }
+
+  .form-box.Login {
+    display: flex;
+  }
+
+  .container.active .form-box.Login {
+    display: none;
+    visibility: hidden;
+  }
+
+  .form-box.Register {
+    display: none;
+    visibility: hidden;
+    position: absolute;
+  }
+
+  .container.active .form-box.Register {
+    display: flex;
+    visibility: visible;
+    position: relative;
+  }
+
+  .info-content {
+    display: none !important;
+  }
+
+  .form-box.Login .animation,
+  .container.active .form-box.Register .animation {
+    transform: none !important;
+    opacity: 1 !important;
+    filter: none !important;
+    transition: none !important;
+  }
+
+  .form-box h2 {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+
+  .form-box .inputBox {
+    margin-top: 18px;
+  }
+
+  .btn {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .selectBox {
+    height: 44px;
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 420px) {
+  .container {
+    border-radius: 12px;
+  }
+
+  .container .form-box {
+    padding: 36px 20px 28px;
+  }
+
+  .form-box h2 {
+    font-size: 22px;
+  }
+}

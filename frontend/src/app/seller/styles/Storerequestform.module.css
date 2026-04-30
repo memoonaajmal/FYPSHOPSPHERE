@@ -1,7 +1,3 @@
-/* ============================================
-   FORM PAGE CONTAINER
-============================================ */
-
 .container {
   min-height: 100vh;
   display: flex;
@@ -43,7 +39,6 @@
   pointer-events: none;
 }
 
-/* ---------- Title ---------- */
 .title {
   font-size: 2rem;
   font-weight: 800;
@@ -68,7 +63,6 @@
   opacity: 0.45;
 }
 
-/* ---------- Form Intro ---------- */
 .formIntro {
   font-size: 1.3rem;
   font-weight: 500;
@@ -89,7 +83,6 @@
   }
 }
 
-/* ---------- Message ---------- */
 .message {
   font-size: 1.1rem;
   font-weight: 500;
@@ -100,7 +93,6 @@
   z-index: 1;
 }
 
-/* ---------- Submit Button ---------- */
 .button {
   position: relative;
   overflow: hidden;
@@ -130,7 +122,6 @@
   box-shadow: none;
 }
 
-/* ---------- Form ---------- */
 .form {
   position: relative;
   z-index: 1;
@@ -179,7 +170,6 @@
   }
 }
 
-/* ---------- Columns ---------- */
 .leftColumn,
 .rightColumn {
   display: flex;
@@ -197,7 +187,6 @@
   letter-spacing: 0.2px;
 }
 
-/* ---------- Inputs, Select & Textarea ---------- */
 .formInput,
 .formSelect,
 .formTextarea {
@@ -244,7 +233,6 @@
     0 0 0 3px rgba(62, 91, 169, 0.15);
 }
 
-/* ---------- Button Container ---------- */
 .buttonContainer {
   grid-column: 1 / -1;
   display: flex;
@@ -252,7 +240,6 @@
   margin-top: 2.25rem;
 }
 
-/* ---------- Animation ---------- */
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -261,5 +248,26 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .form {
+    padding: 1.75rem 1.25rem;
+    border-radius: 16px;
+  }
+
+  .title {
+    font-size: 1.6rem;
+    padding: 1.25rem;
+  }
+
+  .formIntro {
+    font-size: 1rem;
+  }
+
+  .button {
+    width: 100%;
+    font-size: 1rem;
   }
 }
