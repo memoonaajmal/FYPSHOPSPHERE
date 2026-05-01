@@ -31,6 +31,7 @@ const streamRoutes = require("./routes/streamRoutes");
 const chatbotRoutes = require("./routes/chatbot.routes");
 const chatRoutes = require("./routes/chat.routes");
 const recommendationRoutes = require("./routes/recommendation.routes");
+const stripeRoutes = require('./routes/stripe.routes');
 
 const cartRouter = require ("./routes/cart.routes");
 const wishlistRoutes = require("./routes/wishlist.routes");
@@ -96,6 +97,14 @@ app.use("/api/stores", (req, res, next) => {
   next();
 });
 
+
+app.use('/api/stripe/webhook', (req, res, next) => {
+  console.log('HEADERS:', JSON.stringify(req.headers, null, 2));
+  next();
+});
+app.use('/api/stripe', stripeRoutes);
+
+
 // Mount store routes (multer handles multipart form data here)
 app.use("/api/stores", storeRoutes);
 
@@ -118,7 +127,6 @@ app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/chat", chatRoutes);
 app.use("/api/recommendation", recommendationRoutes);
 app.use("/api/wishlist", wishlistRoutes); 
-
 
 app.use("/api/cart", cartRouter); 
      

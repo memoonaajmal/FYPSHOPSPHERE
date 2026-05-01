@@ -167,15 +167,123 @@
 /* ============================
    Responsive
 ============================ */
-@media (max-width: 768px) {
+/* ============================= */
+/* TABLET (≤ 1024px) */
+/* ============================= */
+@media (max-width: 1024px) {
+
   .tableHeader,
   .tableRow {
-    grid-template-columns: 2fr 1fr 40px;
-    padding: 16px;
+    grid-template-columns: 
+      0.4fr   /* # */
+      1.3fr   /* Tracking */
+      1.7fr   /* Email */
+      1fr     /* Status */
+      0.4fr;  /* Arrow */
+    padding: 16px 20px;
   }
 
-  .indexCell,
-  .tableHeader > div:first-child {
-    display: none; /* hide serial on mobile */
+  .trackingId,
+  .email {
+    font-size: 13px;
+  }
+
+  .indexCell {
+    width: 32px;
+    height: 32px;
+    font-size: 12px;
+  }
+}
+
+
+/* ============================= */
+/* MOBILE (≤ 768px) */
+/* ============================= */
+@media (max-width: 768px) {
+
+  /* Hide header completely */
+  .tableHeader {
+    display: none;
+  }
+
+  /* Convert rows into cards */
+  .tableRow {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    border-bottom: none;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    background: var(--white);
+    box-shadow: 0 6px 18px rgba(39, 70, 144, 0.08);
+  }
+
+  .tablePanel {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+  }
+
+  /* Top row: ID + arrow */
+  .tableRow::before {
+    display: none;
+  }
+
+  .indexCell {
+    display: none; /* cleaner mobile */
+  }
+
+  .trackingId {
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .email {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .badge {
+    width: fit-content;
+    font-size: 11px;
+    padding: 5px 12px;
+  }
+
+  .arrowCell {
+    position: absolute;
+    right: 14px;
+    top: 14px;
+    font-size: 22px;
+  }
+}
+
+
+/* ============================= */
+/* SMALL MOBILE (≤ 480px) */
+/* ============================= */
+@media (max-width: 480px) {
+
+  .tableRow {
+    padding: 14px;
+    gap: 8px;
+  }
+
+  .trackingId {
+    font-size: 12px;
+  }
+
+  .email {
+    font-size: 11px;
+  }
+
+  .badge {
+    font-size: 10px;
+  }
+
+  .arrowCell {
+    font-size: 20px;
+    right: 10px;
+    top: 10px;
   }
 }

@@ -25,7 +25,8 @@ const orderSchema = new mongoose.Schema(
     shippingFee: { type: Number, default: 0 },
     grandTotal: { type: Number, required: true },
     paymentMethod: { type: String, default: "COD" },
-    paymentStatus: { type: String, default: "pending" }, 
+    paymentStatus: { type: String, default: "pending" },
+    stripePaymentIntentId: { type: String }, 
     trackingId: { type: String, index: true },
   },
   { timestamps: true }

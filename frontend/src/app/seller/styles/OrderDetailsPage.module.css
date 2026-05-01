@@ -281,7 +281,7 @@
 @media (max-width: 800px) {
 
   .header {
-    padding: 60px 24px 36px;
+    padding: 70px 24px 36px;
   }
 
   .content {
@@ -436,4 +436,71 @@
 
 .dropdownMenu button:hover::before {
   transform: scaleY(1);
+}
+
+/* ============================
+   TABLET (≤ 1024px)
+============================ */
+@media (max-width: 1024px) {
+
+  .dropdownMenu {
+    width: 160px;
+  }
+
+  .dropdownBtn {
+    font-size: 12px;
+    padding: 7px 14px;
+  }
+}
+
+
+/* ============================
+   MOBILE (≤ 768px)
+============================ */
+@media (max-width: 768px) {
+
+  .actions {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .dropdownMenu {
+    right: 0;
+    left: auto;
+    width: 150px;
+
+    /* prevent cut-off on small screens */
+    transform-origin: top right;
+  }
+
+  .dropdownBtn {
+    font-size: 12px;
+    padding: 7px 12px;
+  }
+}
+
+
+/* ============================
+   SMALL MOBILE (≤ 480px)
+============================ */
+@media (max-width: 480px) {
+
+  .dropdownMenu {
+    width: 140px;
+
+    /* ensure it never overflows screen */
+    right: 0;
+    left: auto;
+  }
+
+  .dropdownMenu button {
+    font-size: 12px;
+    padding: 8px 12px;
+  }
+
+  .dropdownBtn {
+    font-size: 11px;
+    padding: 6px 10px;
+  }
 }

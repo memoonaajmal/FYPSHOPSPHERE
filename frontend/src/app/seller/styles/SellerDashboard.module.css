@@ -50,7 +50,7 @@
 }
 
 .sdHeroTitle {
-  font-size: 64px;
+  font-size: clamp(28px, 5vw, 64px);
   font-weight: 500;
   line-height: 1.1;
   color: var(--text);
@@ -383,3 +383,166 @@
   color: #555;
 }
 
+/* ============================= */
+/* TABLET (≤ 1024px) */
+/* ============================= */
+@media (max-width: 1024px) {
+
+  .sdHeroSection {
+    padding: 100px 30px 40px;
+  }
+
+  .sdHeroRow {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .sdHeroLeft {
+    align-items: center;
+  }
+
+  .sdHeroTitle {
+    font-size: 42px;
+  }
+
+  .sdHeroSubtitle {
+    max-width: 100%;
+  }
+
+  .sdHeroActions {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .sdImage {
+    width: 350px;
+    height: 300px;
+  }
+
+  .sdImage::before {
+    width: 260px;
+    height: 260px;
+  }
+
+  .customersSection {
+    grid-template-columns: 1fr; /* stack */
+    padding-right: 0;
+  }
+
+  .topRow {
+    flex-direction: column;
+    width: 100%;
+  }
+}
+
+
+/* ============================= */
+/* MOBILE (≤ 768px) */
+/* ============================= */
+@media (max-width: 768px) {
+
+  .innerContent {
+    padding: 1rem 0.6rem;
+  }
+
+  .sdHeroSection {
+    padding: 80px 20px 30px;
+    border-radius: 14px;
+  }
+
+  .sdHeroTitle {
+    font-size: 32px;
+    line-height: 1.2;
+  }
+
+  .sdHeroSubtitle {
+    font-size: 14px;
+  }
+
+  .sdPrimaryBtn,
+  .sdSecondaryBtn {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .sdHeroActions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .sdImage {
+    width: 260px;
+    height: 220px;
+  }
+
+  .sdImage::before {
+    width: 200px;
+    height: 200px;
+  }
+
+  .statsGrid {
+    grid-template-columns: 1fr; /* stack cards */
+  }
+
+  .statCard {
+    padding: 1.2rem;
+  }
+
+  .sectionTitle {
+    font-size: 1.4rem;
+  }
+
+  .topProducts {
+    padding: 12px;
+  }
+
+  .productCardWrapper {
+    width: 160px;
+  }
+
+  .customersSection {
+    gap: 14px;
+  }
+
+  .card {
+    padding: 1.2rem;
+  }
+}
+
+
+/* ============================= */
+/* SMALL MOBILE (≤ 480px) */
+/* ============================= */
+@media (max-width: 480px) {
+
+  .sdHeroTitle {
+    font-size: 26px;
+  }
+
+  .sdHeroSection {
+    padding: 70px 15px 25px;
+  }
+
+  .sdImage {
+    width: 220px;
+    height: 180px;
+  }
+
+  .sdImage::before {
+    width: 160px;
+    height: 160px;
+  }
+
+  .sectionTitleTop {
+    font-size: 1.5rem;
+  }
+
+  .cardTitle {
+    font-size: 1rem;
+  }
+
+  .cardText {
+    font-size: 0.85rem;
+  }
+}

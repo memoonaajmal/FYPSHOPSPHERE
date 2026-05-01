@@ -195,3 +195,148 @@
     width: 100%;
   }
 }
+
+/* ============================
+   TABLET (≤ 1024px)
+============================ */
+@media (max-width: 1024px) {
+
+  .publisherContainer {
+    max-width: 100%;
+    margin-top: 4rem;
+    padding: 0 1rem;
+  }
+
+  .videoPanel {
+    flex: 1 1 65%;
+    padding: 1rem;
+  }
+
+  .chatPanel {
+    flex: 0 0 280px;
+  }
+
+  .liveStream h1 {
+    font-size: 1.7rem;
+  }
+
+  .liveStream p {
+    font-size: 0.9rem;
+  }
+
+  .liveStreamControls {
+    max-width: 380px;
+  }
+}
+
+
+/* ============================
+   MOBILE (≤ 768px)
+============================ */
+@media (max-width: 768px) {
+
+  /* landing screen */
+  .liveStream {
+    padding: 0 1rem;
+  }
+
+  .liveStreamImage {
+    width: 110px;
+  }
+
+  .liveStream h1 {
+    font-size: 1.5rem;
+  }
+
+  .liveStream p {
+    font-size: 0.85rem;
+    max-width: 320px;
+  }
+
+  .liveStreamControls {
+    flex-direction: column;
+    border-radius: 12px;
+    overflow: hidden;
+    max-width: 100%;
+  }
+
+  .liveStreamInput {
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    padding: 0.7rem 0.9rem;
+  }
+
+  .liveStreamBtn {
+    width: 100%;
+    padding: 0.8rem;
+  }
+
+  /* live stream layout */
+  .publisherContainer {
+    flex-direction: column;
+    margin-top: 3.5rem;
+    padding: 0 0.8rem;
+  }
+
+  .videoPanel {
+    flex: 1 1 auto;
+    padding: 0.8rem;
+  }
+
+  .chatPanel {
+    width: 100%;
+    height: 320px;
+    flex: none;
+    border-left: none;
+    border-top: 0.5px solid rgba(255,255,255,0.08);
+  }
+
+  .endStreamBtn {
+    width: fit-content;
+    font-size: 0.7rem;
+    padding: 6px 12px;
+  }
+}
+
+
+/* ============================
+   SMALL MOBILE (≤ 480px)
+============================ */
+@media (max-width: 480px) {
+
+  .liveStream h1 {
+    font-size: 1.3rem;
+  }
+
+  .liveStream p {
+    font-size: 0.8rem;
+  }
+
+  .liveStreamControls {
+    gap: 0;
+  }
+
+  .liveStreamInput {
+    font-size: 0.85rem;
+    padding: 0.65rem 0.8rem;
+  }
+
+  .liveStreamBtn {
+    font-size: 0.85rem;
+    padding: 0.75rem;
+  }
+
+  .publisherContainer {
+    margin-top: 3rem;
+    padding: 0 0.6rem;
+  }
+
+  .chatPanel {
+    height: 280px;
+  }
+
+  .endStreamBtn {
+    font-size: 0.68rem;
+    padding: 5px 10px;
+  }
+}
