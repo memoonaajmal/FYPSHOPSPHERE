@@ -35,7 +35,7 @@
 }
 
 .title {
-  font-size: 34px;
+  font-size: clamp(20px, 4vw, 34px);
   font-weight: 700;
   color: var(--white);
   margin-bottom: 8px;
@@ -192,4 +192,130 @@
   outline: none;
   border-color: var(--blue-light);
   box-shadow: 0 0 0 3px rgba(62, 91, 169, 0.15);
+}
+/* ============================= */
+/* TABLET (≤ 1024px) */
+/* ============================= */
+@media (max-width: 1024px) {
+
+  .header {
+    padding: 72px 40px 36px;
+  }
+
+  .title {
+    font-size: 28px;
+  }
+
+  .content {
+    padding: 28px 30px 50px;
+  }
+
+  .statsBar {
+    gap: 10px;
+  }
+
+  .statPill {
+    padding: 6px 14px;
+    font-size: 12px;
+  }
+
+  .searchInput {
+    max-width: 100%;
+  }
+}
+
+
+/* ============================= */
+/* MOBILE (≤ 768px) */
+/* ============================= */
+@media (max-width: 768px) {
+
+  .header {
+    padding: 56px 20px 28px;
+    text-align: center;
+  }
+
+  .title {
+    font-size: 22px;
+  }
+
+  .subtitle {
+    font-size: 13px;
+  }
+
+  .content {
+    padding: 20px 14px 40px;
+  }
+
+  .searchBar {
+    margin-bottom: 16px;
+  }
+
+  .searchInput {
+    font-size: 13px;
+    padding: 9px 12px;
+  }
+
+  .statsBar {
+    justify-content: flex-start;
+    overflow-x: auto;
+    flex-wrap: nowrap;
+    padding-bottom: 6px;
+    scrollbar-width: none;
+  }
+
+  .statsBar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .statPill {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  .emptyState {
+    padding: 60px 16px;
+  }
+
+  .emptyIcon {
+    font-size: 36px;
+  }
+}
+
+
+/* ============================= */
+/* SMALL MOBILE (≤ 480px) */
+/* ============================= */
+@media (max-width: 480px) {
+
+  .header {
+    padding: 70px 16px 24px;
+  }
+
+  .title {
+    font-size: 20px;
+  }
+
+  .subtitle {
+    font-size: 12px;
+  }
+
+  .content {
+    padding: 16px 12px 32px;
+  }
+
+  .searchInput {
+    font-size: 12px;
+  }
+
+  .statPill {
+    font-size: 11px;
+    padding: 6px 12px;
+  }
+
+  .loadingText,
+  .errorText {
+    padding: 40px 16px;
+    font-size: 13px;
+  }
 }

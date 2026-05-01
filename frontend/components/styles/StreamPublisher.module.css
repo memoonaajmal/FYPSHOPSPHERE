@@ -282,3 +282,41 @@
   from { opacity: 0; transform: translate(-50%, -48%); }
   to   { opacity: 1; transform: translate(-50%, -50%); }
 }
+
+/* ============================
+   VIDEO RESPONSIVENESS FIX
+   (increase height on smaller screens)
+============================ */
+
+/* Tablet */
+@media (max-width: 1024px) {
+  .videoWrap {
+    max-height: 68vh;
+  }
+}
+
+/* Small tablets / large phones */
+@media (max-width: 768px) {
+  .videoWrap {
+    max-height: 66vh;
+    border-radius: 14px;
+  }
+}
+
+/* Phones - make video dominant */
+@media (max-width: 600px) {
+  .videoWrap {
+    max-height: 60vh;
+    aspect-ratio: 3 / 4;   /* optional: vertical live style */
+    border-radius: 12px;
+  }
+}
+
+/* Small phones */
+@media (max-width: 420px) {
+  .videoWrap {
+    max-height: 60vh;
+    aspect-ratio: 3 / 4;
+  }
+
+}
