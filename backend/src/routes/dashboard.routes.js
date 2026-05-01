@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { requireAuth, requireRole } = require("../middleware/auth");
+const { requireAuth, } = require("../middleware/auth");
 const {
   getAllUsers,
 
@@ -8,7 +8,7 @@ const {
 
   getAllStoresWithStats,
   getRecentOrders,
- getRecentStores
+
 } = require("../controllers/dashboardController");
 
 
@@ -16,14 +16,10 @@ const {
 router.get("/users",getAllUsers);
 
 
-
-// Admin: Get all store orders
-router.get("/orders", requireAuth, requireRole("admin"), getStoreOrdersForAdmin);
-
 // Admin: Get analytics summary
-router.get("/analytics", requireAuth, requireRole("admin"), getAnalytics); 
-router.get("/stores", requireAuth, requireRole("admin"),getAllStoresWithStats);
-router.get("/recent-orders",requireAuth, requireRole("admin"),  getRecentOrders);
+router.get("/analytics", getAnalytics); 
+router.get("/stores",getAllStoresWithStats);
+router.get("/recent-orders",  getRecentOrders);
 
 
 module.exports = router;

@@ -20,44 +20,34 @@ import { styled, keyframes } from "@mui/material/styles";
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || "";
 
 // ─── Design Tokens ────────────────────────────────────────────────────────────
-// Single source of truth. Every color in this file derives from here.
-// No raw hex or rgba strings appear anywhere else in JSX.
 const T = {
-  // ── Text hierarchy (on light surfaces) ──────────────────────────────────────
-  ink:          "#1a2238",   // headings / bold labels     WCAG AAA on surface0
-  body:         "#3d4f6e",   // paragraph text             WCAG AA  on surface0
-  muted:        "#6b7c99",   // captions / meta            WCAG AA  on surface0 (4.6:1)
-  subtle:       "#9baabb",   // decorative / placeholder   intentionally lower
+  ink:          "#1a2238",
+  body:         "#3d4f6e",
+  muted:        "#6b7c99",
+  subtle:       "#9baabb",
 
-  // ── Surface stack (light → slightly tinted) ──────────────────────────────────
-  surface0:     "#ffffff",   // page base
-  surface1:     "#f4f6fb",   // alternating section tint   — clearly perceptible
-  surface2:     "#eaeff8",   // card / chip / input bg
+  surface0:     "#ffffff",
+  surface1:     "#f4f6fb",
+  surface2:     "#eaeff8",
 
-  // ── Dark surface (hero, why-choose, footer) ──────────────────────────────────
-  dark:         "#0d1629",   // background
-  darkCard:     "#121e38",   // elevated card on dark bg
+  dark:         "#0d1629",
+  darkCard:     "#121e38",
 
-  // ── Brand accent ─────────────────────────────────────────────────────────────
-  accent:       "#2251d4",   // primary CTA / link         4.7:1 on white (AA)
-  accentHov:    "#1a3fa8",   // hover / pressed
-  accentSoft:   "#dce6fb",   // ghost pill background
-  accentOnSoft: "#1a3fa8",   // text on accentSoft         5.9:1 (AA)
+  accent:       "#2251d4",
+  accentHov:    "#1a3fa8",
+  accentSoft:   "#dce6fb",
+  accentOnSoft: "#1a3fa8",
 
-  // ── On-dark text ─────────────────────────────────────────────────────────────
   onDark:       "#ffffff",
   onDarkDim:    "rgba(255,255,255,0.60)",
   onDarkFaint:  "rgba(255,255,255,0.28)",
 
-  // ── On-dark accent (particle / icon / label colour on dark bg) ───────────────
-  glowBlue:     "rgba(160,185,255,0.88)",   // icon / accent text on dark
-  glowBlueSoft: "rgba(160,185,255,0.12)",   // ghost background on dark
+  glowBlue:     "rgba(160,185,255,0.88)",
+  glowBlueSoft: "rgba(160,185,255,0.12)",
 
-  // ── Borders ──────────────────────────────────────────────────────────────────
   borderLight:  "#dde4f0",
   borderDark:   "rgba(255,255,255,0.07)",
 
-  // ── Hero photography overlays (separate from surface stack) ──────────────────
   heroLeft:     "rgba(13,22,41,0.84)",
   heroRight:    "rgba(13,22,41,0.00)",
   heroBottom:   "rgba(13,22,41,0.80)",
@@ -80,6 +70,10 @@ const barGrow = keyframes`
   from { transform: scaleX(0); }
   to   { transform: scaleX(1); }
 `;
+const pulse = keyframes`
+  0%,100% { opacity: 1; }
+  50%     { opacity: 0.4; }
+`;
 
 // ─── Hero Constants ───────────────────────────────────────────────────────────
 const SLIDE_DURATION = 5000;
@@ -88,10 +82,12 @@ const SLIDES = [
   { src: "/images/hero2.jpg", label: "Trending Now"    },
   { src: "/images/hero3.jpg", label: "Exclusive Drops" },
 ];
-const STATS = [
-  { value: "2.4M+", label: "Active Shoppers" },
-  { value: "340+",  label: "Curated Stores"  },
-  { value: "98%",   label: "Satisfaction"    },
+
+// ─── Fallback stats (shown while loading) ─────────────────────────────────────
+const FALLBACK_STATS = [
+  { value: "—",   label: "Active Shoppers" },
+  { value: "—",   label: "Curated Stores"  },
+
 ];
 
 // ─── Layout Helpers ───────────────────────────────────────────────────────────
@@ -100,8 +96,6 @@ const sxInner   = { width: "100%", maxWidth: 1400, mx: "auto" };
 const sxHeading = { textAlign: "center", mb: 6 };
 
 // ─── Styled Components ────────────────────────────────────────────────────────
-
-/** Pill label for section headings — on light surfaces */
 const Eyebrow = styled(Typography)({
   display:         "inline-block",
   fontSize:        "0.68rem",
@@ -115,7 +109,6 @@ const Eyebrow = styled(Typography)({
   marginBottom:    "0.6rem",
 });
 
-/** Pill label for section headings — on dark surfaces */
 const EyebrowDark = styled(Typography)({
   display:         "inline-block",
   fontSize:        "0.68rem",
@@ -129,13 +122,11 @@ const EyebrowDark = styled(Typography)({
   marginBottom:    "0.6rem",
 });
 
-/** Hairline rule between light sections */
 const PageDivider = styled(Divider)({
   width: "100%", maxWidth: 1200, margin: "0 auto",
   borderColor: T.borderLight,
 });
 
-/** Primary CTA — used on light sections */
 const PrimaryBtn = styled(Button)({
   background:    T.accent,
   color:         T.onDark,
@@ -153,7 +144,6 @@ const PrimaryBtn = styled(Button)({
   },
 });
 
-/** Hero ghost CTA — white outline, sits over photography */
 const HeroPrimaryBtn = styled(Link)({
   display:        "inline-flex",
   alignItems:     "center",
@@ -172,7 +162,6 @@ const HeroPrimaryBtn = styled(Link)({
   "&:hover": { background: "rgba(255,255,255,0.13)", borderColor: T.onDark, transform: "translateY(-2px)" },
 });
 
-/** Hero secondary ghost link */
 const GhostBtn = styled(Link)({
   display:        "inline-flex",
   alignItems:     "center",
@@ -190,7 +179,6 @@ const GhostBtn = styled(Link)({
   },
 });
 
-/** Store card — full-bleed image */
 const StoreCard = styled(Link)(({ bgimage }) => ({
   position:           "relative",
   display:            "flex",
@@ -211,7 +199,6 @@ const StoreCard = styled(Link)(({ bgimage }) => ({
   "&:hover": { transform: "translateY(-6px) scale(1.01)", boxShadow: "0 14px 36px rgba(34,81,212,0.18)" },
 }));
 
-/** Dark feature card (Why Choose) */
 const FeatureCard = styled(Box)({
   background:   `linear-gradient(140deg, ${T.darkCard} 0%, #1a3168 100%)`,
   position:     "relative",
@@ -247,7 +234,24 @@ const ProductCardWrapper = styled(Box)({
   "& > *": { width: "100% !important", maxWidth: "none !important" },
 });
 
-// ─── ParticleCanvas — mouse-reactive, used in hero ───────────────────────────
+// ─── Utility: format large numbers ───────────────────────────────────────────
+function formatStat(value) {
+  if (value === null || value === undefined) return "—";
+  const num = Number(value);
+  if (isNaN(num)) return String(value);
+  if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M+`;
+  if (num >= 1_000)     return `${(num / 1_000).toFixed(1)}K+`;
+  return `${num}+`;
+}
+
+function formatPct(value) {
+  if (value === null || value === undefined) return "—";
+  const num = Number(value);
+  if (isNaN(num)) return String(value);
+  return `${Math.round(num)}%`;
+}
+
+// ─── ParticleCanvas ───────────────────────────────────────────────────────────
 function ParticleCanvas({ mouseRef }) {
   const canvasRef = useRef(null);
   useEffect(() => {
@@ -300,10 +304,15 @@ function ParticleCanvas({ mouseRef }) {
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(raf); };
   }, [mouseRef]);
 
-  return <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1, pointerEvents: "none", opacity: 0.6 }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 1, pointerEvents: "none", opacity: 0.6 }}
+    />
+  );
 }
 
-// ─── ParticleMesh — ambient, used in feature cards ───────────────────────────
+// ─── ParticleMesh ─────────────────────────────────────────────────────────────
 function ParticleMesh() {
   const canvasRef = useRef(null);
   useEffect(() => {
@@ -341,7 +350,12 @@ function ParticleMesh() {
     draw();
     return () => { window.removeEventListener("resize", resize); cancelAnimationFrame(raf); };
   }, []);
-  return <canvas ref={canvasRef} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" }} />;
+  return (
+    <canvas
+      ref={canvasRef}
+      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", zIndex: 0, pointerEvents: "none" }}
+    />
+  );
 }
 
 // ─── Slide Progress Bar ───────────────────────────────────────────────────────
@@ -368,7 +382,7 @@ function SlideProgressBar({ active, index, onClick }) {
 }
 
 // ─── Hero Section ─────────────────────────────────────────────────────────────
-function HeroSection() {
+function HeroSection({ stats, statsLoading }) {
   const [slide, setSlide]                 = useState(0);
   const [transitioning, setTransitioning] = useState(false);
   const mouseRef = useRef({ x: -999, y: -999 });
@@ -396,9 +410,14 @@ function HeroSection() {
     return () => { hero.removeEventListener("mousemove", onMove); hero.removeEventListener("mouseleave", onLeave); };
   }, []);
 
-  return (
-    <Box ref={heroRef} component="section" sx={{ position: "relative", width: "100%", height: "100vh", minHeight: 600, overflow: "hidden", bgcolor: T.dark }}>
+  const displayStats = statsLoading ? FALLBACK_STATS : stats;
 
+  return (
+    <Box
+      ref={heroRef}
+      component="section"
+      sx={{ position: "relative", width: "100%", height: "100vh", minHeight: 600, overflow: "hidden", bgcolor: T.dark }}
+    >
       {/* Background slides */}
       {SLIDES.map((s, i) => (
         <Box key={i} sx={{
@@ -411,11 +430,11 @@ function HeroSection() {
         }} />
       ))}
 
-      {/* Gradient overlays — derived from T.heroLeft / T.heroRight / T.heroBottom */}
+      {/* Gradient overlays */}
       <Box sx={{ position: "absolute", inset: 0, zIndex: 1, background: `linear-gradient(105deg, ${T.heroLeft} 0%, rgba(13,22,41,0.50) 52%, ${T.heroRight} 100%)` }} />
       <Box sx={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "38%", zIndex: 1, background: `linear-gradient(0deg, ${T.heroBottom} 0%, transparent 100%)` }} />
 
-      {/* Mouse-reactive particles */}
+      {/* Particles */}
       <ParticleCanvas mouseRef={mouseRef} />
 
       {/* Content grid */}
@@ -475,7 +494,7 @@ function HeroSection() {
           </Box>
         </Box>
 
-        {/* Right: stats
+        {/* Right: live stats */}
         <Box sx={{
           gridColumn: { xs: 1, md: 2 }, gridRow: { xs: 2, md: 1 },
           display: "flex", flexDirection: { xs: "row", md: "column" },
@@ -483,13 +502,22 @@ function HeroSection() {
           alignSelf: { xs: "flex-end", md: "center" },
           animation: `${revealFade} 1.1s 1s ease both`,
         }}>
-          {STATS.map((stat) => (
+          {displayStats.map((stat) => (
             <Box key={stat.label} sx={{
               textAlign: { xs: "left", md: "right" },
               borderRight: { xs: "none", md: `1px solid ${T.borderDark}` },
               pr: { xs: 0, md: 3.5 },
             }}>
-              <Typography sx={{ fontFamily: "'Orbitron', sans-serif", fontSize: { xs: "1.4rem", md: "1.9rem" }, fontWeight: 800, color: T.onDark, lineHeight: 1, mb: 0.4 }}>
+              <Typography sx={{
+                fontFamily: "'Orbitron', sans-serif",
+                fontSize: { xs: "1.4rem", md: "1.9rem" },
+                fontWeight: 800,
+                color: T.onDark,
+                lineHeight: 1,
+                mb: 0.4,
+                // subtle pulse while loading
+                animation: statsLoading ? `${pulse} 1.4s ease-in-out infinite` : "none",
+              }}>
                 {stat.value}
               </Typography>
               <Typography sx={{ fontSize: "0.66rem", letterSpacing: "0.16em", textTransform: "uppercase", color: T.onDarkDim, fontWeight: 600 }}>
@@ -497,7 +525,7 @@ function HeroSection() {
               </Typography>
             </Box>
           ))}
-        </Box> */}
+        </Box>
 
         {/* Bottom bar: slide controls + scroll indicator */}
         <Box sx={{
@@ -533,11 +561,60 @@ function HomeContent() {
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [token, setToken]                   = useState(null);
 
+  // ── Analytics stats ────────────────────────────────────────────────────────
+  const [stats, setStats]               = useState(FALLBACK_STATS);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Resolve Firebase token, then fetch analytics with it as a Bearer header.
+  // Both concerns live here so we never fire the request before auth resolves.
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      if (user) setToken(await user.getIdToken());
+      // Always update the shared token state for other sections
+      if (user) {
+        const idToken = await user.getIdToken();
+        setToken(idToken);
+        await fetchAnalytics(idToken);
+      } else {
+        // Not signed in — still try without a token (will 401 and fall back gracefully)
+        await fetchAnalytics(null);
+      }
     });
     return () => unsub();
+
+    async function fetchAnalytics(idToken) {
+      try {
+        const headers = { "Content-Type": "application/json" };
+        if (idToken) {
+          // Cover both common patterns — backend may read either one
+          headers["Authorization"] = `Bearer ${idToken}`;
+          headers["x-auth-token"]  = idToken;
+        }
+
+        const res = await fetch("http://localhost:4000/api/dashboard/analytics", );
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const data = await res.json();
+
+        /*
+         * Map API response → hero stats.
+         * Handles camelCase, snake_case, and a nested `data` wrapper.
+         */
+        const d = data?.data ?? data;
+
+        const totalUsers   = d?.totalUsers  ;
+        const totalStores  = d?.activeStores ;
+        
+
+        setStats([
+          { value: totalUsers   !== null ? formatStat(totalUsers)  : "—", label: "Active Shoppers" },
+          { value: totalStores  !== null ? formatStat(totalStores) : "—", label: "Curated Stores"  },
+        ]);
+      } catch (err) {
+        console.error("Analytics fetch failed:", err);
+        setStats(FALLBACK_STATS);
+      } finally {
+        setStatsLoading(false);
+      }
+    }
   }, []);
 
   useEffect(() => {
@@ -588,7 +665,7 @@ function HomeContent() {
     <Box sx={{ width: "100%", minHeight: "100vh", bgcolor: T.surface0, color: T.body }}>
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
-      <HeroSection />
+      <HeroSection stats={stats} statsLoading={statsLoading} />
 
       {/* ── Stores  [surface0 — white] ───────────────────────────────────── */}
       <Box component="section" id="stores" sx={{ width: "100%", bgcolor: T.surface0, ...sxPad }}>
@@ -665,7 +742,7 @@ function HomeContent() {
 
       <PageDivider />
 
-      {/* ── Why Choose  [dark — same family as hero & footer] ───────────── */}
+      {/* ── Why Choose  [dark] ───────────────────────────────────────────── */}
       <Box component="section" sx={{ width: "100%", bgcolor: T.dark, ...sxPad }}>
         <Box sx={sxInner}>
           <Box sx={sxHeading}>
@@ -777,7 +854,7 @@ function HomeContent() {
         </Box>
       )}
 
-      {/* ── Footer  [dark — same family as hero & Why Choose] ────────────── */}
+      {/* ── Footer  [dark] ────────────────────────────────────────────────── */}
       <Box
         component="footer"
         sx={{

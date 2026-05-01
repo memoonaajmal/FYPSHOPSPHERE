@@ -16,6 +16,8 @@ const connectDB = require('./utils/connectDB');
 const logger = require('./utils/logger');
 const authRoutes = require('./routes/auth.routes');
 const productsRoutes = require('./routes/products.routes');
+const DashboardRoutes = require('./routes/dashboard.routes');
+
 const facetsRoutes = require('./routes/facets.routes');
 const storeRoutes = require('./routes/store.routes');
 const orderRoutes = require('./routes/orderRoutes');
@@ -103,6 +105,7 @@ app.use(express.json({ limit: '2mb' }));
 // Mount the rest
 app.use('/api/auth', authRoutes);
 app.use('/api/products', productsRoutes);
+app.use('/api/dashboard', DashboardRoutes);
 app.use('/api/facets', facetsRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/jazzcash', jazzcashRoutes);
