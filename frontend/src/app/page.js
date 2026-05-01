@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import Link from "next/link";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { ShoppingBag, Bot, Globe2, Sparkles, ChevronDown } from "lucide-react";
+import { ShoppingBag, Bot, Globe2, Sparkles, ChevronDown, ArrowRight } from "lucide-react";
 import { FaFacebookF, FaInstagram, FaTwitter, FaLinkedinIn } from "react-icons/fa";
 import ProductCard from "../../components/ProductCard";
 import { auth } from "../../firebase/config";
@@ -74,25 +74,26 @@ const pulse = keyframes`
   0%,100% { opacity: 1; }
   50%     { opacity: 0.4; }
 `;
+const shimmer = keyframes`
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+`;
 
 // ─── Hero Constants ───────────────────────────────────────────────────────────
 const SLIDE_DURATION = 5000;
 const SLIDES = [
-  { src: "/images/hero1.jpg", label: "New Arrivals"    },
-  { src: "/images/hero2.jpg", label: "Trending Now"    },
-  { src: "/images/hero3.jpg", label: "Exclusive Drops" },
+  { src: "/images/hero1.jpg", label: "New Arrivals", href: "#new-arrivals" },
 ];
 
 // ─── Fallback stats (shown while loading) ─────────────────────────────────────
 const FALLBACK_STATS = [
-  { value: "—",   label: "Active Shoppers" },
-  { value: "—",   label: "Curated Stores"  },
-
+  { value: "—", label: "Active Shoppers" },
+  { value: "—", label: "Curated Stores"  },
 ];
 
 // ─── Layout Helpers ───────────────────────────────────────────────────────────
-const sxPad     = { px: { xs: 2, sm: 3, md: 5 }, py: { xs: 7, md: 10 } };
-const sxInner   = { width: "100%", maxWidth: 1400, mx: "auto" };
+const sxPad   = { px: { xs: 2, sm: 3, md: 5 }, py: { xs: 7, md: 10 } };
+const sxInner = { width: "100%", maxWidth: 1400, mx: "auto" };
 const sxHeading = { textAlign: "center", mb: 6 };
 
 // ─── Styled Components ────────────────────────────────────────────────────────
@@ -234,6 +235,28 @@ const ProductCardWrapper = styled(Box)({
   "& > *": { width: "100% !important", maxWidth: "none !important" },
 });
 
+// ─── Skeleton card for new arrivals loading state ─────────────────────────────
+const SkeletonCard = styled(Box)({
+  width:        "100%",
+  borderRadius: 16,
+  overflow:     "hidden",
+  border:       `1px solid ${T.borderLight}`,
+  backgroundColor: T.surface0,
+});
+
+function SkeletonPulse({ height, borderRadius = 8, mb = 0 }) {
+  return (
+    <Box sx={{
+      height,
+      borderRadius,
+      mb,
+      background: `linear-gradient(90deg, ${T.surface2} 25%, ${T.surface1} 50%, ${T.surface2} 75%)`,
+      backgroundSize: "800px 100%",
+      animation: `${shimmer} 1.5s infinite linear`,
+    }} />
+  );
+}
+
 // ─── Utility: format large numbers ───────────────────────────────────────────
 function formatStat(value) {
   if (value === null || value === undefined) return "—";
@@ -242,13 +265,6 @@ function formatStat(value) {
   if (num >= 1_000_000) return `${(num / 1_000_000).toFixed(1)}M+`;
   if (num >= 1_000)     return `${(num / 1_000).toFixed(1)}K+`;
   return `${num}+`;
-}
-
-function formatPct(value) {
-  if (value === null || value === undefined) return "—";
-  const num = Number(value);
-  if (isNaN(num)) return String(value);
-  return `${Math.round(num)}%`;
 }
 
 // ─── ParticleCanvas ───────────────────────────────────────────────────────────
@@ -359,10 +375,20 @@ function ParticleMesh() {
 }
 
 // ─── Slide Progress Bar ───────────────────────────────────────────────────────
-function SlideProgressBar({ active, index, onClick }) {
+function SlideProgressBar({ active, index, onClick, slide }) {
+  // If slide has an href, clicking the label navigates to that section
+  const handleClick = (e) => {
+    onClick(index);
+    if (slide.href) {
+      e.stopPropagation();
+      const el = document.querySelector(slide.href);
+      if (el) el.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <Box
-      onClick={() => onClick(index)}
+      onClick={handleClick}
       sx={{
         display: "flex", flexDirection: "column", gap: "6px",
         cursor: "pointer", opacity: active ? 1 : 0.38,
@@ -370,7 +396,7 @@ function SlideProgressBar({ active, index, onClick }) {
       }}
     >
       <Typography sx={{ fontSize: "0.62rem", letterSpacing: "0.18em", textTransform: "uppercase", color: T.onDark, fontWeight: 700 }}>
-        {SLIDES[index].label}
+        {slide.label}
       </Typography>
       <Box sx={{ width: 68, height: "1.5px", bgcolor: "rgba(255,255,255,0.18)", borderRadius: 1, overflow: "hidden" }}>
         {active && (
@@ -418,7 +444,6 @@ function HeroSection({ stats, statsLoading }) {
       component="section"
       sx={{ position: "relative", width: "100%", height: "100vh", minHeight: 600, overflow: "hidden", bgcolor: T.dark }}
     >
-      {/* Background slides */}
       {SLIDES.map((s, i) => (
         <Box key={i} sx={{
           position: "absolute", inset: 0,
@@ -430,14 +455,11 @@ function HeroSection({ stats, statsLoading }) {
         }} />
       ))}
 
-      {/* Gradient overlays */}
       <Box sx={{ position: "absolute", inset: 0, zIndex: 1, background: `linear-gradient(105deg, ${T.heroLeft} 0%, rgba(13,22,41,0.50) 52%, ${T.heroRight} 100%)` }} />
       <Box sx={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "38%", zIndex: 1, background: `linear-gradient(0deg, ${T.heroBottom} 0%, transparent 100%)` }} />
 
-      {/* Particles */}
       <ParticleCanvas mouseRef={mouseRef} />
 
-      {/* Content grid */}
       <Box sx={{
         position: "absolute", inset: 0, zIndex: 3,
         display: "grid",
@@ -489,8 +511,9 @@ function HeroSection({ stats, statsLoading }) {
           </Typography>
 
           <Box sx={{ display: "flex", gap: 2.5, flexWrap: "wrap", alignItems: "center", animation: `${revealFade} 0.9s 0.85s ease both` }}>
-            <HeroPrimaryBtn href="#stores">Explore Stores</HeroPrimaryBtn>
-            <GhostBtn href="/user/products">View All Products →</GhostBtn>
+            <HeroPrimaryBtn href="#new-arrivals">New Arrivals</HeroPrimaryBtn>
+            <HeroPrimaryBtn href="#stores" style={{ borderColor: "rgba(255,255,255,0.35)" }}>Explore Stores</HeroPrimaryBtn>
+            <GhostBtn href="/user/products">View All →</GhostBtn>
           </Box>
         </Box>
 
@@ -515,7 +538,6 @@ function HeroSection({ stats, statsLoading }) {
                 color: T.onDark,
                 lineHeight: 1,
                 mb: 0.4,
-                // subtle pulse while loading
                 animation: statsLoading ? `${pulse} 1.4s ease-in-out infinite` : "none",
               }}>
                 {stat.value}
@@ -527,7 +549,7 @@ function HeroSection({ stats, statsLoading }) {
           ))}
         </Box>
 
-        {/* Bottom bar: slide controls + scroll indicator */}
+        {/* Bottom bar */}
         <Box sx={{
           gridColumn: "1 / -1", gridRow: { xs: 3, md: 2 },
           display: "flex", alignItems: "flex-end", justifyContent: "space-between",
@@ -535,8 +557,8 @@ function HeroSection({ stats, statsLoading }) {
           animation: `${revealFade} 1s 1.1s ease both`,
         }}>
           <Box sx={{ display: "flex", gap: 3, alignItems: "center" }}>
-            {SLIDES.map((_, i) => (
-              <SlideProgressBar key={i} index={i} active={i === slide} onClick={goTo} />
+            {SLIDES.map((s, i) => (
+              <SlideProgressBar key={i} index={i} slide={s} active={i === slide} onClick={goTo} />
             ))}
           </Box>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "6px" }}>
@@ -553,6 +575,167 @@ function HeroSection({ stats, statsLoading }) {
   );
 }
 
+// ─── New Arrivals Badge ───────────────────────────────────────────────────────
+const NewBadge = styled(Box)({
+  position:        "absolute",
+  top:             12,
+  left:            12,
+  zIndex:          2,
+  background:      `linear-gradient(135deg, ${T.accent}, #6c63ff)`,
+  color:           "#fff",
+  fontSize:        "0.6rem",
+  fontWeight:      800,
+  letterSpacing:   "0.18em",
+  textTransform:   "uppercase",
+  padding:         "3px 10px",
+  borderRadius:    20,
+  boxShadow:       `0 2px 10px ${T.accent}55`,
+});
+
+// ─── New Arrivals Section ─────────────────────────────────────────────────────
+function NewArrivalsSection() {
+  const [products, setProducts]   = useState([]);
+  const [loading, setLoading]     = useState(true);
+  const [error, setError]         = useState(null);
+  const sectionRef                = useRef(null);
+
+  useEffect(() => {
+    async function fetchNewArrivals() {
+      try {
+        // Fetch latest 8 products — adjust query params to match your API
+        const q = new URLSearchParams({ limit: 8, sort: "createdAt", order: "desc" }).toString();
+        const res = await fetch(`${BASE_URL}/api/products?${q}`);
+        if (!res.ok) throw new Error("Failed to fetch products");
+        const data = await res.json();
+        // Handle both array response and { products: [] } shape
+        setProducts(Array.isArray(data) ? data : data?.products ?? data?.data ?? []);
+      } catch (err) {
+        setError("Could not load new arrivals.");
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchNewArrivals();
+  }, []);
+
+  // GSAP scroll-triggered reveal for each card
+  useEffect(() => {
+    if (loading || products.length === 0) return;
+    gsap.registerPlugin(ScrollTrigger);
+    gsap.utils.toArray(".newArrivalCard").forEach((card, i) => {
+      gsap.fromTo(
+        card,
+        { opacity: 0, y: 40, scale: 0.96 },
+        {
+          opacity: 1, y: 0, scale: 1,
+          duration: 0.65,
+          delay: (i % 4) * 0.1,
+          ease: "power3.out",
+          scrollTrigger: { trigger: card, start: "top 92%" },
+        }
+      );
+    });
+  }, [loading, products]);
+
+  return (
+    <Box
+      component="section"
+      id="new-arrivals"
+      ref={sectionRef}
+      sx={{ width: "100%", bgcolor: T.surface0, ...sxPad, scrollMarginTop: "80px" }}
+    >
+      <Box sx={sxInner}>
+        {/* Header */}
+        <Box sx={{ ...sxHeading, position: "relative" }}>
+          {/* Decorative accent line */}
+          <Box sx={{
+            width: 40, height: 3, borderRadius: 2,
+            background: `linear-gradient(90deg, ${T.accent}, #6c63ff)`,
+            mx: "auto", mb: 2,
+          }} />
+          <Eyebrow>Just Dropped</Eyebrow>
+          <Typography
+            variant="h2"
+            sx={{ fontSize: { xs: "1.9rem", md: "2.5rem" }, fontWeight: 800, color: T.ink, mt: 0.5, lineHeight: 1.2 }}
+          >
+            New Arrivals
+          </Typography>
+          <Typography sx={{ color: T.muted, mt: 1, fontSize: "0.97rem", maxWidth: 420, mx: "auto" }}>
+            Fresh picks added to our catalogue — be the first to shop them.
+          </Typography>
+        </Box>
+
+        {/* Loading skeletons — horizontal scroll */}
+        {loading && (
+          <Box sx={{ overflowX: "auto", pb: 2 }}>
+            <Grid container spacing={3} wrap="nowrap" alignItems="stretch">
+              {Array.from({ length: 6 }).map((_, i) => (
+                <Grid item key={i} sx={{ minWidth: 280, maxWidth: 280, display: "flex" }}>
+                  <SkeletonCard sx={{ flex: 1 }}>
+                    <SkeletonPulse height={220} borderRadius={0} mb={0} />
+                    <Box sx={{ p: 2 }}>
+                      <SkeletonPulse height={14} mb={1.5} />
+                      <SkeletonPulse height={12} mb={1} />
+                      <SkeletonPulse height={18} borderRadius={20} />
+                    </Box>
+                  </SkeletonCard>
+                </Grid>
+              ))}
+            </Grid>
+          </Box>
+        )}
+
+        {/* Error */}
+        {!loading && error && (
+          <Typography textAlign="center" color="error">{error}</Typography>
+        )}
+
+        {/* Empty */}
+        {!loading && !error && products.length === 0 && (
+          <Typography textAlign="center" sx={{ color: T.muted }}>No new arrivals found.</Typography>
+        )}
+
+        {/* Product horizontal scroll — mirrors Recently Viewed */}
+        {!loading && !error && products.length > 0 && (
+          <>
+            <Box sx={{ overflowX: "auto", pb: 2 }}>
+              <Grid container spacing={3} wrap="nowrap" alignItems="stretch">
+                {products.map((product, index) => {
+                  const id = product.id ?? product._id ?? String(index);
+                  return (
+                    <Grid item key={id} sx={{ minWidth: 280, maxWidth: 280, display: "flex" }}>
+                      <Box
+                        className="newArrivalCard"
+                        sx={{ position: "relative", flex: 1, opacity: 0 }}
+                      >
+                        {index < 4 && <NewBadge>New</NewBadge>}
+                        <ProductCardWrapper sx={{ flex: 1, height: "100%" }}>
+                          <ProductCard product={{ ...product, id, _id: id }} />
+                        </ProductCardWrapper>
+                      </Box>
+                    </Grid>
+                  );
+                })}
+              </Grid>
+            </Box>
+
+            {/* View all CTA */}
+            <Box sx={{ display: "flex", justifyContent: "center", mt: 6, gap: 2, flexWrap: "wrap" }}>
+              <PrimaryBtn
+                component={Link}
+                href="/user/products"
+                endIcon={<ArrowRight size={16} />}
+              >
+                Browse All Products
+              </PrimaryBtn>
+            </Box>
+          </>
+        )}
+      </Box>
+    </Box>
+  );
+}
+
 // ─── Main Page ────────────────────────────────────────────────────────────────
 function HomeContent() {
   const [stores, setStores]                 = useState([]);
@@ -561,21 +744,16 @@ function HomeContent() {
   const [recentlyViewed, setRecentlyViewed] = useState([]);
   const [token, setToken]                   = useState(null);
 
-  // ── Analytics stats ────────────────────────────────────────────────────────
   const [stats, setStats]               = useState(FALLBACK_STATS);
   const [statsLoading, setStatsLoading] = useState(true);
 
-  // Resolve Firebase token, then fetch analytics with it as a Bearer header.
-  // Both concerns live here so we never fire the request before auth resolves.
   useEffect(() => {
     const unsub = onAuthStateChanged(auth, async (user) => {
-      // Always update the shared token state for other sections
       if (user) {
         const idToken = await user.getIdToken();
         setToken(idToken);
         await fetchAnalytics(idToken);
       } else {
-        // Not signed in — still try without a token (will 401 and fall back gracefully)
         await fetchAnalytics(null);
       }
     });
@@ -585,28 +763,18 @@ function HomeContent() {
       try {
         const headers = { "Content-Type": "application/json" };
         if (idToken) {
-          // Cover both common patterns — backend may read either one
           headers["Authorization"] = `Bearer ${idToken}`;
           headers["x-auth-token"]  = idToken;
         }
-
-        const res = await fetch("http://localhost:4000/api/dashboard/analytics", );
+        const res = await fetch("http://localhost:4000/api/dashboard/analytics");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         const data = await res.json();
-
-        /*
-         * Map API response → hero stats.
-         * Handles camelCase, snake_case, and a nested `data` wrapper.
-         */
         const d = data?.data ?? data;
-
-        const totalUsers   = d?.totalUsers  ;
-        const totalStores  = d?.activeStores ;
-        
-
+        const totalUsers  = d?.totalUsers;
+        const totalStores = d?.activeStores;
         setStats([
-          { value: totalUsers   !== null ? formatStat(totalUsers)  : "—", label: "Active Shoppers" },
-          { value: totalStores  !== null ? formatStat(totalStores) : "—", label: "Curated Stores"  },
+          { value: totalUsers  !== null ? formatStat(totalUsers)  : "—", label: "Active Shoppers" },
+          { value: totalStores !== null ? formatStat(totalStores) : "—", label: "Curated Stores"  },
         ]);
       } catch (err) {
         console.error("Analytics fetch failed:", err);
@@ -666,6 +834,11 @@ function HomeContent() {
 
       {/* ── Hero ─────────────────────────────────────────────────────────── */}
       <HeroSection stats={stats} statsLoading={statsLoading} />
+
+      {/* ── New Arrivals  [surface0 — white] ─────────────────────────────── */}
+      <NewArrivalsSection />
+
+      <PageDivider />
 
       {/* ── Stores  [surface0 — white] ───────────────────────────────────── */}
       <Box component="section" id="stores" sx={{ width: "100%", bgcolor: T.surface0, ...sxPad }}>
@@ -867,8 +1040,6 @@ function HomeContent() {
         }}
       >
         <Box sx={{ display: "flex", justifyContent: "space-between", flexWrap: "wrap", gap: "3rem", width: "100%", maxWidth: 1400, mx: "auto" }}>
-
-          {/* Brand */}
           <Box sx={{ flex: 1.5, minWidth: 230 }}>
             <Typography sx={{ fontFamily: "'Orbitron', sans-serif", fontSize: "1.3rem", fontWeight: 800, mb: 1.5, letterSpacing: "0.07em", color: T.onDark }}>
               SHOPSPHERE
@@ -878,7 +1049,6 @@ function HomeContent() {
             </Typography>
           </Box>
 
-          {/* Quick Links */}
           <Box sx={{ flex: 1, minWidth: 155 }}>
             <Typography sx={{ fontSize: "0.67rem", letterSpacing: "0.22em", textTransform: "uppercase", color: T.glowBlue, mb: 2, fontWeight: 700 }}>
               Quick Links
@@ -899,7 +1069,6 @@ function HomeContent() {
             ))}
           </Box>
 
-          {/* Social */}
           <Box sx={{ flex: 1, minWidth: 155 }}>
             <Typography sx={{ fontSize: "0.67rem", letterSpacing: "0.22em", textTransform: "uppercase", color: T.glowBlue, mb: 2, fontWeight: 700 }}>
               Follow Us
