@@ -475,7 +475,7 @@ function HeroSection() {
           </Box>
         </Box>
 
-        {/* Right: stats */}
+        {/* Right: stats
         <Box sx={{
           gridColumn: { xs: 1, md: 2 }, gridRow: { xs: 2, md: 1 },
           display: "flex", flexDirection: { xs: "row", md: "column" },
@@ -497,7 +497,7 @@ function HeroSection() {
               </Typography>
             </Box>
           ))}
-        </Box>
+        </Box> */}
 
         {/* Bottom bar: slide controls + scroll indicator */}
         <Box sx={{
