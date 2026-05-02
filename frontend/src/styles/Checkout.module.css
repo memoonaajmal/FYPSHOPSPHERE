@@ -132,35 +132,17 @@
   color: #0d1320;
 }
 
-/* Left side buttons - 40% width */
 .radioGroup {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
   gap: 16px;
-  width: 40%;
-  padding-left: 40px;
+  width: 100%;
 }
 
-/* Vertical separator - bold line */
-.separator {
-  width: 4px;               /* 👈 makes it bold */
-  background-color: #0d1320;
-  align-self: stretch;       /* stretches to match height of buttons */
-  border-radius: 2px;        /* optional: slightly rounded edges */
-  margin-left: 60px; /* 👈 ADD THIS */
-}
 
-/* Right side info box - 40% width */
-.infoBox {
-  width: 40%;
-  font-size: 14px;
-  color: #333;
-  padding: 8px;
-  margin-left: 30px; /* 👈 ADD THIS */
-}
-
-/* Buttons (unchanged) */
 .radioLabel {
+  flex: 1;  /* 👈 add this */
   display: flex;
   flex-direction: column;
   align-items: center;
