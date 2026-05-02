@@ -526,19 +526,7 @@ export default function CheckoutPage() {
                 </label>
               </div>
 
-              <div className={styles.separator}></div>
-
-              <div className={styles.infoBox}>
-                {formData.paymentMethod === "COD" && (
-                  <p>No advance payment. Pay later in cash at your doorstep.</p>
-                )}
-                {formData.paymentMethod === "JazzCash" && (
-                  <p>Enjoy an instant 5% discount when you pay with JazzCash.</p>
-                )}
-                {formData.paymentMethod === "Stripe" && (
-                  <p>Pay securely with your credit or debit card via Stripe.</p>
-                )}
-              </div>
+              
             </div>
 
             {/* Place Order button — hidden once Stripe panel is shown */}
