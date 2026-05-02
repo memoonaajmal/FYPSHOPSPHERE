@@ -17,8 +17,6 @@ router.get("/", async (req, res) => {
     res.status(500).json({ message: "Failed to fetch cart" });
   }
 });
-
-// ── POST /api/cart/merge ───────────────────────────────────
 router.post("/merge", async (req, res) => {
   try {
     const { items: guestItems } = req.body;
@@ -34,7 +32,7 @@ router.post("/merge", async (req, res) => {
     for (const guestItem of guestItems) {
       const existing = cart.items.find((i) => i.productId === guestItem.id);
       if (existing) {
-        existing.qty += guestItem.qty;
+        existing.qty = guestItem.qty; // ✅ REPLACE, don't add — guest cart is the latest intent
       } else {
         cart.items.push({
           productId: guestItem.id,
