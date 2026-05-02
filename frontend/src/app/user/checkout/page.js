@@ -9,7 +9,6 @@ import styles from "../../../styles/Checkout.module.css";
 import successStyles from "../../../styles/SuccessCheckout.module.css";
 import Recommendations from "../../../../components/Recommendations";
 
-// ── Stripe imports ──────────────────────────────────────────────────────────
 import { loadStripe } from "@stripe/stripe-js";
 import {
   Elements,
@@ -18,13 +17,9 @@ import {
   useElements,
 } from "@stripe/react-stripe-js";
 
-// Load Stripe once outside the component (never inside render)
 const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY);
 
-// ────────────────────────────────────────────────────────────────────────────
-// Inner Stripe payment form — rendered inside <Elements>
-// ────────────────────────────────────────────────────────────────────────────
-function StripePaymentForm({ clientSecret, onSuccess, onError }) {
+function StripePaymentForm({ clientSecret, onSuccess, onError, buttonClassName }) {
   const stripe = useStripe();
   const elements = useElements();
   const [paying, setPaying] = useState(false);
@@ -79,8 +74,7 @@ function StripePaymentForm({ clientSecret, onSuccess, onError }) {
         type="button"
         onClick={handlePay}
         disabled={paying || !stripe}
-        // Reuse your existing button style from styles.button
-        style={{ width: "100%" }}
+        className={buttonClassName}
       >
         {paying ? "Processing..." : "Pay with Card"}
       </button>
@@ -88,9 +82,6 @@ function StripePaymentForm({ clientSecret, onSuccess, onError }) {
   );
 }
 
-// ────────────────────────────────────────────────────────────────────────────
-// Main Checkout Page
-// ────────────────────────────────────────────────────────────────────────────
 export default function CheckoutPage() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -108,12 +99,10 @@ export default function CheckoutPage() {
   const [trackingId, setTrackingId] = useState("");
   const [token, setToken] = useState(null);
 
-  // ── Stripe-specific state ─────────────────────────────────────────────────
   const [stripeClientSecret, setStripeClientSecret] = useState(null);
   const [stripeOrderId, setStripeOrderId] = useState(null);
   const [stripeTrackingId, setStripeTrackingId] = useState("");
   const [stripeError, setStripeError] = useState("");
-  // When true, we show the Stripe card input panel below the form
   const [showStripePanel, setShowStripePanel] = useState(false);
 
   const [formData, setFormData] = useState({
@@ -121,10 +110,9 @@ export default function CheckoutPage() {
     lastName: "",
     phone: "",
     address: "",
-    paymentMethod: "COD", // "COD" | "JazzCash" | "Stripe"
+    paymentMethod: "COD",
   });
 
-  // ── Auth check ────────────────────────────────────────────────────────────
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (u) => {
       if (!u) {
@@ -139,14 +127,12 @@ export default function CheckoutPage() {
     return () => unsubscribe();
   }, [router]);
 
-  // ── JazzCash / Stripe discount logic ─────────────────────────────────────
   useEffect(() => {
     if (formData.paymentMethod === "JazzCash") {
       setDiscountedTotal(itemsTotal - itemsTotal * 0.05);
     } else {
       setDiscountedTotal(itemsTotal);
     }
-    // Hide Stripe panel if user switches away from Stripe
     if (formData.paymentMethod !== "Stripe") {
       setShowStripePanel(false);
       setStripeClientSecret(null);
@@ -159,7 +145,6 @@ export default function CheckoutPage() {
   if (loading) return <p className={styles.text}>Loading...</p>;
   if (!user) return null;
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
@@ -167,6 +152,17 @@ export default function CheckoutPage() {
 
   const computedTotal =
     formData.paymentMethod === "JazzCash" ? discountedTotal : itemsTotal;
+
+  const clearDBCart = async (idToken) => {
+    try {
+      await fetch(`${BASE_URL}/api/cart`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${idToken}` },
+      });
+    } catch (err) {
+      console.error("Failed to clear DB cart:", err);
+    }
+  };
 
   const redirectToJazzCash = async (orderId, idToken) => {
     try {
@@ -198,7 +194,6 @@ export default function CheckoutPage() {
     }
   };
 
-  // ── Submit handler ────────────────────────────────────────────────────────
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -217,7 +212,6 @@ export default function CheckoutPage() {
       image: item.image,
     }));
 
-    // ── COD flow (unchanged) ────────────────────────────────────────────────
     if (formData.paymentMethod === "COD") {
       try {
         setLoading(true);
@@ -242,6 +236,7 @@ export default function CheckoutPage() {
         const data = await res.json();
         if (!res.ok) { alert(data.message || "Checkout failed"); return; }
         dispatch(clearCart());
+        await clearDBCart(idToken);
         setTrackingId(data.trackingId);
       } catch (err) {
         console.error("checkout error:", err);
@@ -252,7 +247,6 @@ export default function CheckoutPage() {
       return;
     }
 
-    // ── JazzCash flow (unchanged) ───────────────────────────────────────────
     if (formData.paymentMethod === "JazzCash") {
       try {
         setLoading(true);
@@ -277,6 +271,7 @@ export default function CheckoutPage() {
         const data = await res.json();
         if (!res.ok) { alert(data.message || "Checkout failed"); return; }
         dispatch(clearCart());
+        await clearDBCart(idToken);
         await redirectToJazzCash(data._id || data.orderId, idToken);
       } catch (err) {
         console.error("checkout error:", err);
@@ -287,16 +282,13 @@ export default function CheckoutPage() {
       return;
     }
 
-    // ── Stripe flow ─────────────────────────────────────────────────────────
     if (formData.paymentMethod === "Stripe") {
       try {
         setLoading(true);
         setStripeError("");
 
-        // Build minimal items — storeId, itemsTotal & grandTotal resolved server-side
-        // (same pattern as orderController for COD/JazzCash)
         const stripeItems = cartItems.map((item) => ({
-          productId: item.id,  // MongoDB _id; controller looks up product + store from this
+          productId: item.id,
           price: item.price,
           quantity: item.qty,
           image: item.image,
@@ -309,7 +301,7 @@ export default function CheckoutPage() {
             Authorization: `Bearer ${idToken}`,
           },
           body: JSON.stringify({
-            user: user.uid,        // Firebase UID; controller resolves to MongoDB _id
+            user: user.uid,
             email: user.email,
             firstName: formData.firstName,
             lastName: formData.lastName,
@@ -317,7 +309,6 @@ export default function CheckoutPage() {
             houseAddress: formData.address,
             items: stripeItems,
             shippingFee: 0,
-            // itemsTotal & grandTotal omitted — calculated server-side from rebuilt items
           }),
         });
 
@@ -327,7 +318,6 @@ export default function CheckoutPage() {
           return;
         }
 
-        // Store clientSecret + orderId + trackingId, then reveal the card input panel
         setStripeClientSecret(data.clientSecret);
         setStripeOrderId(data.orderId);
         setStripeTrackingId(data.trackingId || "");
@@ -342,24 +332,28 @@ export default function CheckoutPage() {
     }
   };
 
-  // Called by StripePaymentForm after stripe.confirmCardPayment succeeds
-  const handleStripeSuccess = () => {
-    dispatch(clearCart());
-    setTrackingId(stripeTrackingId || "Confirmed");
-    setShowStripePanel(false);
+  const handleStripeSuccess = async () => {
+    try {
+      const idToken = await user.getIdToken();
+      dispatch(clearCart());
+      await clearDBCart(idToken);
+    } catch (err) {
+      console.error("Failed to clear cart after Stripe payment:", err);
+    } finally {
+      setTrackingId(stripeTrackingId || "Confirmed");
+      setShowStripePanel(false);
+    }
   };
 
   const handleStripeError = (message) => {
     setStripeError(message);
   };
 
-  // ── UI ────────────────────────────────────────────────────────────────────
   return (
     <div className={styles.container}>
       <h1 className={styles.title}>Checkout</h1>
 
       {trackingId ? (
-        /* ── SUCCESS SCREEN (unchanged) ─────────────────────────────────── */
         <div className={successStyles.successCard}>
           <div className={successStyles.orderStatusSection}>
             <div className={successStyles.successIcon}>
@@ -412,7 +406,6 @@ export default function CheckoutPage() {
           </div>
         </div>
       ) : (
-        /* ── CHECKOUT FORM ───────────────────────────────────────────────── */
         <div className={styles.checkoutGrid}>
           {/* LEFT: FORM */}
           <form onSubmit={handleSubmit} className={styles.formWrapper}>
@@ -436,16 +429,17 @@ export default function CheckoutPage() {
               onChange={handleChange}
               className={styles.input}
             />
-            <input 
-            type="text" 
-            name="phone" 
-            placeholder="Phone Number" 
-            inputMode="numeric" 
-            pattern="[0-9]*" 
-            maxLength={11} 
-            required value={formData.phone} 
-            onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, "") })} 
-            className={styles.input} 
+            <input
+              type="text"
+              name="phone"
+              placeholder="Phone Number"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              maxLength={11}
+              required
+              value={formData.phone}
+              onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, "") })}
+              className={styles.input}
             />
             <input
               type="email"
@@ -462,7 +456,7 @@ export default function CheckoutPage() {
               className={styles.textarea}
             />
 
-            {/* ── Payment Method ─────────────────────────────────────────── */}
+            {/* Payment Method */}
             <div className={styles.paymentContainer}>
               <h3 className={styles.paymentTitle}>Payment method:</h3>
 
@@ -505,7 +499,7 @@ export default function CheckoutPage() {
                   <span className={styles.text}>JazzCash (5% off)</span>
                 </label>
 
-                {/* Stripe — new */}
+                {/* Stripe */}
                 <label
                   className={`${styles.radioLabel} ${
                     formData.paymentMethod === "Stripe" ? styles.active : ""
@@ -519,17 +513,14 @@ export default function CheckoutPage() {
                     onChange={handleChange}
                   />
                   <span className={styles.icon}>
-                    {/* Drop a stripe.png in /public/images/ or use any card icon */}
                     <img src="/images/stripe.svg" alt="Stripe" />
                   </span>
                   <span className={styles.text}>Credit / Debit Card</span>
                 </label>
               </div>
-
-              
             </div>
 
-            {/* Place Order button — hidden once Stripe panel is shown */}
+            {/* Place Order / Continue to Payment button */}
             {!showStripePanel && (
               <button
                 type="submit"
@@ -544,13 +535,14 @@ export default function CheckoutPage() {
               </button>
             )}
 
-            {/* ── Stripe card panel (shown after intent is created) ───────── */}
+            {/* Stripe card panel */}
             {showStripePanel && stripeClientSecret && (
               <Elements stripe={stripePromise} options={{ clientSecret: stripeClientSecret }}>
                 <StripePaymentForm
                   clientSecret={stripeClientSecret}
                   onSuccess={handleStripeSuccess}
                   onError={handleStripeError}
+                  buttonClassName={styles.button}
                 />
               </Elements>
             )}
@@ -562,7 +554,7 @@ export default function CheckoutPage() {
             )}
           </form>
 
-          {/* RIGHT: CART SUMMARY (unchanged) */}
+          {/* RIGHT: CART SUMMARY */}
           <div className={styles.summaryCard}>
             <h2 className={styles.sectionTitle}>Order Summary</h2>
 
