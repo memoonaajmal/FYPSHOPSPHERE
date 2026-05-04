@@ -424,8 +424,7 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
       <div className={styles.arContentLarge}>
         <Webcam
           ref={webcamRef}
-          style={{ display: "none" }}
-          videoConstraints={{ facingMode: "user" }}
+style={{ visibility: "hidden", position: "absolute", width: 1, height: 1 }}          videoConstraints={{ facingMode: "user" }}
           crossOrigin="anonymous"
         />
         <canvas

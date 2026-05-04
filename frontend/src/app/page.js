@@ -11,7 +11,7 @@ import { auth } from "../../firebase/config";
 import { onAuthStateChanged } from "firebase/auth";
 import Recommendations from "../../components/Recommendations";
 import ChatbotWrapper from "../../components/ChatbotWrapper";
-
+import s from './page.module.css'; 
 import {
   Box, Typography, Grid, Chip, Button, IconButton, Divider, CircularProgress,
 } from "@mui/material";

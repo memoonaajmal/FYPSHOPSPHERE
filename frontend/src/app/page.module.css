@@ -1,0 +1,570 @@
+/* ================================================================
+   shopsphere.module.css
+   
+   RULES:
+   - Zero bare element selectors (no html/body/img/*)
+   - Zero :root  →  variables live on .vars
+   - Every selector has at least one local class (CSS Modules pure)
+   - overflow-x:hidden NEVER on the page wrapper (causes clipping)
+   - Only scrollers themselves carry overflow-x:auto
+   
+   APPLY IN YOUR JSX:
+     import s from './shopsphere.module.css';
+
+     // outermost Box:
+     <Box className={`${s.vars} ${s.page}`}>
+
+     // every section inner wrapper:
+     <Box className={s.inner}>
+
+     // every section heading block:
+     <Box className={s.heading}>
+
+     // horizontal scroller containers (New Arrivals / Recently Viewed):
+     <Box className={s.scrollerTrack}>
+       <Box className={s.scrollerCard}> ... </Box>
+     </Box>
+
+     // stores grid:
+     <Box className={s.storesGrid}>
+       <Box className={s.storeItem}> ... </Box>
+     </Box>
+
+     // feature cards scroller (Why Choose):
+     <Box className={s.featuresTrack}>
+       <Box className={s.featureItem}> ... </Box>
+     </Box>
+
+     // fashion grid:
+     <Box className={s.fashionGrid}>
+       ...images...
+       <Box className={s.fashionCta}> ... </Box>
+     </Box>
+
+     // footer inner:
+     <Box className={s.footerInner}>
+       <Box className={s.footerBrand}> ... </Box>
+       <Box className={s.footerLinks}> ... </Box>
+       <Box className={s.footerSocial}> ... </Box>
+     </Box>
+   ================================================================ */
+
+
+/* ----------------------------------------------------------------
+   CSS VARIABLES  (on .vars — never on :root)
+   ---------------------------------------------------------------- */
+.vars {
+  --ss-accent:       #2251d4;
+  --ss-accent-hov:   #1a3fa8;
+  --ss-accent-soft:  #dce6fb;
+  --ss-ink:          #1a2238;
+  --ss-body:         #3d4f6e;
+  --ss-muted:        #6b7c99;
+  --ss-surface0:     #ffffff;
+  --ss-surface1:     #f4f6fb;
+  --ss-dark:         #0d1629;
+  --ss-on-dark:      #ffffff;
+  --ss-on-dark-dim:  rgba(255,255,255,0.60);
+  --ss-glow:         rgba(160,185,255,0.88);
+  --ss-border-l:     #dde4f0;
+  --ss-border-d:     rgba(255,255,255,0.07);
+  --ss-r-card:       16px;
+  --ss-r-store:      20px;
+
+  /* section padding — overridden at each breakpoint */
+  --ss-py: 5rem;
+  --ss-px: 2.5rem;
+
+  /* card width used by every horizontal scroller */
+  --ss-cw: 280px;
+}
+
+
+/* ----------------------------------------------------------------
+   PAGE WRAPPER
+   No overflow-x:hidden here — it clips sticky nav and headings.
+   ---------------------------------------------------------------- */
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background-color: var(--ss-surface0);
+  color: var(--ss-body);
+}
+
+/* scoped box-sizing — never bare * */
+.page *,
+.page *::before,
+.page *::after {
+  box-sizing: border-box;
+}
+
+/* scoped img reset — never bare img */
+.page img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+
+/* ----------------------------------------------------------------
+   SHARED LAYOUT
+   ---------------------------------------------------------------- */
+.inner {
+  width: 100%;
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Heading block — NEVER clip, always full width, text wraps */
+.heading {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  width: 100%;
+  overflow: visible;          /* headings must never be half-hidden */
+  word-break: break-word;
+  padding-left: 1rem;         /* breathing room from viewport edge  */
+  padding-right: 1rem;
+}
+
+
+/* ----------------------------------------------------------------
+   SHARED — PRIMARY BUTTON
+   ---------------------------------------------------------------- */
+.btnPrimary {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--ss-accent);
+  color: #fff;
+  border-radius: 40px;
+  font-weight: 700;
+  font-size: 0.93rem;
+  padding: 0.7rem 2rem;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.btnPrimary:hover {
+  background: var(--ss-accent-hov);
+  box-shadow: 0 6px 22px rgba(34,81,212,0.27);
+  transform: translateY(-2px);
+}
+
+
+/* ----------------------------------------------------------------
+   HORIZONTAL SCROLLER
+   The track itself scrolls; the parent section does NOT clip.
+   overflow-y:visible keeps card drop-shadows visible.
+   ---------------------------------------------------------------- */
+.scrollerTrack {
+  display: flex;
+  flex-direction: row;          /* always horizontal */
+  gap: 1.25rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 1rem;
+  padding-top: 0.5rem;          /* top shadow not clipped */
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: #dce6fb transparent;
+  /* never constrain width — fill the parent naturally */
+}
+.scrollerTrack::-webkit-scrollbar        { height: 5px; }
+.scrollerTrack::-webkit-scrollbar-track  { background: transparent; }
+.scrollerTrack::-webkit-scrollbar-thumb  { background: #dce6fb; border-radius: 99px; }
+
+.scrollerCard {
+  flex: 0 0 var(--ss-cw);
+  min-width: var(--ss-cw);
+  max-width: var(--ss-cw);
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+}
+
+
+/* ----------------------------------------------------------------
+   PRODUCT CARD WRAPPER
+   ---------------------------------------------------------------- */
+.productCard {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--ss-r-card);
+  overflow: hidden;
+  border: 1px solid var(--ss-border-l);
+  background-color: var(--ss-surface0);
+  box-shadow: 0 2px 10px rgba(34,81,212,0.05);
+  height: 100%;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+.productCard:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 28px rgba(34,81,212,0.12);
+}
+
+
+/* ----------------------------------------------------------------
+   NEW ARRIVALS  CTA row
+   ---------------------------------------------------------------- */
+.arrivalsCta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+
+/* ----------------------------------------------------------------
+   STORES GRID
+   Desktop: 4-column fixed-width CSS grid, centred.
+   ≤ 899 px: becomes a horizontal flex scroller.
+   ---------------------------------------------------------------- */
+.storesGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 280px));
+  gap: 1.5rem;
+  justify-content: center;
+  align-items: stretch;
+}
+
+/* Each store grid item keeps a fixed height on desktop */
+.storeItem {
+  width: 280px;
+  height: 340px;
+  display: flex;
+}
+
+.storesCta {
+  display: flex;
+  justify-content: center;
+  margin-top: 2.5rem;
+}
+
+
+/* ----------------------------------------------------------------
+   FEATURES SCROLLER  (Why Choose — dark section)
+   ---------------------------------------------------------------- */
+.featuresTrack {
+  display: flex;
+  flex-direction: row;
+  gap: 1.25rem;
+  overflow-x: auto;
+  overflow-y: visible;
+  padding-bottom: 1rem;
+  padding-top: 0.5rem;
+  -webkit-overflow-scrolling: touch;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(160,185,255,0.2) transparent;
+  justify-content: safe center;   /* centre when all cards fit */
+}
+.featuresTrack::-webkit-scrollbar       { height: 5px; }
+.featuresTrack::-webkit-scrollbar-thumb { background: rgba(160,185,255,0.2); border-radius: 99px; }
+
+.featureItem {
+  flex: 0 0 280px;
+  min-width: 280px;
+  max-width: 280px;
+  scroll-snap-align: start;
+  display: flex;
+}
+
+
+/* ----------------------------------------------------------------
+   FASHION GRID
+   Desktop: 7-column (6 images + 1 CTA button).
+   Collapses progressively at each breakpoint.
+   ---------------------------------------------------------------- */
+.fashionGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 0.9rem;
+  align-items: center;
+  margin-top: 2rem;
+  width: 100%;
+}
+
+.fashionImg {
+  width: 100%;
+  border-radius: 1.1rem;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.fashionImg:hover { transform: scale(1.04); }
+
+/* CTA sits in column 4 on desktop */
+.fashionCta {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+/* ----------------------------------------------------------------
+   FOOTER
+   ---------------------------------------------------------------- */
+.footerInner {
+  display: flex;
+  flex-direction: row;          /* horizontal on desktop */
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 3rem;
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.footerBrand  { flex: 1.5; min-width: 230px; }
+.footerLinks  { flex: 1;   min-width: 155px; }
+.footerSocial { flex: 1;   min-width: 155px; }
+
+.footerCopy {
+  text-align: center;
+  font-size: 0.8rem;
+  color: rgba(255,255,255,0.28);
+}
+
+.socialBtn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.07);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.07);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.28s, color 0.28s, transform 0.28s;
+}
+.socialBtn:hover {
+  background: #fff;
+  color: #0d1629;
+  transform: translateY(-4px);
+}
+
+
+/* ----------------------------------------------------------------
+   SKELETON LOADER
+   ---------------------------------------------------------------- */
+@keyframes ssShimmer {
+  0%   { background-position: -400px 0; }
+  100% { background-position:  400px 0; }
+}
+
+.skeletonCard {
+  width: 100%;
+  border-radius: var(--ss-r-card);
+  overflow: hidden;
+  border: 1px solid var(--ss-border-l);
+  background-color: var(--ss-surface0);
+}
+
+.skeletonPulse {
+  border-radius: 8px;
+  background: linear-gradient(90deg, #eaeff8 25%, #f4f6fb 50%, #eaeff8 75%);
+  background-size: 800px 100%;
+  animation: ssShimmer 1.5s infinite linear;
+}
+
+
+/* ================================================================
+   RESPONSIVE BREAKPOINTS
+   All layout changes are applied via class overrides only.
+   No :root inside @media — override .vars instead.
+   ================================================================ */
+
+
+/* ── LG  1200 – 1535 px ─────────────────────────────────────── */
+@media (max-width: 1535px) {
+  .vars  { --ss-py: 4.5rem; --ss-px: 2rem; }
+
+  .storesGrid { grid-template-columns: repeat(4, minmax(0, 230px)); }
+  .storeItem  { width: 230px; height: 300px; }
+}
+
+
+/* ── MD  900 – 1199 px ──────────────────────────────────────── */
+@media (max-width: 1199px) {
+  .vars  { --ss-py: 4rem; --ss-px: 1.75rem; }
+
+  /* Stores → 2 × 2 grid, centred */
+  .storesGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    max-width: 580px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .storeItem { width: 100%; height: 280px; }
+
+  /* Fashion → 3 cols; CTA spans full row below */
+  .fashionGrid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
+  }
+  .fashionCta {
+    grid-column: 1 / -1;
+    margin-top: 0.5rem;
+  }
+}
+
+
+/* ── SM  600 – 899 px ───────────────────────────────────────── */
+@media (max-width: 899px) {
+  .vars  { --ss-py: 3.5rem; --ss-px: 1.5rem; --ss-cw: 240px; }
+
+  /* ── heading — extra safety on tablets ── */
+  .heading {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+    margin-bottom: 2rem;
+  }
+
+  /* ── stores → horizontal scroller ── */
+  .storesGrid {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: visible;
+    gap: 1rem;
+    justify-content: flex-start;
+    padding-bottom: 1rem;
+    padding-top: 0.5rem;
+    -webkit-overflow-scrolling: touch;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: thin;
+    scrollbar-color: #dce6fb transparent;
+    max-width: 100%;
+    /* reset grid props */
+    grid-template-columns: unset;
+    align-items: unset;
+  }
+  .storesGrid::-webkit-scrollbar       { height: 5px; }
+  .storesGrid::-webkit-scrollbar-thumb { background: #dce6fb; border-radius: 99px; }
+
+  .storeItem {
+    flex: 0 0 250px;
+    min-width: 250px;
+    width: 250px;
+    height: 250px;
+    scroll-snap-align: start;
+  }
+
+  /* ── features → left-align (safe center can hide first card) ── */
+  .featuresTrack { justify-content: flex-start; }
+  .featureItem   { flex: 0 0 260px; min-width: 260px; max-width: 260px; }
+
+  /* ── fashion → 2 cols ── */
+  .fashionGrid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.6rem;
+  }
+  .fashionCta { grid-column: 1 / -1; }
+
+  /* ── footer → column stack ── */
+  .footerInner   { flex-direction: column; gap: 2rem; }
+  .footerBrand,
+  .footerLinks,
+  .footerSocial  { min-width: unset; flex: unset; width: 100%; }
+}
+
+
+/* ── XS  0 – 599 px ─────────────────────────────────────────── */
+@media (max-width: 599px) {
+  .vars  { --ss-py: 2.5rem; --ss-px: 1rem; --ss-cw: 210px; }
+
+  /* ── heading — full safety on phones ── */
+  .heading {
+    margin-bottom: 1.5rem;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    overflow: visible;
+  }
+
+  /* ── scroller cards ── */
+  .scrollerCard {
+    flex: 0 0 var(--ss-cw);
+    min-width: var(--ss-cw);
+    max-width: var(--ss-cw);
+  }
+
+  /* ── stores ── */
+  .storeItem {
+    flex: 0 0 220px;
+    min-width: 220px;
+    width: 220px;
+    height: 220px;
+  }
+
+  /* ── features ── */
+  .featureItem {
+    flex: 0 0 230px;
+    min-width: 230px;
+    max-width: 230px;
+  }
+
+  /* ── fashion → single column ── */
+  .fashionGrid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+  .fashionImg  { height: 150px !important; }
+  .fashionCta  { grid-column: 1; width: 100%; }
+
+  /* ── arrivals CTA → column ── */
+  .arrivalsCta {
+    flex-direction: column;
+    align-items: center;
+  }
+  .arrivalsCta .btnPrimary {
+    width: 100%;
+    max-width: 300px;
+    justify-content: center;
+  }
+
+  /* ── footer tighter ── */
+  .footerInner { gap: 1.5rem; }
+}
+
+
+/* ── Ultra-small  ≤ 374 px ─────────────────────────────────── */
+@media (max-width: 374px) {
+  .vars  { --ss-cw: 185px; }
+
+  .storeItem   { flex: 0 0 190px; min-width: 190px; width: 190px; height: 190px; }
+  .featureItem { flex: 0 0 185px; min-width: 185px; max-width: 185px; }
+}
+
+
+/* ── XL  ≥ 1536 px ─────────────────────────────────────────── */
+@media (min-width: 1536px) {
+  .vars  { --ss-py: 6rem; --ss-px: 3rem; --ss-cw: 300px; }
+
+  .storesGrid { grid-template-columns: repeat(4, minmax(0, 300px)); }
+  .storeItem  { width: 300px; height: 370px; }
+
+  .featureItem { flex: 0 0 300px; min-width: 300px; max-width: 300px; }
+}
+
+
+/* ----------------------------------------------------------------
+   REDUCED MOTION  (scoped to .page — no bare *)
+   ---------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
