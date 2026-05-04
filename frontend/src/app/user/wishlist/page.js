@@ -74,7 +74,6 @@ export default function WishlistPage() {
     );
   }
 
-  //UPDATED: also syncs to cart DB + removes from wishlist DB
   const handleAddToCart = async (item) => {
     dispatch(
       addItemToCart({
@@ -86,7 +85,6 @@ export default function WishlistPage() {
       })
     );
 
-    // Sync add to cart DB
     await syncCartWithDB("POST", "", {
       id:      item.id,
       storeId: item.storeId,
@@ -100,11 +98,10 @@ export default function WishlistPage() {
     setTimeout(() => setMiniCartVisible(false), 3000);
   };
 
-  //UPDATED: also clears wishlist DB
   const handleClearWishlist = async () => {
     if (window.confirm("Are you sure you want to clear your entire wishlist?")) {
       dispatch(clearWishlist());
-      await syncWishlistWithDB("DELETE", ""); // DELETE /api/wishlist
+      await syncWishlistWithDB("DELETE", ""); 
     }
   };
 
@@ -154,7 +151,7 @@ export default function WishlistPage() {
                   Add to Cart
                 </button>
 
-                {/* ✅ UPDATED: remove also syncs to DB */}
+                {/*UPDATED: remove also syncs to DB */}
                 <button
                   className={styles.removeIcon}
                   onClick={() => {
@@ -178,7 +175,7 @@ export default function WishlistPage() {
               ← Continue Shopping
             </button>
 
-            {/* ✅ UPDATED: uses handleClearWishlist for DB sync */}
+            {/* UPDATED: uses handleClearWishlist for DB sync */}
             <div
               className={styles.clearCartContainer}
               onClick={handleClearWishlist}

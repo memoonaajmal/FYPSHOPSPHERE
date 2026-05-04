@@ -7,7 +7,7 @@ exports.getRecommendations = async (req, res) => {
   try {
     console.log("🔹 Authenticated user:", req.user);
 
-    // 1️⃣ Get user orders if user is provided
+    //Get user orders if user is provided
     let purchasedIds = new Set();
 
     if (req.user?.id) {
@@ -22,12 +22,12 @@ exports.getRecommendations = async (req, res) => {
       });
     }
 
-    console.log("🔹 Purchased IDs:", Array.from(purchasedIds));
+    console.log("Purchased IDs:", Array.from(purchasedIds));
 
     let recommendations = [];
 
     if (purchasedIds.size > 0) {
-      // 2️⃣ Get purchased products embeddings
+      //Get purchased products embeddings
       const purchasedProducts = await Product.find({
         productId: { $in: Array.from(purchasedIds) },
         embedding: { $exists: true, $ne: [] },
@@ -38,7 +38,7 @@ exports.getRecommendations = async (req, res) => {
       );
 
       if (purchasedProducts.length > 0) {
-        // 3️⃣ Compute average embedding
+        //Compute average embedding
         const avgEmbedding = new Array(
           purchasedProducts[0].embedding.length,
         ).fill(0);
@@ -54,7 +54,7 @@ exports.getRecommendations = async (req, res) => {
           "...",
         );
 
-        // 4️⃣ Get all other products
+        //Get all other products
         const allProducts = await Product.find({
           productId: { $nin: Array.from(purchasedIds) },
           embedding: { $exists: true, $ne: [] },
@@ -65,7 +65,7 @@ exports.getRecommendations = async (req, res) => {
         );
 
         if (allProducts.length > 0) {
-          // 5️⃣ Compute similarity and pick top 10
+          //compute similarity and pick top 10
           const rankedProducts = allProducts
             .map((p) => ({
               product: p,
@@ -82,7 +82,7 @@ exports.getRecommendations = async (req, res) => {
             })),
           );
 
-          // 6️⃣ Attach prices
+          //Attach prices
           recommendations = await Promise.all(
             rankedProducts.map(async (item) => {
               const priceDoc = await Price.findOne({
@@ -99,7 +99,7 @@ exports.getRecommendations = async (req, res) => {
       }
     }
 
-    // 🔹 Fallback: show popular/random products if no recommendations
+    //Fallback: show popular/random products if no recommendations
     if (recommendations.length === 0) {
       console.log(
         "⚠️ No order history or embeddings, returning fallback products",

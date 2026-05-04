@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { getRecommendations } = require("../controllers/recommendation.controller");
 
-const { requireAuth } = require("../middleware/auth"); // <- adjust path if needed
+const { requireAuth } = require("../middleware/auth"); 
 
 router.get("/recommendations", requireAuth, getRecommendations);
 

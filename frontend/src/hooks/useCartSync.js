@@ -81,8 +81,8 @@ export function useCartSync() {
         }
       } else {
         // ── USER LOGGED OUT ──────────────────────────────────
-        dispatch(clearCart());     // ✅ wipe cart so next user starts fresh
-        dispatch(clearWishlist()); // ✅ ADDED — wipe wishlist too
+        dispatch(clearCart());    
+        dispatch(clearWishlist()); 
       }
     });
 

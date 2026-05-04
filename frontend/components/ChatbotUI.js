@@ -118,7 +118,7 @@ export default function ChatbotUI({
                           return (
                             <Link
                               key={idx}
-                              href={`/user/products/${p._id}`}
+                              href={`/user/products/${p.productId}`}
                               className={styles.productCard}
                             >
                               <div className={styles.productImage}>

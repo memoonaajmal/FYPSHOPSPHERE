@@ -52,10 +52,41 @@ export default function Chatbot() {
   const [imageErrors, setImageErrors] = useState(new Set());
 
   // Conversation-flow state 
-  const [topProducts, setTopProducts] = useState([]);
-  const [awaitingCartChoice, setAwaitingCartChoice] = useState(false);
-  const [awaitingProductNumber, setAwaitingProductNumber] = useState(false);
-  const [awaitingCheckoutChoice, setAwaitingCheckoutChoice] = useState(false);
+const [topProducts, setTopProducts] = useState(() => {
+  try { return JSON.parse(sessionStorage.getItem('chat_topProducts') || '[]'); }
+  catch { return []; }
+});
+const [awaitingCartChoice, setAwaitingCartChoice] = useState(() => 
+  sessionStorage.getItem('chat_awaitingCartChoice') === 'true'
+);
+const [awaitingProductNumber, setAwaitingProductNumber] = useState(() => 
+  sessionStorage.getItem('chat_awaitingProductNumber') === 'true'
+);
+const [awaitingCheckoutChoice, setAwaitingCheckoutChoice] = useState(() => 
+  sessionStorage.getItem('chat_awaitingCheckoutChoice') === 'true'
+);
+
+// Persist flow state across page navigations
+useEffect(() => {
+  sessionStorage.setItem('chat_topProducts', JSON.stringify(topProducts));
+}, [topProducts]);
+useEffect(() => {
+  sessionStorage.setItem('chat_awaitingCartChoice', awaitingCartChoice);
+}, [awaitingCartChoice]);
+useEffect(() => {
+  sessionStorage.setItem('chat_awaitingProductNumber', awaitingProductNumber);
+}, [awaitingProductNumber]);
+useEffect(() => {
+  sessionStorage.setItem('chat_awaitingCheckoutChoice', awaitingCheckoutChoice);
+}, [awaitingCheckoutChoice]);
+
+// Helper to clear all flow state
+const clearFlowState = () => {
+  sessionStorage.removeItem('chat_topProducts');
+  sessionStorage.removeItem('chat_awaitingCartChoice');
+  sessionStorage.removeItem('chat_awaitingProductNumber');
+  sessionStorage.removeItem('chat_awaitingCheckoutChoice');
+};
 
   // Voice state 
   const [listening, setListening] = useState(false);
@@ -272,6 +303,7 @@ export default function Chatbot() {
           if (isLoggedIn) saveChatMessage(botMsg);
 
           setAwaitingCheckoutChoice(false);
+          clearFlowState();
           setLoading(false);
           setTimeout(() => (window.location.href = "/user/checkout"), 1000);
           return;
@@ -286,6 +318,7 @@ export default function Chatbot() {
           if (isLoggedIn) saveChatMessage(botMsg);
 
           setAwaitingCheckoutChoice(false);
+          clearFlowState();
           setLoading(false);
           return;
         }
@@ -309,6 +342,7 @@ export default function Chatbot() {
           if (isLoggedIn) saveChatMessage(botMsg);
 
           setAwaitingCartChoice(false);
+          clearFlowState();
           setTopProducts([]);
           setLoading(false);
           return;
@@ -357,7 +391,7 @@ export default function Chatbot() {
         const selected = topProducts[index];
         dispatch(
           addItemToCart({
-            id: selected._id,
+             id: selected.productId,
             name: selected.productDisplayName,
             price: selected.price || 0,
             image: `${BASE_URL}/images/${selected.imageFilename}`,
