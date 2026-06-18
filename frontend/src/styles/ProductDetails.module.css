@@ -3,6 +3,7 @@
 .container {
   display: flex;
   gap: 3rem;
+  
   padding: 3rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -113,6 +114,7 @@
 /* AR modal */
 .arModal {
   position: fixed;
+padding: 10rem 2rem 2rem 2rem;
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   display: flex;
