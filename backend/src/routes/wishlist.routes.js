@@ -8,7 +8,7 @@ const router = express.Router();
 // All routes require auth
 router.use(requireAuth);
 
-// ── GET /api/wishlist ──────────────────────────────────────
+//GET /api/wishlist 
 router.get("/", async (req, res) => {
   try {
     const wishlist = await Wishlist.findOne({ userId: req.user.uid });
@@ -18,7 +18,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ── POST /api/wishlist/merge ───────────────────────────────
+// POST /api/wishlist/merge 
 router.post("/merge", async (req, res) => {
   try {
     const { items: guestItems } = req.body;
@@ -52,7 +52,7 @@ router.post("/merge", async (req, res) => {
   }
 });
 
-// ── POST /api/wishlist ─────────────────────────────────────
+// POST /api/wishlist 
 router.post("/", async (req, res) => {
   try {
     const { id, storeId, name, price, image } = req.body;
@@ -80,7 +80,7 @@ router.post("/", async (req, res) => {
   }
 });
 
-// ── DELETE /api/wishlist/:productId ───────────────────────
+// DELETE /api/wishlist/:productId 
 router.delete("/:productId", async (req, res) => {
   try {
     const wishlist = await Wishlist.findOne({ userId: req.user.uid });
@@ -94,7 +94,7 @@ router.delete("/:productId", async (req, res) => {
   }
 });
 
-// ── DELETE /api/wishlist ───────────────────────────────────
+// DELETE /api/wishlist 
 router.delete("/", async (req, res) => {
   try {
     await Wishlist.findOneAndUpdate({ userId: req.user.uid }, { items: [] });

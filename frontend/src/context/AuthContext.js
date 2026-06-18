@@ -2,13 +2,12 @@
 
 import { createContext, useContext, useEffect, useState } from "react";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
-import app  from "../../firebase/config";
-
+import app from "../../firebase/config";
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(null);   // {email, name, roles: []}
+  const [user, setUser] = useState(null); // {email, name, roles: []}
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -18,10 +17,12 @@ export function AuthProvider({ children }) {
       if (firebaseUser) {
         const token = await firebaseUser.getIdToken();
 
-       const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`, {
-  headers: { Authorization: `Bearer ${token}` },
-});
-
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASE_URL}/api/auth/me`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
 
         const data = await res.json();
         setUser(data.user);
@@ -35,9 +36,9 @@ export function AuthProvider({ children }) {
   }, []);
 
   return (
-<AuthContext.Provider value={{ user, setUser, loading }}>
-  {children}
-</AuthContext.Provider>
+    <AuthContext.Provider value={{ user, setUser, loading }}>
+      {children}
+    </AuthContext.Provider>
   );
 }
 

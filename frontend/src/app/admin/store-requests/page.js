@@ -179,7 +179,6 @@ export default function StoreRequests() {
           </div>
         )}
 
-        {/* ── Pagination (same component as seller orders) ── */}
         {totalPages > 1 && <OrderPagination totalPages={totalPages} />}
       </div>
     </div>

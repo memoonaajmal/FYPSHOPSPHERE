@@ -66,7 +66,7 @@ Generate a brief, friendly response (2-3 sentences max). Remember to use PKR for
   }
 
   const result = await res.json();
-  console.log("🧮 Token usage:", result.usage);
+  console.log("Token usage:", result.usage);
 
   return result.choices[0].message.content;
 }
@@ -77,7 +77,7 @@ const chatWithBot = async (req, res) => {
     if (!message) return res.status(400).json({ error: "No message provided" });
 
     const lowerMsg = message.toLowerCase().trim();
-    console.log("📝 User query:", message);
+    console.log("User query:", message);
 
     const greetings = [
       "hi",
@@ -97,7 +97,7 @@ const chatWithBot = async (req, res) => {
         const answer = await generateAIResponse(message, []);
         return res.json({ answer, topProducts: [] });
       } catch (error) {
-        console.error("⚠️ AI error:", error.message);
+        console.error("AI error:", error.message);
         return res.json({
           answer:
             "👋 Hi there! I'm your ShopSphere Assistant. Ask me about any product!",
@@ -146,7 +146,7 @@ const chatWithBot = async (req, res) => {
     try {
       qEmbedding = await getEmbedding(message);
     } catch (e) {
-      console.error("⚠️ Embedding failed:", e.message);
+      console.error("Embedding failed:", e.message);
       return res.json({
         answer:
           "I'm having trouble understanding your request right now, but you can browse products manually 🛍️",
@@ -154,14 +154,14 @@ const chatWithBot = async (req, res) => {
       });
     }
 
-    console.log("🔢 Query embedding:", qEmbedding.length, "dimensions");
+    console.log("Query embedding:", qEmbedding.length, "dimensions");
 
     // Retrieve products with embeddings
     const products = await Product.find({
       embedding: { $exists: true, $ne: [] },
     }).lean();
 
-    console.log("📦 Found", products.length, "products with embeddings");
+    console.log("Found", products.length, "products with embeddings");
 
     if (!products.length) {
       return res.status(400).json({
@@ -178,7 +178,7 @@ const chatWithBot = async (req, res) => {
       .sort((a, b) => b.score - a.score)
       .slice(0, 5);
 
-    console.log("🎯 Top matches:");
+    console.log("Top matches:");
     ranked.forEach((item, idx) => {
       console.log(
         `  ${idx + 1}. ${item.p.productDisplayName} (score: ${item.score.toFixed(3)})`,
@@ -192,7 +192,7 @@ const chatWithBot = async (req, res) => {
       const priceDoc = await Price.findOne({ productId: p.productId }).lean();
 
       topProducts.push({
-        _id: p._id.toString(), // ✅ Mongo ObjectId (CRITICAL FIX)
+        _id: p._id.toString(), // Mongo ObjectId 
         productId: p.productId,
         productDisplayName: p.productDisplayName,
         baseColour: p.baseColour,
@@ -211,15 +211,15 @@ const chatWithBot = async (req, res) => {
         answer += "\n\nClick any product below to learn more!";
       }
     } catch (aiError) {
-      console.error("⚠️ AI error:", aiError.message);
+      console.error("AI error:", aiError.message);
       // Fallback to simple response
       answer = `Great choice! I found ${topProducts.length} products that match your search. 🛍️\n\nClick any product below to learn more!`;
     }
 
-    console.log("✅ Sending response\n");
+    console.log("Sending response\n");
     res.json({ answer, topProducts });
   } catch (err) {
-    console.error("❌ Error:", err.message);
+    console.error("Error:", err.message);
     res.status(500).json({ error: "Failed to process request" });
   }
 };

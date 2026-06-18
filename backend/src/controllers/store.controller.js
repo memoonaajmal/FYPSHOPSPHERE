@@ -87,7 +87,7 @@ exports.createStoreRequest = async (req, res) => {
     const objectId = new mongoose.Types.ObjectId(sellerId);
 
     //  Check if user exists
-    const User = require("../models/User"); // Adjust path as needed
+    const User = require("../models/User"); 
     const userExists = await User.findById(objectId);
     if (!userExists) {
       return res.status(404).json({ message: "User not found" });

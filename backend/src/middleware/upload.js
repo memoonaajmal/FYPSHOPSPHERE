@@ -21,7 +21,7 @@ const storage = multer.diskStorage({
   },
 });
 
-// ✅ Add file filter for security
+// Add file filter for security
 const fileFilter = (req, file, cb) => {
   // Accept images only
   const allowedTypes = /jpeg|jpg|png|gif|webp/;

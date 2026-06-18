@@ -12,7 +12,7 @@ router.get("/", storeController.getStores);
 router.get("/check/exists", requireAuth, requireRole("seller"), storeController.checkSellerStore);
 
 
-// Submit store creation request with error handling
+// Submit store creation request 
 router.post(
   "/create-request",
   upload.fields([
