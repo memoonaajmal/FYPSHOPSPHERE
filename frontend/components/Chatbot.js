@@ -391,7 +391,7 @@ const clearFlowState = () => {
         const selected = topProducts[index];
         dispatch(
           addItemToCart({
-             id: selected.productId,
+             id: selected._id,
             name: selected.productDisplayName,
             price: selected.price || 0,
             image: `${BASE_URL}/images/${selected.imageFilename}`,

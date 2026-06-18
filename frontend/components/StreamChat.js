@@ -20,13 +20,13 @@ export default function StreamChat({ streamId, username, userType, socket }) {
     if (!socket) return;
 
     const handleMessage = (msg) => {
-      // ✅ SELLER MESSAGE: ALWAYS PIN & REPLACE
+      // SELLER MESSAGE: ALWAYS PIN & REPLACE
       if (msg.userType === "seller") {
         setPinnedMessage(msg);
-        return; // ❗ never add to chat list
+        return; // never add to chat list
       }
 
-      // ⛔ Dedup ONLY for viewer messages
+      // Dedup ONLY for viewer messages
       const key = msgKey(msg);
       if (seen.current.has(key)) return;
       seen.current.add(key);

@@ -17,7 +17,7 @@ const StreamPublisher = forwardRef(
     const streamRef = useRef(null);
 
     const [viewerCount, setViewerCount] = useState(0);
-    const [viewers, setViewers] = useState([]); // ✅ viewer names
+    const [viewers, setViewers] = useState([]); // viewer names
     const [showViewerList, setShowViewerList] = useState(false);
 
     useEffect(() => {

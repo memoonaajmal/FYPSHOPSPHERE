@@ -480,7 +480,7 @@ export default function CheckoutPage() {
                   <span className={styles.text}>Cash on Delivery</span>
                 </label>
 
-                {/* JazzCash */}
+                {/* JazzCash *
                 <label
                   className={`${styles.radioLabel} ${
                     formData.paymentMethod === "JazzCash" ? styles.active : ""
@@ -498,6 +498,7 @@ export default function CheckoutPage() {
                   </span>
                   <span className={styles.text}>JazzCash (5% off)</span>
                 </label>
+                */}
 
                 {/* Stripe */}
                 <label
