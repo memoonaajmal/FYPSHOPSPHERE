@@ -98,6 +98,7 @@ const clearFlowState = () => {
   const transcriptRef = useRef("");
   const autoSendTimerRef = useRef(null);
   const messagesEndRef = useRef(null);
+  const sentRef = useRef(false); 
 
   // Auto-scroll 
   useEffect(() => {
@@ -148,17 +149,19 @@ const clearFlowState = () => {
       setVoiceLoading(false);
       setVoiceReady(true);
       transcriptRef.current = "";
+      sentRef.current = false;
     };
 
     recognition.onend = () => {
       setListening(false);
       setVoiceReady(false);
 
-      if (transcriptRef.current) {
+      if (!sentRef.current && transcriptRef.current) {
         const finalTranscript = transcriptRef.current.trim();
         if (finalTranscript) processTranscript(finalTranscript);
-        transcriptRef.current = "";
       }
+      transcriptRef.current = "";
+      sentRef.current = false; 
     };
 
     recognition.onresult = (event) => {
@@ -186,6 +189,7 @@ const clearFlowState = () => {
       setInput(convertedText);
 
       if (finalTranscript) {
+        sentRef.current = true;
         processTranscript(finalTranscript.trim());
       }
     };
@@ -208,7 +212,7 @@ const clearFlowState = () => {
     return () => {
       if (autoSendTimerRef.current) clearTimeout(autoSendTimerRef.current);
     };
-  }, [awaitingCartChoice, awaitingCheckoutChoice]);
+  }, [awaitingCartChoice, awaitingCheckoutChoice, awaitingProductNumber]);
 
   // Helpers 
   const processTranscript = (transcript) => {
@@ -391,7 +395,7 @@ const clearFlowState = () => {
         const selected = topProducts[index];
         dispatch(
           addItemToCart({
-             id: selected._id,
+             id: selected.productId,
             name: selected.productDisplayName,
             price: selected.price || 0,
             image: `${BASE_URL}/images/${selected.imageFilename}`,
