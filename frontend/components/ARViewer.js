@@ -10,18 +10,9 @@ import {
 } from "@mediapipe/tasks-vision";
 import styles from "../src/styles/ProductDetails.module.css";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FIX 1 — Pin the WASM version explicitly.
-// "@latest" can resolve to a cached/stale CDN path in Chrome that serves the
-// wrong MIME type for .wasm files. Pinning a concrete semver guarantees Chrome
-// gets a valid application/wasm response every time.
-// ─────────────────────────────────────────────────────────────────────────────
 const VISION_WASM_URL =
   "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.14/wasm";
 
-// ─────────────────────────────────────────────────────────────────────────────
-// BACKGROUND REMOVAL
-// ─────────────────────────────────────────────────────────────────────────────
 
 function sampleBgColor(data, w, h) {
   const patches = [
@@ -157,12 +148,7 @@ function removeBackground(img, { tolerance = 42, shadowStrength = 0.85, featherR
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// FIX 3 helper — wait for the video element to have valid dimensions.
-// Chrome resolves getUserMedia before loadedmetadata fires, so videoWidth/Height
-// are 0 when the draw loop starts. Calling detectForVideo on a 0×0 frame
-// silently crashes the MediaPipe WASM worker in Chrome (Firefox tolerates it).
-// ─────────────────────────────────────────────────────────────────────────────
+
 function waitForVideoReady(video) {
   return new Promise((resolve) => {
     if (video.readyState >= 2 && video.videoWidth > 0) {
@@ -179,16 +165,12 @@ function waitForVideoReady(video) {
   });
 }
 
-// ─────────────────────────────────────────────────────────────────────────────
-// COMPONENT
-// ─────────────────────────────────────────────────────────────────────────────
+
 
 export default function ARViewer({ product, baseUrl, openAnalyze = false, onClose = () => {} }) {
   const webcamRef    = useRef(null);
   const canvasRef    = useRef(null);
-  // FIX 2 — guard flag stops Chrome spawning concurrent async draw frames.
-  // Firefox queues microtasks sequentially; Chrome does not — without this flag
-  // you get 2-4 simultaneous detectForVideo calls which corrupts the WASM heap.
+
   const isProcessing = useRef(false);
   const rafId        = useRef(null);
 
@@ -290,10 +272,7 @@ export default function ARViewer({ product, baseUrl, openAnalyze = false, onClos
       const draw = async () => {
         if (!isMounted) return;
 
-        // FIX 2 — skip this frame if the previous one hasn't finished.
-        // This is the key Chrome fix: without it, each rAF fires a new async
-        // chain before the previous await resolves, stacking up concurrent
-        // detectForVideo calls that race and crash the WASM worker.
+   
         if (isProcessing.current) {
           rafId.current = requestAnimationFrame(draw);
           return;

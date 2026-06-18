@@ -50,7 +50,6 @@ const cartSlice = createSlice({
       localStorage.removeItem("cart");
     },
 
-    // ✅ NEW: replace entire cart (used when loading from DB)
     setCart: (state, action) => {
       // DB items use `productId`, redux uses `id` — normalize here
       state.items = action.payload.map((item) => ({
@@ -72,7 +71,7 @@ export const {
   increaseQty,
   decreaseQty,
   clearCart,
-  setCart,        // ✅ NEW export
+  setCart,       
 } = cartSlice.actions;
 
 export default cartSlice.reducer;
