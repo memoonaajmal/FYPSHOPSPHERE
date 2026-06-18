@@ -69,7 +69,7 @@ export default function SellerDashboard() {
           <button className={styles.sdPrimaryBtn}>Start Streaming</button>
         </Link>
 
-        <Link href="/seller/orders">
+        <Link href="/seller/products">
           <button className={styles.sdSecondaryBtn}>Your Catalog</button>
         </Link>
       </div>
