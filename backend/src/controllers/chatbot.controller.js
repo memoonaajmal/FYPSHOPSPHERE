@@ -1,6 +1,7 @@
 const Price = require("../models/Price");
 const cosineSim = require("../utils/similarity");
 const { getEmbedding } = require("../utils/embedding");
+const Store = require("../models/Store");
 
 const fetch = (...args) =>
   import("node-fetch").then(({ default: fetch }) => fetch(...args));
@@ -191,6 +192,8 @@ const chatWithBot = async (req, res) => {
     for (const { p } of ranked) {
       const priceDoc = await Price.findOne({ productId: p.productId }).lean();
 
+      const store = await Store.findOne({ productIds: p.productId }).lean();
+
       topProducts.push({
         _id: p._id.toString(), // Mongo ObjectId 
         productId: p.productId,
@@ -199,6 +202,7 @@ const chatWithBot = async (req, res) => {
         gender: p.gender,
         imageFilename: p.imageFilename,
         price: priceDoc ? priceDoc.price : 0,
+        storeId: store ? store._id.toString() : null,
       });
     }
 
