@@ -88,8 +88,8 @@ Your frontend should now be running.
 
 ## 👩‍💻 Authors
 
-* **Samreen Khubaib**
-* **Hafsa Akmal**
-* **Memoona Ajmal**
+* **Samreen Khubaib FA22-BSE-025**
+* **Hafsa Akmal FA22-BSE-037**
+* **Memoona Ajmal FA22-BSE-045**
 
 Final Year Project — COMSATS University Islamabad
