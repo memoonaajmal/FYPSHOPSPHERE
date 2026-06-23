@@ -42,7 +42,7 @@
   },
   "name": "fypshopsphere",
   "version": "1.0.0",
-  "description": "ShopSphere is an **e-commerce platform** with **AI**, **AR (Augmented Reality)**, and **Live Stream** features — built using **Next.js**, **Node.js**, and **MongoDB**.",
+  "description": "ShopSphere is an **e-commerce platform** with **AI**, **AR (Augmented Reality)**, and **Live Stream** features \u2014 built using **Next.js**, **Node.js**, and **MongoDB**.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
