@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "main": "src/server.js",
   "scripts": {
-    "dev": "nodemon --ignore data/ src/server.js",
-    "start": "npm run dev",
+    "dev": "node api.js && nodemon --ignore data/ src/server.js",
+    "start": "node api.js && npm run dev",
     "seed": "node scripts/seed.js",
     "buildStores": "node scripts/buildStores.js",
     "seedPrices": "node scripts/seedPrices.js",
